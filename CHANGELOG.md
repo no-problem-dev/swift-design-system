@@ -5,9 +5,17 @@
 フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に基づいており、
 このプロジェクトは [セマンティックバージョニング](https://semver.org/lang/ja/spec/v2.0.0.html) に準拠しています。
 
-## [未リリース]
+## [1.0.10] - 2025-11-08
 
-なし
+### ドキュメント
+- **リリースプロセスガイドの包括的な更新**
+  - リリース思想とコンセプトを詳細に記載（ハイブリッドアプローチの理由、セマンティックバージョニング、Keep a Changelog）
+  - 詳細な手順とワークフロー全体像を追加
+  - CHANGELOG.mdの書き方のベストプラクティス（良い例/悪い例の比較）
+  - 自動化の仕組みを技術的に解説（release.yml、prepare-next-release.yml）
+  - トラブルシューティングガイドを充実
+  - README.mdに開発者向け情報セクションを追加
+  - 旧docsディレクトリを削除（内容は統合済み）
 
 ## [1.0.9] - 2025-11-08
 
@@ -207,7 +215,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.9...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.10...HEAD
+[1.0.10]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.9...v1.0.10
 [1.0.9]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.8...v1.0.9
 [1.0.8]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.7...v1.0.8
 [1.0.7]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.6...v1.0.7
