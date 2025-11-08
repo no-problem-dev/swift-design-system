@@ -35,6 +35,38 @@ struct PatternsCatalogView: View {
 
                     VStack(spacing: spacing.sm) {
                         NavigationLink {
+                            AspectGridCatalogView()
+                        } label: {
+                            HStack(spacing: spacing.md) {
+                                Image(systemName: "square.grid.2x2.fill")
+                                    .font(.title3)
+                                    .foregroundStyle(colorPalette.primary)
+                                    .frame(width: 32)
+
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("AspectGrid")
+                                        .typography(.bodyLarge)
+                                        .foregroundStyle(colorPalette.onSurface)
+
+                                    Text("アスペクト比固定グリッドレイアウト")
+                                        .typography(.bodySmall)
+                                        .foregroundStyle(colorPalette.onSurfaceVariant)
+                                }
+
+                                Spacer()
+
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(colorPalette.onSurfaceVariant)
+                            }
+                            .padding(.horizontal, spacing.lg)
+                            .padding(.vertical, spacing.md)
+                            .background(colorPalette.surface)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .buttonStyle(.plain)
+
+                        NavigationLink {
                             SectionCardCatalogView()
                         } label: {
                             HStack(spacing: spacing.md) {
