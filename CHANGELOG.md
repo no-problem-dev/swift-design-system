@@ -9,6 +9,15 @@
 
 なし
 
+## [1.0.5] - 2025-11-08
+
+### 追加
+- **自動化ワークフロー** - リリース後の準備を自動化
+  - `.github/workflows/prepare-next-release.yml` を追加
+  - GitHub Release公開後に自動的に次のリリース準備PRをドラフト作成
+  - CHANGELOG.mdの「未リリース」セクションを自動挿入
+  - Keep a Changelogのベストプラクティスに基づく実装
+
 ## [1.0.4] - 2025-11-08
 
 ### 変更
@@ -167,7 +176,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.4...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.5...HEAD
+[1.0.5]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.1...v1.0.2
