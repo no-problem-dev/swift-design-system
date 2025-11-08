@@ -39,7 +39,7 @@ Text("見出し").typography(.headlineLarge)
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/no-problem-dev/swift-design-system.git", from: "1.0.0")
+    .package(url: "https://github.com/no-problem-dev/swift-design-system.git", from: "1.0.2")
 ]
 ```
 

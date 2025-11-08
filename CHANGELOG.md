@@ -9,6 +9,71 @@
 
 なし
 
+## [1.0.2] - 2025-11-08
+
+### 追加
+- **マルチテーマシステム** - 7種類のビルトインテーマを追加
+  - Default - Material Design 3準拠のデフォルトテーマ
+  - Ocean - 海の青をベースとした落ち着いたテーマ
+  - Forest - 森の緑をベースとした自然なテーマ
+  - Sunset - 夕焼けのオレンジをベースとした温かいテーマ
+  - Purple Haze - 鮮やかな紫をベースとしたクリエイティブなテーマ
+  - Monochrome - グレースケールのミニマルなテーマ
+  - High Contrast - WCAG AAA準拠の高コントラストテーマ
+- **テーマアーキテクチャ**
+  - `Theme` protocol - Protocol指向設計による拡張性の高いテーマシステム
+  - `ThemeMode` - システム追従/ライト固定/ダーク固定の3モード対応
+  - `ThemeCategory` - テーマの論理的分類（Standard, Brand Personality, Accessibility）
+  - `ThemeRegistry` - 全テーマの一元管理
+  - 各テーマにLight/Darkパレット実装（計14パレット）
+- **カタログアプリUI**
+  - `ThemeGalleryView` - カテゴリ別テーマ一覧表示
+  - `ThemeDetailView` - テーマ詳細とインタラクティブプレビュー
+  - `ThemeCardView` - テーマ選択カード
+  - `ThemeColorPreview` - 全27色のカラーパレット表示
+  - `AppearanceModeSection` - 外観モード切り替えUI
+- **DesignSystemCatalogApp** - Xcodeプロジェクトとしてのカタログアプリケーション
+
+### 変更
+- **ThemeProvider の完全リライト**（破壊的変更）
+  - `@Observable` マクロに移行
+  - 初期化パラメータの変更:
+    - 旧: `ThemeProvider(colorScheme:lightPalette:darkPalette:)`
+    - 新: `ThemeProvider(initialTheme:initialMode:additionalThemes:)`
+  - Environment注入方法の変更:
+    - 旧: `.environment(\.themeProvider, provider)`
+    - 新: `.environment(provider)`
+  - デフォルトモードを `.system` に変更（システム設定に追従）
+- **ThemeModifier の改善**
+  - `ThemeMode.system` のColorScheme解決ロジック実装
+  - `@Environment(\.colorScheme)` と連携して適切なパレットを選択
+- **DesignSystemCatalogView の改善**
+  - 冗長なヘッダーセクションを削除
+  - ナビゲーションタイトルを「デザインシステムカタログ」に変更
+  - 情報セクションにリポジトリとドキュメントへのリンク追加
+  - バージョン・デザインシステム説明を削除（メンテナンス負荷軽減）
+
+### 修正
+- **カタログビューのハードコード色をテーマシステムに統一**
+  - PatternsCatalogView/ComponentsCatalogView のヘッダーアイコン色を `colorPalette.primary` に統一
+  - FeatureRow コンポーネントをテーマ対応（`color` パラメータを削除）
+  - RadiusDemoView/SpacingDemoView の視覚デモをテーマカラーに対応
+  - ButtonCatalogView の説明文と背景色をColorPaletteトークンに統一
+  - ColorSwatchView の `.primary`/`.secondary`/`.tertiary` を `colorPalette` トークンに統一
+  - すべてのカタログビューでSwiftUIネイティブセマンティックカラーを排除し、Material Design 3準拠に統一
+
+### 削除
+- `ThemeProviderKey` - @Observableに移行したため不要
+- カスタムEnvironmentKeyによるThemeProvider注入パターン
+
+### ドキュメント
+- README.md にマルチテーマシステムの包括的なドキュメント追加
+  - 7テーマの特徴と用途を説明する表
+  - テーマ切り替えとモード選択の使用例
+  - カスタムテーマ作成ガイド
+- 全テーマファイルに詳細なドキュメントコメント追加
+- ThemeProtocol/ThemeRegistry/ThemeMode/ThemeCategory に実践的なコード例追加
+
 ## [1.0.1] - 2025-01-08
 
 ### 修正
@@ -78,6 +143,7 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.1...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/no-problem-dev/swift-design-system/releases/tag/v1.0.0
