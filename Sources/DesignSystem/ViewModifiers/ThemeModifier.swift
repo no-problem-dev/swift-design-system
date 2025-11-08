@@ -37,10 +37,16 @@ private struct ThemeEnvironmentView<Content: View>: View {
         resolvedMode == .dark ? .dark : .light
     }
 
+    /// 実際に適用するカラーパレット（リアクティブ）
+    /// provider.currentThemeが変更されると自動的に再計算される
+    private var resolvedColorPalette: any ColorPalette {
+        provider.currentTheme.colorPalette(for: resolvedMode)
+    }
+
     var body: some View {
         content
             .environment(provider)
-            .environment(\.colorPalette, provider.currentTheme.colorPalette(for: resolvedMode))
+            .environment(\.colorPalette, resolvedColorPalette)
             .environment(\.spacingScale, DefaultSpacingScale())
             .environment(\.radiusScale, DefaultRadiusScale())
             .colorScheme(resolvedColorScheme)
