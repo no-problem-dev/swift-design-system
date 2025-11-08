@@ -9,10 +9,30 @@
 
 なし
 
+## [1.0.4] - 2025-11-08
+
+### 変更
+- **リリースプロセスの改善** - ハイブリッドアプローチを採用
+  - CHANGELOG.mdは人間が手動で管理（Keep a Changelog形式を維持）
+  - GitHub Releasesはタグから自動生成
+  - ベストプラクティスに基づく正しい設計に変更
+
+### 削除
+- 誤った自動化ワークフロー `prepare-next-version.yml` を削除
+- 不要なスクリプト `prepare_next_version.sh` を削除
+- 古いドキュメント `RELEASE_AUTOMATION.md` を削除
+
+### 追加
+- 新しいリリースワークフロー `.github/workflows/release.yml`
+  - タグプッシュ時にCHANGELOG.mdから該当バージョンを抽出
+  - GitHub Releaseを自動作成
+- 包括的なリリースプロセスガイド `docs/RELEASE_PROCESS.md`
+
 ## [1.0.3] - 2025-11-08
 
 ### ドキュメント
 - README.md のインストール方法を `upToNextMajor` に変更し、セマンティックバージョニングのベストプラクティスに準拠
+
 ## [1.0.2] - 2025-11-08
 
 ### 追加
@@ -147,7 +167,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.3...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.4...HEAD
+[1.0.4]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.0...v1.0.1

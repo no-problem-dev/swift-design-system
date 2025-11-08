@@ -1,0 +1,73 @@
+name: Release
+
+# タグがプッシュされた時に自動的にGitHub Releaseを作成
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+
+          # CHANGELOG.mdから該当バージョンのセクションを抽出
+          if grep -q "## \[$VERSION\]" CHANGELOG.md; then
+            # バージョンセクションの開始行を見つける
+            START_LINE=$(grep -n "## \[$VERSION\]" CHANGELOG.md | cut -d: -f1)
+            # 次のバージョンセクションの開始行を見つける（または末尾）
+            NEXT_LINE=$(tail -n +$((START_LINE + 1)) CHANGELOG.md | grep -n "^## \[" | head -1 | cut -d: -f1)
+
+            if [ -n "$NEXT_LINE" ]; then
+              # 次のセクションがある場合
+              END_LINE=$((START_LINE + NEXT_LINE - 1))
+              sed -n "${START_LINE},${END_LINE}p" CHANGELOG.md > release_notes.md
+            else
+              # 最後のセクションの場合
+              sed -n "${START_LINE},\$p" CHANGELOG.md > release_notes.md
+            fi
+
+            # バージョン見出しを削除
+            sed -i '1d' release_notes.md
+
+            # リンクセクションを削除
+            sed -i '/^\[.*\]: http/d' release_notes.md
+
+            # 空行を整理
+            sed -i '/^$/N;/^\n$/D' release_notes.md
+
+            echo "found=true" >> $GITHUB_OUTPUT
+          else
+            echo "found=false" >> $GITHUB_OUTPUT
+            echo "⚠️ CHANGELOG.mdにバージョン $VERSION が見つかりませんでした" > release_notes.md
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: v${{ steps.version.outputs.version }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          generate_release_notes: ${{ steps.changelog.outputs.found != 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
