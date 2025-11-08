@@ -148,10 +148,6 @@ struct FloatingActionButtonCatalogView: View {
 #Preview {
     NavigationStack {
         FloatingActionButtonCatalogView()
-            .theme(ThemeProvider(
-                colorScheme: .light,
-                lightPalette: LightColorPalette(),
-                darkPalette: DarkColorPalette()
-            ))
+            .theme(ThemeProvider())
     }
 }

@@ -3,6 +3,7 @@ import SwiftUI
 /// 色見本コンポーネント
 /// 色 + HEXコード + トークン名を表示し、タップでHEXコードをコピー
 struct ColorSwatchView: View {
+    @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
 
     let name: String
@@ -30,7 +31,7 @@ struct ColorSwatchView: View {
                     .frame(width: 48, height: 48)
                     .overlay {
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.primary.opacity(0.2), lineWidth: 1)
+                            .stroke(colors.outline.opacity(0.3), lineWidth: 1)
                     }
                     .overlay {
                         if showCopiedFeedback {
@@ -45,19 +46,19 @@ struct ColorSwatchView: View {
                     Text(name)
                         .font(.subheadline)
                         .fontWeight(.medium)
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(colors.onSurface)
 
                     if let hexCode {
                         Text(hexCode)
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(colors.onSurfaceVariant)
                             .fontDesign(.monospaced)
                     }
 
                     if let description {
                         Text(description)
                             .font(.caption2)
-                            .foregroundStyle(.tertiary)
+                            .foregroundStyle(colors.onSurfaceVariant.opacity(0.7))
                     }
                 }
 
@@ -65,7 +66,7 @@ struct ColorSwatchView: View {
 
                 Image(systemName: "doc.on.doc")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(colors.onSurfaceVariant)
             }
             .padding(.vertical, spacing.sm)
         }

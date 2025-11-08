@@ -12,18 +12,18 @@ struct ComponentsCatalogView: View {
                 VStack(spacing: spacing.sm) {
                     Image(systemName: "square.stack.3d.up.fill")
                         .font(.system(size: 48))
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(colorPalette.primary)
 
                     Text("コンポーネントカタログ")
-                        .font(.title2)
-                        .fontWeight(.bold)
+                        .typography(.headlineLarge)
+                        .foregroundStyle(colorPalette.onBackground)
 
                     Text("再利用可能なUIコンポーネント")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .typography(.bodySmall)
+                        .foregroundStyle(colorPalette.onSurfaceVariant)
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.top, 24)
+                .padding(.top, spacing.xl)
 
                 // コンポーネントリスト
                 VStack(alignment: .leading, spacing: 12) {
@@ -99,10 +99,6 @@ struct ComponentsCatalogView: View {
 #Preview {
     NavigationStack {
         ComponentsCatalogView()
-            .theme(ThemeProvider(
-                colorScheme: .light,
-                lightPalette: LightColorPalette(),
-                darkPalette: DarkColorPalette()
-            ))
+            .theme(ThemeProvider())
     }
 }

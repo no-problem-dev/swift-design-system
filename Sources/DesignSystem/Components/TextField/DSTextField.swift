@@ -220,9 +220,5 @@ struct DSTextFieldPreview: View {
 
 #Preview {
     DSTextFieldPreview()
-        .theme(ThemeProvider(
-            colorScheme: .light,
-            lightPalette: LightColorPalette(),
-            darkPalette: DarkColorPalette()
-        ))
+        .theme(ThemeProvider())
 }

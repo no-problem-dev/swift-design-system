@@ -146,9 +146,5 @@ struct IconButtonPreview: View {
 
 #Preview {
     IconButtonPreview()
-        .theme(ThemeProvider(
-            colorScheme: .light,
-            lightPalette: LightColorPalette(),
-            darkPalette: DarkColorPalette()
-        ))
+        .theme(ThemeProvider())
 }

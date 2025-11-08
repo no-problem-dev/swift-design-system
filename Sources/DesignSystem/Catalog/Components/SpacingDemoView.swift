@@ -3,6 +3,7 @@ import SwiftUI
 /// スペーシング値のデモコンポーネント
 /// 実際のサイズを視覚的に表示
 struct SpacingDemoView: View {
+    @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
 
     let name: String
@@ -12,30 +13,30 @@ struct SpacingDemoView: View {
         VStack(alignment: .leading, spacing: spacing.sm) {
             HStack {
                 Text(name)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
+                    .typography(.bodyMedium)
+                    .foregroundStyle(colors.onSurface)
 
                 Spacer()
 
                 Text("\(Int(value))pt")
                     .font(.caption)
                     .fontDesign(.monospaced)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(colors.onSurfaceVariant)
             }
 
             // 視覚的表現
             HStack(spacing: 0) {
                 Rectangle()
-                    .fill(.blue.opacity(0.2))
+                    .fill(colors.primary.opacity(0.2))
                     .frame(width: value, height: 32)
                     .overlay(alignment: .leading) {
                         Rectangle()
-                            .fill(.blue)
+                            .fill(colors.primary)
                             .frame(width: 2)
                     }
                     .overlay(alignment: .trailing) {
                         Rectangle()
-                            .fill(.blue)
+                            .fill(colors.primary)
                             .frame(width: 2)
                     }
 

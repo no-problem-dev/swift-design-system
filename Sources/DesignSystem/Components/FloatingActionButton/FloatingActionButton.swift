@@ -119,9 +119,5 @@ struct FABPreview: View {
 
 #Preview {
     FABPreview()
-        .theme(ThemeProvider(
-            colorScheme: .light,
-            lightPalette: LightColorPalette(),
-            darkPalette: DarkColorPalette()
-        ))
+        .theme(ThemeProvider())
 }

@@ -3,6 +3,7 @@ import SwiftUI
 /// 角丸値のデモコンポーネント
 /// 実際の角丸を視覚的にプレビュー
 struct RadiusDemoView: View {
+    @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
 
     let name: String
@@ -12,21 +13,21 @@ struct RadiusDemoView: View {
         VStack(alignment: .leading, spacing: spacing.sm) {
             HStack {
                 Text(name)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
+                    .typography(.bodyMedium)
+                    .foregroundStyle(colors.onSurface)
 
                 Spacer()
 
                 Text(value.isInfinite ? "∞" : "\(Int(value))pt")
                     .font(.caption)
                     .fontDesign(.monospaced)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(colors.onSurfaceVariant)
             }
 
             // 視覚的表現
             RoundedRectangle(cornerRadius: value.isInfinite ? 32 : value)
-                .fill(.blue.opacity(0.2))
-                .stroke(.blue, lineWidth: 2)
+                .fill(colors.primary.opacity(0.2))
+                .stroke(colors.primary, lineWidth: 2)
                 .frame(height: 64)
         }
         .padding(.vertical, spacing.xs)

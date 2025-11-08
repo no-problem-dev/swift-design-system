@@ -120,9 +120,5 @@ struct CardPreview: View {
 
 #Preview {
     CardPreview()
-        .theme(ThemeProvider(
-            colorScheme: .light,
-            lightPalette: LightColorPalette(),
-            darkPalette: DarkColorPalette()
-        ))
+        .theme(ThemeProvider())
 }

@@ -13,15 +13,15 @@ struct PatternsCatalogView: View {
                 VStack(spacing: spacing.sm) {
                     Image(systemName: "square.grid.3x3.fill")
                         .font(.system(size: 48))
-                        .foregroundStyle(.purple)
+                        .foregroundStyle(colorPalette.primary)
 
                     Text("パターンカタログ")
-                        .font(.title2)
-                        .fontWeight(.bold)
+                        .typography(.headlineLarge)
+                        .foregroundStyle(colorPalette.onBackground)
 
                     Text("レイアウトパターンやデザインパターン")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .typography(.bodySmall)
+                        .foregroundStyle(colorPalette.onSurfaceVariant)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.top, spacing.xl)
@@ -82,10 +82,6 @@ struct PatternsCatalogView: View {
 #Preview {
     NavigationStack {
         PatternsCatalogView()
-            .theme(ThemeProvider(
-                colorScheme: .light,
-                lightPalette: LightColorPalette(),
-                darkPalette: DarkColorPalette()
-            ))
+            .theme(ThemeProvider())
     }
 }

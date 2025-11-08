@@ -232,10 +232,6 @@ struct TextFieldCatalogView: View {
 #Preview {
     NavigationStack {
         TextFieldCatalogView()
-            .theme(ThemeProvider(
-                colorScheme: .light,
-                lightPalette: LightColorPalette(),
-                darkPalette: DarkColorPalette()
-            ))
+            .theme(ThemeProvider())
     }
 }

@@ -13,7 +13,7 @@ struct ButtonCatalogView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("ボタンのバリエーションとサイズを確認できます")
                         .typography(.bodyMedium)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(colorPalette.onSurfaceVariant)
                         .padding(.horizontal, spacing.lg)
 
                     Toggle("ボタンを有効化", isOn: $isButtonEnabled)
@@ -25,7 +25,7 @@ struct ButtonCatalogView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("最も強調されるボタン。主要なアクションに使用。")
                             .typography(.bodySmall)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(colorPalette.onSurfaceVariant)
 
                         VStack(spacing: spacing.md) {
                             Button("Large (デフォルト)") { }
@@ -49,7 +49,7 @@ struct ButtonCatalogView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("副次的なアクションに使用。プライマリより控えめな強調。")
                             .typography(.bodySmall)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(colorPalette.onSurfaceVariant)
 
                         VStack(spacing: spacing.md) {
                             Button("Large (デフォルト)") { }
@@ -73,7 +73,7 @@ struct ButtonCatalogView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("最も控えめなボタン。テキストのみのスタイル。")
                             .typography(.bodySmall)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(colorPalette.onSurfaceVariant)
 
                         VStack(spacing: spacing.md) {
                             Button("Large (デフォルト)") { }
@@ -108,7 +108,7 @@ struct ButtonCatalogView: View {
                         .typography(.bodySmall)
                         .fontDesign(.monospaced)
                         .padding()
-                        .background(.secondary.opacity(0.1))
+                        .background(colorPalette.surfaceVariant)
                         .cornerRadius(8)
                     }
                 }
@@ -126,10 +126,6 @@ struct ButtonCatalogView: View {
 #Preview {
     NavigationStack {
         ButtonCatalogView()
-            .theme(ThemeProvider(
-                colorScheme: .light,
-                lightPalette: LightColorPalette(),
-                darkPalette: DarkColorPalette()
-            ))
+            .theme(ThemeProvider())
     }
 }

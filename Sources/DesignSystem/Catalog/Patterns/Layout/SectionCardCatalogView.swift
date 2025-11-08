@@ -88,10 +88,10 @@ struct SectionCardCatalogView: View {
                         // デモ
                         SectionCard(title: "機能リスト") {
                             VStack(alignment: .leading, spacing: spacing.sm) {
-                                FeatureRow(icon: "checkmark.circle.fill", title: "自動パディング管理", color: .green)
-                                FeatureRow(icon: "checkmark.circle.fill", title: "Cardコンポーネント統合", color: .green)
-                                FeatureRow(icon: "checkmark.circle.fill", title: "Spacing tokens対応", color: .green)
-                                FeatureRow(icon: "checkmark.circle.fill", title: "階層的な情報構造", color: .green)
+                                FeatureRow(icon: "checkmark.circle.fill", title: "自動パディング管理")
+                                FeatureRow(icon: "checkmark.circle.fill", title: "Cardコンポーネント統合")
+                                FeatureRow(icon: "checkmark.circle.fill", title: "Spacing tokens対応")
+                                FeatureRow(icon: "checkmark.circle.fill", title: "階層的な情報構造")
                             }
                         }
                     }
@@ -199,10 +199,6 @@ struct SectionCardCatalogView: View {
 #Preview {
     NavigationStack {
         SectionCardCatalogView()
-            .theme(ThemeProvider(
-                colorScheme: .light,
-                lightPalette: LightColorPalette(),
-                darkPalette: DarkColorPalette()
-            ))
+            .theme(ThemeProvider())
     }
 }

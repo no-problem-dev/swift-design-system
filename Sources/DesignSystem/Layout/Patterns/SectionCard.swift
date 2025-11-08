@@ -111,9 +111,5 @@ public struct SectionCard<Content: View>: View {
         }
         .padding(.vertical, spacing.xl)
     }
-    .theme(ThemeProvider(
-        colorScheme: .light,
-        lightPalette: LightColorPalette(),
-        darkPalette: DarkColorPalette()
-    ))
+    .theme(ThemeProvider())
 }

@@ -240,10 +240,6 @@ struct IconButtonCatalogView: View {
 #Preview {
     NavigationStack {
         IconButtonCatalogView()
-            .theme(ThemeProvider(
-                colorScheme: .light,
-                lightPalette: LightColorPalette(),
-                darkPalette: DarkColorPalette()
-            ))
+            .theme(ThemeProvider())
     }
 }
