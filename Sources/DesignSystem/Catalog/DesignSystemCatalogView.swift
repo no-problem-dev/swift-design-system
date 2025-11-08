@@ -13,19 +13,6 @@ public struct DesignSystemCatalogView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: spacing.xl) {
-                    // ヘッダー
-                    VStack(spacing: spacing.sm) {
-                        Image(systemName: "swatchpalette")
-                            .font(.system(size: 48))
-                            .foregroundStyle(colorPalette.primary)
-
-                        Text("デザインシステムカタログ")
-                            .typography(.headlineLarge)
-                            .foregroundStyle(colorPalette.onBackground)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, spacing.xl)
-
                     // カテゴリセクション
                     ForEach(CatalogCategory.allCases) { category in
                         VStack(alignment: .leading, spacing: spacing.md) {
@@ -92,21 +79,30 @@ public struct DesignSystemCatalogView: View {
                             .padding(.horizontal, spacing.lg)
 
                         VStack(spacing: 0) {
-                            InfoRow(label: "バージョン", value: "1.0.0")
-                            Divider().padding(.leading, 16)
                             InfoRow(label: "プラットフォーム", value: "iOS 17+, macOS 14+")
                             Divider().padding(.leading, 16)
-                            InfoRow(label: "デザインシステム", value: "Material Design 3 + Tailwind CSS")
+                            InfoLinkRow(
+                                label: "リポジトリ",
+                                value: "GitHub",
+                                url: "https://github.com/no-problem-dev/swift-design-system"
+                            )
+                            Divider().padding(.leading, 16)
+                            InfoLinkRow(
+                                label: "ドキュメント",
+                                value: "DocC",
+                                url: "https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/"
+                            )
                         }
                         .background(colorPalette.surface)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .padding(.horizontal, spacing.lg)
                     }
                 }
+                .padding(.top, spacing.lg)
                 .padding(.bottom, spacing.xl)
             }
             .background(colorPalette.background)
-            .navigationTitle("デザインシステム")
+            .navigationTitle("デザインシステムカタログ")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.large)
             #endif
@@ -154,6 +150,34 @@ private struct InfoRow: View {
             Text(value)
                 .typography(.bodyMedium)
                 .foregroundStyle(colorPalette.onSurfaceVariant)
+        }
+        .padding(.horizontal, spacing.lg)
+        .padding(.vertical, 12)
+    }
+}
+
+private struct InfoLinkRow: View {
+    @Environment(\.colorPalette) private var colorPalette
+    @Environment(\.spacingScale) private var spacing
+    let label: String
+    let value: String
+    let url: String
+
+    var body: some View {
+        HStack {
+            Text(label)
+                .typography(.bodyMedium)
+                .foregroundStyle(colorPalette.onSurface)
+            Spacer()
+            Link(destination: URL(string: url)!) {
+                HStack(spacing: 4) {
+                    Text(value)
+                        .typography(.bodyMedium)
+                    Image(systemName: "arrow.up.right.square")
+                        .font(.caption)
+                }
+                .foregroundStyle(colorPalette.primary)
+            }
         }
         .padding(.horizontal, spacing.lg)
         .padding(.vertical, 12)
