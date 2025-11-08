@@ -87,17 +87,31 @@
 ### 全体像
 
 ```
-開発 → PRマージ → 蓄積 → リリース準備 → タグプッシュ → 自動化
-  ↓        ↓         ↓          ↓            ↓           ↓
-feature  CHANGELOG  複数の    バージョン    release    次回準備PR
-ブランチ  更新      変更      セクション    作成       自動作成
+開発 → リリースブランチにマージ → リリース準備 → mainへPRマージ → 自動化
+  ↓              ↓                    ↓               ↓            ↓
+feature    release/vX.Y.Z        CHANGELOG        タグ自動作成    次のrelease
+ブランチ    にマージ              セクション変換      Release作成    ブランチ作成
 ```
+
+### 重要な変更点
+
+**新しいフロー**では、以下のように変わりました：
+
+- ✅ **リリースブランチ** (`release/vX.Y.Z`) で開発を進める
+- ✅ **mainへのマージ** がリリースのトリガーとなる
+- ✅ **タグは自動作成** - 手動でタグを打つ必要がない
+- ✅ **次のリリースブランチも自動作成** - すぐに次の開発を開始できる
 
 ### 1. 開発フェーズ
 
 新機能やバグ修正を開発する際：
 
 ```bash
+# 現在のリリースブランチを確認（例: release/v1.0.11）
+git fetch origin
+git checkout release/v1.0.11
+git pull origin release/v1.0.11
+
 # feature ブランチで開発
 git checkout -b feature/new-component
 
@@ -115,76 +129,109 @@ git checkout -b feature/new-component
 ### 修正
 - カードコンポーネントの影の表示バグを修正
 
-## [1.0.9] - 2025-11-08
+## [1.0.10] - 2025-11-08
 ...
 ```
 
 ```bash
-# PRを作成してmainにマージ
-gh pr create --title "feat: add Ocean theme" --base main
+# PRを作成してリリースブランチにマージ
+gh pr create --title "feat: add Ocean theme" --base release/v1.0.11
 ```
 
 **重要**: PRマージ時にCHANGELOGも更新する習慣をつけましょう。リリース時にまとめて書くと忘れやすくなります。
 
 ### 2. リリース準備
 
-複数の変更が蓄積したら、リリースの準備をします：
+リリースブランチに十分な変更が蓄積したら、リリースの準備をします：
 
 ```bash
-# mainブランチを最新化
-git checkout main
-git pull origin main
+# リリースブランチを最新化
+git checkout release/v1.0.11
+git pull origin release/v1.0.11
 ```
 
 CHANGELOG.mdを編集して、「未リリース」セクションを新しいバージョンセクションに変換します。
 
-### 3. タグ作成とプッシュ
+**変更前:**
+```markdown
+## [未リリース]
+
+### 追加
+- 新機能A
+- 新機能B
+```
+
+**変更後:**
+```markdown
+## [1.0.11] - 2025-11-08
+
+### 追加
+- 新機能A
+- 新機能B
+```
+
+比較リンクも忘れずに更新してください。
+
+### 3. mainブランチへのPRマージ（リリース実行）
+
+リリース準備が完了したら、mainブランチへのPRをマージします：
 
 ```bash
-# バージョンタグを作成
-git tag v1.0.10
+# 変更をコミット・プッシュ
+git add CHANGELOG.md
+git commit -m "chore: prepare for v1.0.11 release"
+git push origin release/v1.0.11
 
-# タグをプッシュ（これが自動リリースをトリガー）
-git push origin v1.0.10
+# PRをReady for reviewに変更（ドラフトPRの場合）
+gh pr ready <PR番号>
+
+# PRをマージ（これがリリースをトリガーします）
+gh pr merge <PR番号> --squash
 ```
+
+または、GitHub UIからマージボタンをクリック。
 
 ### 4. 自動化の実行
 
-タグがプッシュされると、2つのワークフローが並行実行されます：
+**mainブランチへのマージ** をトリガーとして、以下が自動的に実行されます：
+
+#### auto-release-on-merge.yml
+1. **バージョン抽出**: ブランチ名から自動抽出（`release/v1.0.11` → `v1.0.11`）
+2. **CHANGELOG検証**: 該当バージョンのセクションが存在するか確認
+3. **タグ作成**: `v1.0.11`タグを自動作成・プッシュ
+4. **次バージョン計算**: PATCHをインクリメント（`v1.0.11` → `v1.0.12`）
+5. **次のリリースブランチ作成**: `release/v1.0.12`を自動作成
+6. **「未リリース」セクション追加**: 新ブランチのCHANGELOGを更新
+7. **ドラフトPR作成**: 次のリリース用PRを自動作成
 
 #### release.yml
+- タグプッシュをトリガーとして実行
 - CHANGELOG.mdから該当バージョンを抽出
 - 整形されたリリースノートを生成
 - GitHub Releaseを作成
 
-#### prepare-next-release.yml
-- `chore/prepare-next-release`ブランチを作成
-- 新しい「未リリース」セクションを追加
-- 比較リンクを最新バージョンに自動更新
-- ドラフトPRを作成
+### 5. 次の開発サイクル開始
 
-### 5. ドラフトPRをマージ
-
-次の開発サイクルを開始するため、自動作成されたドラフトPRをマージします：
+自動的に作成された次のリリースブランチ（`release/v1.0.12`）で、すぐに次の開発を開始できます：
 
 ```bash
-# PRをReady for reviewに変更
-gh pr ready <PR番号>
+# 次のリリースブランチに切り替え
+git fetch origin
+git checkout release/v1.0.12
+git pull origin release/v1.0.12
 
-# PRをマージ
-gh pr merge <PR番号> --squash
-
-# ローカルを更新
-git pull origin main
+# 開発を続ける...
 ```
 
 ## 詳細な手順
 
-### ステップ1: 最新のmainブランチを取得
+### ステップ1: リリースブランチを最新化
 
 ```bash
-git checkout main
-git pull origin main
+# リリースブランチ（例: release/v1.0.11）に切り替え
+git fetch origin
+git checkout release/v1.0.11
+git pull origin release/v1.0.11
 ```
 
 ### ステップ2: CHANGELOG.mdを更新
@@ -205,7 +252,7 @@ git pull origin main
 
 **変更後:**
 ```markdown
-## [1.0.10] - 2025-11-08
+## [1.0.11] - 2025-11-08
 
 ### 追加
 - 新機能Aを追加
@@ -216,6 +263,7 @@ git pull origin main
 ```
 
 **重要事項:**
+- バージョン番号はブランチ名と一致させる（`release/v1.0.11` → `[1.0.11]`）
 - バージョン番号は[セマンティックバージョニング](#バージョニング規則)に従う
 - 日付は`YYYY-MM-DD`形式で記載
 
@@ -225,59 +273,80 @@ git pull origin main
 
 **変更前:**
 ```markdown
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.9...HEAD
-[1.0.9]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.8...v1.0.9
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.10...HEAD
+[1.0.10]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.9...v1.0.10
 ```
 
 **変更後:**
 ```markdown
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.10...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.11...HEAD
+[1.0.11]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.10...v1.0.11
 [1.0.10]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.9...v1.0.10
-[1.0.9]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.8...v1.0.9
 ```
 
 **注意**:
 - `[未リリース]`のリンクは新バージョンを基準に更新
 - 新バージョンの比較リンクを追加
 
-### ステップ3: 変更をコミット
+### ステップ3: 変更をコミット・プッシュ
 
 ```bash
 git add CHANGELOG.md
-git commit -m "chore: vX.Y.Zリリース準備"
-git push origin main
+git commit -m "chore: prepare for v1.0.11 release"
+git push origin release/v1.0.11
 ```
 
-### ステップ4: タグを作成してプッシュ
+### ステップ4: mainブランチへのPRをマージ（リリース実行）
+
+リリースブランチからmainへのPRが既に作成されているはずです。このPRをマージすることでリリースが実行されます。
 
 ```bash
-git tag vX.Y.Z
-git push origin vX.Y.Z
+# ドラフトPRの場合、Ready for reviewに変更
+gh pr list --head release/v1.0.11
+gh pr ready <PR番号>
+
+# PRをマージ（これが自動的にタグ作成とリリースをトリガー）
+gh pr merge <PR番号> --squash
 ```
 
-**例:**
-```bash
-git tag v1.0.10
-git push origin v1.0.10
-```
+または、GitHub UIからマージボタンをクリック。
+
+**重要**: このマージがリリースのトリガーです。タグは自動的に作成されます。
 
 ### ステップ5: 自動化の確認
 
-#### 5.1 release.ymlワークフローの確認
+PRをマージすると、`auto-release-on-merge.yml`ワークフローが自動的に実行されます。
+
+#### 5.1 auto-release-on-merge.ymlワークフローの確認
 
 ```bash
 # ワークフローの実行状況を確認
-gh run list --workflow=release.yml --limit 1
+gh run list --workflow=auto-release-on-merge.yml --limit 1
 
 # 詳細ログを確認（必要に応じて）
 gh run view <run-id> --log
 ```
 
 GitHubのWebページでも確認可能:
-https://github.com/no-problem-dev/swift-design-system/actions/workflows/release.yml
+https://github.com/no-problem-dev/swift-design-system/actions/workflows/auto-release-on-merge.yml
 
-**完了後の確認:**
+**このワークフローが実行すること:**
+1. ブランチ名からバージョンを抽出（`release/v1.0.11` → `v1.0.11`）
+2. CHANGELOG.mdにバージョンセクションが存在するか検証
+3. タグ `v1.0.11` を自動作成してプッシュ
+4. 次のバージョン `v1.0.12` を計算（PATCHインクリメント）
+5. 次のリリースブランチ `release/v1.0.12` を自動作成
+6. CHANGELOG.mdに「未リリース」セクションを追加
+7. 次のリリース用のドラフトPRを自動作成
+
+#### 5.2 release.ymlワークフローの確認
+
+タグが作成されると、`release.yml`ワークフローが自動的に実行されます。
+
 ```bash
+# ワークフローの実行状況を確認
+gh run list --workflow=release.yml --limit 1
+
 # 作成されたリリースを確認
 gh release view vX.Y.Z
 ```
@@ -285,12 +354,9 @@ gh release view vX.Y.Z
 または:
 https://github.com/no-problem-dev/swift-design-system/releases
 
-#### 5.2 prepare-next-release.ymlワークフローの確認
+#### 5.3 次のリリース用ドラフトPRの確認
 
 ```bash
-# ワークフローの実行状況を確認
-gh run list --workflow=prepare-next-release.yml --limit 1
-
 # 作成されたPRを確認
 gh pr list --state all --limit 1
 ```
@@ -298,22 +364,30 @@ gh pr list --state all --limit 1
 GitHubのWebページでも確認可能:
 https://github.com/no-problem-dev/swift-design-system/pulls
 
-**ドラフトPRの内容確認:**
-- タイトル: "chore: prepare for next release"
+**ドラフトPRの内容:**
+- タイトル: "Release v1.0.12"（次のバージョン）
 - ステータス: DRAFT
-- 変更内容: 新しい「未リリース」セクションと更新された比較リンク
+- ブランチ: `release/v1.0.12`
+- 変更内容: 新しい「未リリース」セクション
 
-### ステップ6: ドラフトPRをマージ
+### ステップ6: 次の開発サイクルへ
+
+次のリリースの準備が自動的に完了しています。すぐに開発を継続できます。
 
 ```bash
-# PRをReady for reviewに変更
-gh pr ready <PR番号>
+# 次のリリースブランチに切り替え
+git fetch origin
+git checkout release/v1.0.12
+git pull origin release/v1.0.12
 
-# PRをマージ
-gh pr merge <PR番号> --squash
+# 機能開発を開始
+# 変更をコミット
+git add .
+git commit -m "feat: new feature"
+git push origin release/v1.0.12
 
-# ローカルブランチを更新
-git pull origin main
+# CHANGELOG.mdの「未リリース」セクションを更新
+# リリース準備ができたら、「未リリース」を「[1.0.12]」に変換してPRをマージ
 ```
 
 ## バージョニング規則
@@ -439,6 +513,102 @@ git push origin v1.0.11
 
 ## 自動化の仕組み
 
+### auto-release-on-merge.ymlワークフロー
+
+**トリガー**: リリースブランチがmainにマージされたとき
+```yaml
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  auto-release:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
+```
+
+**処理内容:**
+
+1. **バージョン抽出**
+   ```bash
+   # ブランチ名からバージョンを抽出 (release/v1.0.11 → v1.0.11)
+   BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+   VERSION_TAG="${BRANCH_NAME#release/}"
+   VERSION="${VERSION_TAG#v}"
+   ```
+
+2. **CHANGELOG検証**
+   - CHANGELOG.mdに該当バージョンのセクションが存在するか確認
+   - 存在しない場合はエラーで停止
+   ```bash
+   if ! grep -q "## \[$VERSION\]" CHANGELOG.md; then
+     echo "❌ エラー: CHANGELOG.mdにバージョン [$VERSION] のセクションが見つかりません"
+     exit 1
+   fi
+   ```
+
+3. **タグ作成とプッシュ**
+   ```bash
+   # タグが既に存在する場合はスキップ
+   if git rev-parse "$VERSION_TAG" >/dev/null 2>&1; then
+     echo "⚠️ タグ $VERSION_TAG は既に存在します。スキップします。"
+     exit 0
+   fi
+
+   git tag "$VERSION_TAG"
+   git push origin "$VERSION_TAG"
+   ```
+
+4. **次のバージョン計算**
+   ```bash
+   # バージョンをMAJOR.MINOR.PATCHに分解
+   IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+
+   # PATCHをインクリメント
+   NEXT_PATCH=$((PATCH + 1))
+   NEXT_VERSION="$MAJOR.$MINOR.$NEXT_PATCH"
+   NEXT_VERSION_TAG="v$NEXT_VERSION"
+   NEXT_BRANCH="release/$NEXT_VERSION_TAG"
+   ```
+
+5. **次のリリースブランチ作成**
+   ```bash
+   # 既存のブランチがあれば削除
+   if git ls-remote --heads origin "$NEXT_BRANCH" | grep -q "$NEXT_BRANCH"; then
+     git push origin --delete "$NEXT_BRANCH"
+   fi
+
+   # mainブランチから新しいリリースブランチを作成
+   git checkout -b "$NEXT_BRANCH"
+   ```
+
+6. **CHANGELOG更新**
+   - 「未リリース」セクションが存在しない場合のみ追加
+   ```bash
+   awk '
+     /^## \[/ && !inserted {
+       print "## [未リリース]"
+       print ""
+       print "なし"
+       print ""
+       inserted = 1
+     }
+     { print }
+   ' CHANGELOG.md > CHANGELOG.tmp
+   mv CHANGELOG.tmp CHANGELOG.md
+   ```
+
+7. **ドラフトPR作成**
+   ```bash
+   gh pr create \
+     --draft \
+     --title "Release $NEXT_VERSION_TAG" \
+     --body "..." \
+     --base main \
+     --head "$NEXT_BRANCH"
+   ```
+
 ### release.ymlワークフロー
 
 **トリガー**: タグプッシュ (`push: tags: - 'v*'`)
@@ -476,67 +646,55 @@ git push origin v1.0.11
    - `softprops/action-gh-release`を使用
    - 生成されたリリースノートを本文に設定
 
-### prepare-next-release.ymlワークフロー
+### ワークフローの連携
 
-**トリガー**: タグプッシュ (`push: tags: - 'v*'`) または手動実行
+```
+PR merge to main → auto-release-on-merge.yml → release.yml
+     ↓                        ↓                      ↓
+リリース準備完了         タグ自動作成              GitHub Release作成
+                             ↓
+                    次のリリースブランチ作成
+                             ↓
+                       ドラフトPR作成
+```
 
-**処理内容:**
-
-1. **バージョン抽出**
-   ```bash
-   VERSION=${GITHUB_REF#refs/tags/v}  # タグイベントの場合
-   VERSION=$(git describe --tags --abbrev=0 | sed 's/^v//')  # 手動実行の場合
-   ```
-
-2. **既存ブランチ削除**
-   ```bash
-   git push origin --delete chore/prepare-next-release 2>/dev/null || true
-   ```
-
-3. **新ブランチ作成**
-   ```bash
-   git checkout -b chore/prepare-next-release
-   ```
-
-4. **CHANGELOG更新**
-   - 「未リリース」セクションが存在しない場合のみ実行
-   - 最初のバージョンセクションの前に挿入
-   - 比較リンクを最新バージョンに更新
-
-5. **ドラフトPR作成**
-   - `gh pr create --draft`を使用
-   - 開発フローの説明を本文に含む
-
-**条件付き実行:**
-- すべてのステップは`if: steps.update_changelog.outputs.updated == 'true'`で制御
-- 「未リリース」セクションが既に存在する場合はスキップ
+**重要なポイント:**
+- リリースブランチをmainにマージするだけで、すべてが自動化される
+- タグを手動で作成する必要はない
+- 次のリリースの準備も自動的に完了する
 
 ## トラブルシューティング
 
 ### ワークフローが失敗した場合
 
-#### release.ymlの失敗
+#### auto-release-on-merge.ymlの失敗
 
-**エラー**: `⚠️ CHANGELOG.mdにバージョン X.Y.Z が見つかりませんでした`
+**エラー**: `❌ エラー: CHANGELOG.mdにバージョン [X.Y.Z] のセクションが見つかりません`
 
-**原因**: CHANGELOG.mdに該当バージョンのセクションが存在しない
+**原因**: CHANGELOG.mdに該当バージョンのセクションが存在しない、またはフォーマットが正しくない
 
 **対処法**:
-1. CHANGELOG.mdに正しいバージョンセクションが存在するか確認
-2. フォーマットが`## [X.Y.Z] - YYYY-MM-DD`になっているか確認
-3. 修正後、タグを削除して再プッシュ:
-```bash
-git tag -d vX.Y.Z
-git push origin :refs/tags/vX.Y.Z
-# CHANGELOG.md修正
-git add CHANGELOG.md
-git commit -m "fix: correct changelog format"
-git push origin main
-git tag vX.Y.Z
-git push origin vX.Y.Z
-```
+1. リリースブランチに切り替え
+2. CHANGELOG.mdを修正
+3. 再度コミット・プッシュしてPRをマージ
 
-#### prepare-next-release.ymlの失敗
+```bash
+# リリースブランチに切り替え
+git checkout release/vX.Y.Z
+git pull origin release/vX.Y.Z
+
+# CHANGELOG.mdを確認・修正
+# フォーマット: ## [X.Y.Z] - YYYY-MM-DD
+vim CHANGELOG.md
+
+# 変更をコミット
+git add CHANGELOG.md
+git commit -m "fix: correct changelog format for vX.Y.Z"
+git push origin release/vX.Y.Z
+
+# PRを再度マージ
+gh pr merge <PR番号> --squash
+```
 
 **エラー**: `pull request create failed: GraphQL: GitHub Actions is not permitted to create or approve pull requests`
 
@@ -548,19 +706,49 @@ git push origin vX.Y.Z
 
 2. 「Workflow permissions」セクションで「Allow GitHub Actions to create and approve pull requests」を有効化
 
-3. 設定保存後、ワークフローを手動実行:
+3. ワークフローは次回のリリース時に自動実行されます
+
+**エラー**: タグが既に存在する
+
+**原因**: 以前のリリース試行でタグが作成済み
+
+**対処法**:
 ```bash
-gh workflow run prepare-next-release.yml
+# リモートのタグを削除
+git push origin :refs/tags/vX.Y.Z
+
+# GitHubのReleaseを手動で削除（Webページから）
+# https://github.com/no-problem-dev/swift-design-system/releases
+
+# PRを再度マージ
+gh pr merge <PR番号> --squash
 ```
 
-**エラー**: ワークフローが成功したがPRが作成されていない
+#### release.ymlの失敗
 
-**原因**: 「未リリース」セクションが既に存在する（正常動作）
+**エラー**: `⚠️ CHANGELOG.mdにバージョン X.Y.Z が見つかりませんでした`
 
-**確認方法**:
+**原因**: CHANGELOG.mdに該当バージョンのセクションが存在しない
+
+**対処法**:
+1. mainブランチでCHANGELOG.mdを修正
+2. タグを削除して再作成
+
 ```bash
-# CHANGELOG.mdを確認
-head -20 CHANGELOG.md | grep "未リリース"
+# タグを削除
+git push origin :refs/tags/vX.Y.Z
+
+# mainブランチでCHANGELOG.md修正
+git checkout main
+git pull origin main
+vim CHANGELOG.md
+git add CHANGELOG.md
+git commit -m "fix: correct changelog format"
+git push origin main
+
+# タグを再作成（手動）
+git tag vX.Y.Z
+git push origin vX.Y.Z
 ```
 
 ### バージョン番号を間違えた場合
@@ -734,5 +922,5 @@ dependencies: [
 ## ワークフローファイル
 
 自動化の詳細は以下のファイルを参照してください：
+- [.github/workflows/auto-release-on-merge.yml](.github/workflows/auto-release-on-merge.yml) - リリース自動化（メインワークフロー）
 - [.github/workflows/release.yml](.github/workflows/release.yml) - GitHub Release作成
-- [.github/workflows/prepare-next-release.yml](.github/workflows/prepare-next-release.yml) - 次回リリース準備

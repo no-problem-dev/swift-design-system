@@ -5,6 +5,22 @@
 フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に基づいており、
 このプロジェクトは [セマンティックバージョニング](https://semver.org/lang/ja/spec/v2.0.0.html) に準拠しています。
 
+## [1.0.11] - 2025-11-08
+
+### 変更
+- **リリースワークフローの完全改訂** - よりシンプルで直感的なフローに変更
+  - リリースブランチ（`release/vX.Y.Z`）からmainへのPRマージがリリースのトリガーに
+  - タグは自動的に作成されるため、手動でのタグ作成が不要に
+  - 次のリリースブランチとドラフトPRも自動作成
+  - ワークフロー: `auto-release-on-merge.yml`を新規追加、`prepare-next-release.yml`を削除
+
+### ドキュメント
+- **RELEASE_PROCESS.mdを新しいワークフローに完全対応**
+  - 新しい開発フローの全体像を追加
+  - 詳細な手順を6ステップに整理
+  - 自動化の仕組みセクションを刷新（`auto-release-on-merge.yml`の詳細な説明）
+  - トラブルシューティングを新しいワークフローに対応
+
 ## [1.0.10] - 2025-11-08
 
 ### ドキュメント
@@ -215,7 +231,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.10...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.11...HEAD
+[1.0.11]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.10...v1.0.11
 [1.0.10]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.9...v1.0.10
 [1.0.9]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.8...v1.0.9
 [1.0.8]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.7...v1.0.8

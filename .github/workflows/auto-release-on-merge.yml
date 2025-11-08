@@ -1,0 +1,220 @@
+name: Auto Release on Merge
+
+# リリースブランチ（release/vX.Y.Z）がmainにマージされたら自動的にリリース処理を実行
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  auto-release:
+    # PRがマージされ、かつブランチ名がrelease/vで始まる場合のみ実行
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Extract version from branch name
+        id: version
+        run: |
+          # ブランチ名からバージョンを抽出 (release/v1.0.11 → v1.0.11)
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          VERSION_TAG="${BRANCH_NAME#release/}"
+          VERSION="${VERSION_TAG#v}"
+
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "version_tag=$VERSION_TAG" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          echo "📦 リリースブランチ: $BRANCH_NAME"
+          echo "🏷️ バージョンタグ: $VERSION_TAG"
+          echo "🔢 バージョン番号: $VERSION"
+
+      - name: Validate CHANGELOG entry
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          if ! grep -q "## \[$VERSION\]" CHANGELOG.md; then
+            echo "❌ エラー: CHANGELOG.mdにバージョン [$VERSION] のセクションが見つかりません"
+            echo "リリースブランチでCHANGELOG.mdを更新してください"
+            exit 1
+          fi
+
+          echo "✅ CHANGELOG.mdに [$VERSION] セクションが存在します"
+
+      - name: Create and push tag
+        run: |
+          VERSION_TAG="${{ steps.version.outputs.version_tag }}"
+
+          # タグが既に存在する場合はスキップ
+          if git rev-parse "$VERSION_TAG" >/dev/null 2>&1; then
+            echo "⚠️ タグ $VERSION_TAG は既に存在します。スキップします。"
+            exit 0
+          fi
+
+          # タグを作成
+          git tag "$VERSION_TAG"
+
+          # タグをプッシュ
+          git push origin "$VERSION_TAG"
+
+          echo "✅ タグ $VERSION_TAG を作成してプッシュしました"
+
+      - name: Calculate next version
+        id: next_version
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # バージョンをMAJOR.MINOR.PATCHに分解
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+
+          # PATCHをインクリメント
+          NEXT_PATCH=$((PATCH + 1))
+          NEXT_VERSION="$MAJOR.$MINOR.$NEXT_PATCH"
+          NEXT_VERSION_TAG="v$NEXT_VERSION"
+          NEXT_BRANCH="release/$NEXT_VERSION_TAG"
+
+          echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+          echo "next_version_tag=$NEXT_VERSION_TAG" >> $GITHUB_OUTPUT
+          echo "next_branch=$NEXT_BRANCH" >> $GITHUB_OUTPUT
+
+          echo "📈 次のバージョン: $NEXT_VERSION"
+          echo "🌿 次のリリースブランチ: $NEXT_BRANCH"
+
+      - name: Delete old release branch if exists
+        run: |
+          NEXT_BRANCH="${{ steps.next_version.outputs.next_branch }}"
+
+          # リモートブランチが存在する場合は削除
+          if git ls-remote --heads origin "$NEXT_BRANCH" | grep -q "$NEXT_BRANCH"; then
+            git push origin --delete "$NEXT_BRANCH"
+            echo "🗑️ 既存のブランチ $NEXT_BRANCH を削除しました"
+          fi
+
+      - name: Create next release branch
+        run: |
+          NEXT_BRANCH="${{ steps.next_version.outputs.next_branch }}"
+
+          # mainブランチから新しいリリースブランチを作成
+          git checkout -b "$NEXT_BRANCH"
+
+          echo "✅ 次のリリースブランチ $NEXT_BRANCH を作成しました"
+
+      - name: Update CHANGELOG for next version
+        run: |
+          NEXT_VERSION="${{ steps.next_version.outputs.next_version }}"
+
+          # 「未リリース」セクションが存在しない場合のみ追加
+          if ! grep -q "## \[未リリース\]" CHANGELOG.md; then
+            # 最初のバージョンセクションの前に挿入
+            awk '
+              /^## \[/ && !inserted {
+                print "## [未リリース]"
+                print ""
+                print "なし"
+                print ""
+                inserted = 1
+              }
+              { print }
+            ' CHANGELOG.md > CHANGELOG.tmp
+            mv CHANGELOG.tmp CHANGELOG.md
+
+            echo "✅ CHANGELOG.mdに「未リリース」セクションを追加しました"
+          else
+            echo "ℹ️ CHANGELOG.mdに既に「未リリース」セクションが存在します"
+          fi
+
+      - name: Commit and push next release branch
+        run: |
+          NEXT_BRANCH="${{ steps.next_version.outputs.next_branch }}"
+          NEXT_VERSION_TAG="${{ steps.next_version.outputs.next_version_tag }}"
+
+          # 変更がある場合のみコミット
+          if git diff --quiet CHANGELOG.md; then
+            echo "ℹ️ CHANGELOG.mdに変更がないため、コミットをスキップします"
+          else
+            git add CHANGELOG.md
+            git commit -m "chore: prepare for $NEXT_VERSION_TAG release"
+            echo "✅ 変更をコミットしました"
+          fi
+
+          # ブランチをプッシュ
+          git push origin "$NEXT_BRANCH"
+
+          echo "✅ ブランチ $NEXT_BRANCH をプッシュしました"
+
+      - name: Create draft PR for next release
+        run: |
+          NEXT_BRANCH="${{ steps.next_version.outputs.next_branch }}"
+          NEXT_VERSION_TAG="${{ steps.next_version.outputs.next_version_tag }}"
+
+          gh pr create \
+            --draft \
+            --title "Release $NEXT_VERSION_TAG" \
+            --body "$(cat <<EOF
+          # 🚀 Release $NEXT_VERSION_TAG
+
+          次のリリース準備用のブランチです。
+
+          ## 📝 開発フロー
+
+          1. **開発**: このブランチに新機能・修正をマージ
+          2. **CHANGELOG更新**: \`CHANGELOG.md\` の「未リリース」セクションに変更を記録
+          3. **リリース準備**: すべての変更が完了したら、「未リリース」を「$NEXT_VERSION_TAG」セクションに変換
+          4. **リリース実行**: このPRをマージ
+
+          ## ⚙️ 自動化
+
+          このPRをmainにマージすると、以下が自動実行されます：
+          - ✅ タグ $NEXT_VERSION_TAG の自動作成
+          - ✅ GitHub Releaseの自動作成
+          - ✅ 次のリリースブランチの自動作成
+
+          ## 📋 リリース前チェックリスト
+
+          - [ ] CHANGELOG.mdの「未リリース」を「[$NEXT_VERSION_TAG]」に変換
+          - [ ] 日付を記載（YYYY-MM-DD形式）
+          - [ ] 比較リンクセクションを更新
+          - [ ] すべてのテストが通過
+          - [ ] ドキュメントが最新
+
+          ---
+          🤖 このPRは自動生成されました
+          EOF
+          )" \
+            --base main \
+            --head "$NEXT_BRANCH"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Summary
+        run: |
+          VERSION_TAG="${{ steps.version.outputs.version_tag }}"
+          NEXT_VERSION_TAG="${{ steps.next_version.outputs.next_version_tag }}"
+          NEXT_BRANCH="${{ steps.next_version.outputs.next_branch }}"
+
+          echo "## 🎉 リリース処理完了"
+          echo ""
+          echo "### ✅ 実行された処理"
+          echo "- タグ $VERSION_TAG を作成・プッシュ"
+          echo "- release.ymlワークフローがGitHub Releaseを作成します"
+          echo "- 次のリリースブランチ $NEXT_BRANCH を作成"
+          echo "- 次のリリース用のドラフトPRを作成"
+          echo ""
+          echo "### 🔗 確認"
+          echo "- リリース: https://github.com/${{ github.repository }}/releases/tag/$VERSION_TAG"
+          echo "- 次のPR: https://github.com/${{ github.repository }}/pulls"
