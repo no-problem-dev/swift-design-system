@@ -72,9 +72,10 @@ git commit -m "chore: prepare for v${NEXT_VERSION} development"
 echo "ブランチをプッシュ..."
 git push origin "$BRANCH_NAME"
 
-# PRを作成
-echo "プルリクエストを作成..."
+# PRを作成（ドラフト状態）
+echo "プルリクエストを作成（ドラフト状態）..."
 gh pr create \
+    --draft \
     --title "chore: prepare for v${NEXT_VERSION} development" \
     --body "## 概要
 
@@ -84,9 +85,17 @@ v${CURRENT_VERSION} リリース後の次期バージョン v${NEXT_VERSION} の
 
 - CHANGELOG.md の「未リリース」セクションをリセット
 
+## 次のステップ
+
+1. 新機能やバグ修正のPRをマージする際、CHANGELOG.mdの「未リリース」セクションに変更内容を記載
+2. v${NEXT_VERSION}のリリース準備が整ったら、このPRを「Ready for review」に変更
+3. レビュー後、mainブランチにマージ
+4. v${NEXT_VERSION}のリリースを作成
+
 ## 備考
 
 このPRは次の開発サイクルを開始するためのものです。
+開発が進むにつれて、CHANGELOG.mdに変更内容を追加してください。
 
 ---
 

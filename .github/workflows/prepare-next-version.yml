@@ -69,6 +69,7 @@ jobs:
           CURRENT_VERSION="${{ steps.extract_version.outputs.current_version }}"
 
           gh pr create \
+            --draft \
             --title "chore: prepare for v${NEXT_VERSION} development" \
             --body "$(cat <<EOF
           ## 概要
@@ -79,10 +80,17 @@ jobs:
 
           - CHANGELOG.md の「未リリース」セクションをリセット
 
+          ## 次のステップ
+
+          1. 新機能やバグ修正のPRをマージする際、CHANGELOG.mdの「未リリース」セクションに変更内容を記載
+          2. v${NEXT_VERSION}のリリース準備が整ったら、このPRを「Ready for review」に変更
+          3. レビュー後、mainブランチにマージ
+          4. v${NEXT_VERSION}のリリースを作成
+
           ## 備考
 
           このPRはリリース後に自動生成されました。
-          次の開発サイクルを開始するために、このPRをマージしてください。
+          開発が進むにつれて、CHANGELOG.mdに変更内容を追加してください。
 
           ---
 
