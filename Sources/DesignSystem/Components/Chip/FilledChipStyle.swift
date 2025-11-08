@@ -59,7 +59,7 @@ public struct FilledChipStyle: ChipStyle, Sendable {
     }
 
     private func backgroundOpacity(for configuration: ChipStyleConfiguration) -> some ShapeStyle {
-        Color.primary.opacity(configuration.isSelected ? 0.2 : 0.1)
+        configuration.colorPalette.primary.opacity(configuration.isSelected ? 0.2 : 0.1)
     }
 }
 

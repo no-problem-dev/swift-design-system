@@ -46,6 +46,7 @@ public struct Chip: View {
     private let label: String
     private let systemImage: String?
     private let onDelete: (() -> Void)?
+    private let isSelectable: Bool
     @Binding private var isSelected: Bool
     @State private var isPressed: Bool = false
 
@@ -57,6 +58,7 @@ public struct Chip: View {
         self.label = label
         self.systemImage = nil
         self.onDelete = nil
+        self.isSelectable = false
         self._isSelected = .constant(false)
     }
 
@@ -68,6 +70,7 @@ public struct Chip: View {
         self.label = label
         self.systemImage = systemImage
         self.onDelete = nil
+        self.isSelectable = false
         self._isSelected = .constant(false)
     }
 
@@ -84,6 +87,7 @@ public struct Chip: View {
         self.label = label
         self.systemImage = systemImage
         self.onDelete = onDelete
+        self.isSelectable = false
         self._isSelected = .constant(false)
     }
 
@@ -100,6 +104,7 @@ public struct Chip: View {
         self.label = label
         self.systemImage = systemImage
         self.onDelete = nil
+        self.isSelectable = true
         self._isSelected = isSelected
     }
 
@@ -119,7 +124,7 @@ public struct Chip: View {
         )
 
         Group {
-            if onDelete != nil || isSelected {
+            if onDelete != nil || isSelectable {
                 // タップ可能なチップ（削除または選択）
                 Button(action: handleTap) {
                     chipStyle.makeBody(configuration: configuration)
