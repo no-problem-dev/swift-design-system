@@ -53,15 +53,27 @@ jobs:
           NEXT_VERSION="${{ steps.extract_version.outputs.next_version }}"
 
           # CHANGELOGの「未リリース」セクションをリセット
-          sed -i.bak '/## \[未リリース\]/,/## \[/c\
-## [未リリース]\
+          # macOS/Linux両対応
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+            # macOS
+            sed -i '' '/## \[未リリース\]/,/^## \[/{
+              /## \[未リリース\]/!{
+                /^## \[/!d
+              }
+            }' CHANGELOG.md
+            sed -i '' '/## \[未リリース\]/a\
 \
-なし\
-\
-## [' CHANGELOG.md
-
-          # バックアップファイルを削除
-          rm -f CHANGELOG.md.bak
+なし
+' CHANGELOG.md
+          else
+            # Linux (GitHub Actions)
+            sed -i '/## \[未リリース\]/,/^## \[/{
+              /## \[未リリース\]/!{
+                /^## \[/!d
+              }
+            }' CHANGELOG.md
+            sed -i '/## \[未リリース\]/a\\n\nなし' CHANGELOG.md
+          fi
 
           git add CHANGELOG.md
           git commit -m "chore: prepare for v${NEXT_VERSION} development"
