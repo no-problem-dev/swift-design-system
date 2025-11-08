@@ -469,6 +469,10 @@ struct SettingsView: View {
 
 MIT License - 詳細は [LICENSE](LICENSE) を参照
 
+## 開発者向け情報
+
+- 🚀 **リリース作業**: [リリースプロセス](RELEASE_PROCESS.md) - 新バージョンをリリースする手順
+
 ## サポート
 
 - 📚 [完全なドキュメント](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/)
