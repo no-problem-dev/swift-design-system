@@ -86,6 +86,8 @@ struct ComponentsCatalogView: View {
             ButtonCatalogView()
         case .card:
             CardCatalogView()
+        case .chip:
+            ChipCatalogView()
         case .fab:
             FloatingActionButtonCatalogView()
         case .iconButton:
