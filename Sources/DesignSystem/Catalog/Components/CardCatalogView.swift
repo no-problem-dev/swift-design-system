@@ -133,10 +133,6 @@ struct CardCatalogView: View {
 #Preview {
     NavigationStack {
         CardCatalogView()
-            .theme(ThemeProvider(
-                colorScheme: .light,
-                lightPalette: LightColorPalette(),
-                darkPalette: DarkColorPalette()
-            ))
+            .theme(ThemeProvider())
     }
 }

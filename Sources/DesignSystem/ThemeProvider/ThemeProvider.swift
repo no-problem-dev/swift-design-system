@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// テーマプロバイダー
+/// テーマ管理クラス
 ///
-/// アプリ全体のテーマ（Light/Dark/カスタム）を管理し、デザイントークンをEnvironmentに提供します。
-/// `@Observable`により、テーマ変更時にUIが自動的に更新されます。
+/// アプリケーション全体のテーマとモード（ライト/ダーク/システム）を管理します。
+/// `@Observable`により、テーマやモードの変更は自動的にUIに反映されます。
 ///
 /// ## 基本的な使い方
 /// ```swift
@@ -20,135 +20,136 @@ import SwiftUI
 /// }
 /// ```
 ///
-/// ## テーマの切り替え
+/// ## モードの設定
 /// ```swift
-/// @Environment(\.themeProvider) var themeProvider
+/// // システム設定に従う（デフォルト）
+/// themeProvider.themeMode = .system
 ///
-/// // ダークモードに切り替え
-/// Button("ダークモード") {
-///     themeProvider?.switchToDark()
-/// }
+/// // ライトモード固定
+/// themeProvider.themeMode = .light
 ///
-/// // ライトモードに切り替え
-/// Button("ライトモード") {
-///     themeProvider?.switchToLight()
-/// }
+/// // ダークモード固定
+/// themeProvider.themeMode = .dark
 /// ```
 ///
-/// ## カスタムテーマの適用
+/// ## テーマの切り替え
 /// ```swift
-/// struct MyBrandPalette: ColorPalette {
-///     var primary: Color { Color(hex: "#FF6B35") }
-///     // ... その他の色を定義
-/// }
-///
-/// // カスタムテーマを適用
-/// themeProvider?.applyCustomTheme(colorPalette: MyBrandPalette())
+/// // テーマを切り替え
+/// themeProvider.switchToTheme(id: "ocean")
 /// ```
 @Observable
 @MainActor
 public final class ThemeProvider {
-    /// 現在のカラースキーム
-    public var colorScheme: ThemeColorScheme
+    /// 現在選択されているテーマ
+    public var currentTheme: any Theme
 
-    /// カスタムカラーパレット（nilの場合は標準テーマを使用）
-    public var customColorPalette: (any ColorPalette)?
+    /// 現在のモード（システム/ライト/ダーク）
+    ///
+    /// - `.system`: システム設定に従う（デフォルト）
+    /// - `.light`: 常にライトモード
+    /// - `.dark`: 常にダークモード
+    public var themeMode: ThemeMode
 
-    /// Light用カラーパレット（初期化時に指定可能）
-    private let lightPalette: any ColorPalette
+    /// 利用可能な全テーマ
+    public private(set) var availableThemes: [any Theme]
 
-    /// Dark用カラーパレット（初期化時に指定可能）
-    private let darkPalette: any ColorPalette
-
-    /// 現在のカラーパレット
+    /// 現在のテーマとモードに基づくカラーパレット
     public var colorPalette: any ColorPalette {
-        if let custom = customColorPalette {
-            return custom
-        }
-
-        switch colorScheme {
-        case .light:
-            return lightPalette
-        case .dark:
-            return darkPalette
-        }
+        currentTheme.colorPalette(for: themeMode)
     }
 
     /// ThemeProviderを初期化
     ///
     /// - Parameters:
-    ///   - colorScheme: 初期カラースキーム（デフォルト: `.light`）
-    ///   - lightPalette: Lightモード用カラーパレット（デフォルト: `LightColorPalette()`）
-    ///   - darkPalette: Darkモード用カラーパレット（デフォルト: `DarkColorPalette()`）
-    ///
-    /// ## カスタムパレットでの初期化
-    /// ```swift
-    /// let themeProvider = ThemeProvider(
-    ///     lightPalette: MyBrandLightPalette(),
-    ///     darkPalette: MyBrandDarkPalette()
-    /// )
-    /// ```
+    ///   - initialTheme: 初期テーマ（デフォルト: DefaultTheme）
+    ///   - initialMode: 初期モード（デフォルト: .system - システム設定に従う）
+    ///   - additionalThemes: 追加で登録するカスタムテーマ
     public init(
-        colorScheme: ThemeColorScheme = .light,
-        lightPalette: any ColorPalette = LightColorPalette(),
-        darkPalette: any ColorPalette = DarkColorPalette()
+        initialTheme: (any Theme)? = nil,
+        initialMode: ThemeMode = .system,
+        additionalThemes: [any Theme] = []
     ) {
-        self.colorScheme = colorScheme
-        self.lightPalette = lightPalette
-        self.darkPalette = darkPalette
+        // ビルトインテーマを登録
+        let themes = ThemeRegistry.builtInThemes + additionalThemes
+        self.availableThemes = themes
+
+        // 初期テーマを設定
+        if let initialTheme {
+            self.currentTheme = initialTheme
+        } else if let defaultTheme = themes.first(where: { $0.id == "default" }) {
+            self.currentTheme = defaultTheme
+        } else {
+            self.currentTheme = themes[0]
+        }
+
+        self.themeMode = initialMode
     }
 
-    /// ライトテーマに切り替え
+    /// テーマIDでテーマを切り替え
     ///
-    /// カスタムテーマが設定されている場合は解除され、標準のLightテーマが適用されます。
-    public func switchToLight() {
-        colorScheme = .light
-        customColorPalette = nil
-    }
-
-    /// ダークテーマに切り替え
-    ///
-    /// カスタムテーマが設定されている場合は解除され、標準のDarkテーマが適用されます。
-    public func switchToDark() {
-        colorScheme = .dark
-        customColorPalette = nil
-    }
-
-    /// カスタムテーマを適用
-    ///
-    /// - Parameter colorPalette: 適用するカスタムカラーパレット
+    /// - Parameter id: 切り替え先のテーマID
     ///
     /// ## 使用例
     /// ```swift
-    /// struct MyBrandPalette: ColorPalette {
-    ///     var primary: Color { Color(hex: "#FF6B35") }
-    ///     // ... その他の色
+    /// withAnimation {
+    ///     themeProvider.switchToTheme(id: "ocean")
     /// }
-    ///
-    /// themeProvider.applyCustomTheme(colorPalette: MyBrandPalette())
     /// ```
-    public func applyCustomTheme(colorPalette: any ColorPalette) {
-        self.customColorPalette = colorPalette
+    public func switchToTheme(id: String) {
+        guard let theme = availableThemes.first(where: { $0.id == id }) else {
+            print("⚠️ Theme with id '\(id)' not found")
+            return
+        }
+        currentTheme = theme
     }
 
-    /// システムのカラースキームに追従
+    /// テーマオブジェクトを直接適用
     ///
-    /// SwiftUIの`ColorScheme`を受け取り、Light/Darkテーマを自動切り替えします。
-    /// カスタムテーマが設定されている場合は解除されます。
+    /// - Parameter theme: 適用するテーマ
+    public func applyTheme(_ theme: any Theme) {
+        currentTheme = theme
+    }
+
+    /// モードを切り替え
     ///
-    /// - Parameter systemColorScheme: SwiftUIの`ColorScheme`
+    /// システム → ライト → ダーク → システム の順で循環します。
+    public func toggleMode() {
+        switch themeMode {
+        case .system:
+            themeMode = .light
+        case .light:
+            themeMode = .dark
+        case .dark:
+            themeMode = .system
+        }
+    }
+
+    /// カスタムテーマを登録
+    ///
+    /// - Parameter theme: 登録するテーマ
     ///
     /// ## 使用例
     /// ```swift
-    /// @Environment(\.colorScheme) var systemColorScheme
-    /// @Environment(\.themeProvider) var themeProvider
-    ///
-    /// .onAppear {
-    ///     themeProvider?.followSystem(systemColorScheme)
+    /// struct MyCustomTheme: Theme {
+    ///     var id: String { "my-theme" }
+    ///     // ... その他の実装
     /// }
+    ///
+    /// themeProvider.registerTheme(MyCustomTheme())
     /// ```
-    public func followSystem(_ systemColorScheme: ColorScheme) {
-        colorScheme = systemColorScheme == .dark ? .dark : .light
-        customColorPalette = nil
+    public func registerTheme(_ theme: any Theme) {
+        // 既存のテーマを更新または追加
+        if let index = availableThemes.firstIndex(where: { $0.id == theme.id }) {
+            availableThemes[index] = theme
+        } else {
+            availableThemes.append(theme)
+        }
+    }
+
+    /// 複数のカスタムテーマを登録
+    ///
+    /// - Parameter themes: 登録するテーマの配列
+    public func registerThemes(_ themes: [any Theme]) {
+        themes.forEach { registerTheme($0) }
     }
 }

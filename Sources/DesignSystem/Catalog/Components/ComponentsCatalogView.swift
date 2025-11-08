@@ -99,10 +99,6 @@ struct ComponentsCatalogView: View {
 #Preview {
     NavigationStack {
         ComponentsCatalogView()
-            .theme(ThemeProvider(
-                colorScheme: .light,
-                lightPalette: LightColorPalette(),
-                darkPalette: DarkColorPalette()
-            ))
+            .theme(ThemeProvider())
     }
 }

@@ -1,18 +1,5 @@
 import SwiftUI
 
-// MARK: - ThemeProvider
-
-private struct ThemeProviderKey: EnvironmentKey {
-    static let defaultValue: ThemeProvider? = nil
-}
-
-extension EnvironmentValues {
-    public var themeProvider: ThemeProvider? {
-        get { self[ThemeProviderKey.self] }
-        set { self[ThemeProviderKey.self] = newValue }
-    }
-}
-
 // MARK: - ColorPalette
 
 private struct ColorPaletteKey: EnvironmentKey {

@@ -82,10 +82,6 @@ struct PatternsCatalogView: View {
 #Preview {
     NavigationStack {
         PatternsCatalogView()
-            .theme(ThemeProvider(
-                colorScheme: .light,
-                lightPalette: LightColorPalette(),
-                darkPalette: DarkColorPalette()
-            ))
+            .theme(ThemeProvider())
     }
 }

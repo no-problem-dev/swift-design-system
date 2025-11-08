@@ -3,7 +3,7 @@ import SwiftUI
 /// デザインシステムカタログのエントリポイント
 /// デザインシステムの全要素を階層的に表示
 public struct DesignSystemCatalogView: View {
-    @Environment(\.themeProvider) private var themeProvider
+    @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.spacingScale) private var spacing
 
@@ -17,11 +17,11 @@ public struct DesignSystemCatalogView: View {
                     VStack(spacing: spacing.sm) {
                         Image(systemName: "swatchpalette")
                             .font(.system(size: 48))
-                            .foregroundStyle(.blue)
+                            .foregroundStyle(colorPalette.primary)
 
                         Text("デザインシステムカタログ")
-                            .font(.title2)
-                            .fontWeight(.bold)
+                            .typography(.headlineLarge)
+                            .foregroundStyle(colorPalette.onBackground)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.top, spacing.xl)
@@ -116,6 +116,8 @@ public struct DesignSystemCatalogView: View {
     @ViewBuilder
     private func destinationView(for category: CatalogCategory, item: CatalogItem) -> some View {
         switch category {
+        case .themes:
+            ThemeGalleryView()
         case .foundations:
             switch item.name {
             case "カラー":
@@ -160,5 +162,5 @@ private struct InfoRow: View {
 
 #Preview {
     DesignSystemCatalogView()
-        .theme(ThemeProvider(colorScheme: .light))
+        .theme(ThemeProvider())
 }

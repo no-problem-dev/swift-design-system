@@ -3,7 +3,7 @@ import SwiftUI
 /// カラーカタログビュー
 /// 現在のテーマを表示し、リファレンスは折りたたみ式で提供
 struct ColorsCatalogView: View {
-    @Environment(\.themeProvider) private var themeProvider
+    @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.spacingScale) private var spacing
 
@@ -35,11 +35,9 @@ struct ColorsCatalogView: View {
                     .typography(.bodyMedium)
                     .foregroundStyle(colorPalette.onSurfaceVariant)
 
-                if let provider = themeProvider {
-                    Text("モード: \(provider.colorScheme == .light ? "ライト" : "ダーク")")
-                        .typography(.bodySmall)
-                        .foregroundStyle(colorPalette.onSurfaceVariant.opacity(0.7))
-                }
+                Text("モード: \(themeProvider.themeMode == .light ? "ライト" : "ダーク")")
+                    .typography(.bodySmall)
+                    .foregroundStyle(colorPalette.onSurfaceVariant.opacity(0.7))
             }
             .padding(.horizontal, spacing.lg)
             .padding(.top, spacing.lg)
@@ -202,10 +200,6 @@ struct ColorsCatalogView: View {
 #Preview {
     NavigationStack {
         ColorsCatalogView()
-            .theme(ThemeProvider(
-                colorScheme: .light,
-                lightPalette: LightColorPalette(),
-                darkPalette: DarkColorPalette()
-            ))
+            .theme(ThemeProvider())
     }
 }

@@ -29,7 +29,8 @@ Text("見出し").typography(.headlineLarge)
 
 - **3層トークンシステム** - Primitive → Semantic → Component の明確な階層
 - **型安全** - プロトコルベース設計により拡張性が高い
-- **テーマ対応** - Light/Dark/カスタムテーマを簡単に切り替え
+- **7種類のビルトインテーマ** - デフォルト、Ocean、Forest、Sunset、PurpleHaze、Monochrome、HighContrast
+- **ライト/ダークモード対応** - 全テーマでシームレスなモード切り替え
 - **すぐ使える** - ボタン、カード、テキストフィールドなどの基本コンポーネント
 - **ドキュメント完備** - 全てのパブリックAPIに実践的なコード例
 
@@ -157,51 +158,129 @@ ScrollView {
 }
 ```
 
-### 4. カスタムテーマの作成
+### 4. ビルトインテーマの使用
+
+7種類のテーマから選択できます：
 
 ```swift
-// カスタムカラーパレット
-struct MyBrandPalette: ColorPalette {
-    var primary: Color { Color(hex: "#007AFF") }
-    var onPrimary: Color { .white }
-    var secondary: Color { Color(hex: "#5856D6") }
-    var onSecondary: Color { .white }
-    // その他の色を定義...
-}
+// テーマを切り替え
+themeProvider.switchToTheme(id: "ocean")      // Ocean（深い青）
+themeProvider.switchToTheme(id: "forest")     // Forest（自然な緑）
+themeProvider.switchToTheme(id: "sunset")     // Sunset（温かいオレンジ）
+themeProvider.switchToTheme(id: "purpleHaze") // PurpleHaze（創造的な紫）
+themeProvider.switchToTheme(id: "monochrome") // Monochrome（ミニマルなグレー）
+themeProvider.switchToTheme(id: "highContrast") // HighContrast（WCAG AAA準拠）
 
-// カスタムスペーシング
-struct CompactSpacingScale: SpacingScale {
-    var lg: CGFloat { PrimitiveSpacing.space12 }  // デフォルトより小さく
-    var xl: CGFloat { PrimitiveSpacing.space16 }
-    // その他のスケールを定義...
-}
+// ライト/ダークモードを切り替え
+themeProvider.toggleMode()
 
-// テーマに適用
-themeProvider.applyCustomTheme(
-    colors: MyBrandPalette(),
-    spacing: CompactSpacingScale()
-)
+// 特定のモードに設定
+themeProvider.themeMode = .dark
 ```
+
+#### テーマ一覧
+
+| カテゴリ | テーマ | 説明 | プライマリカラー |
+|---------|-------|------|----------------|
+| 標準 | Default | 基本的なライト/ダークテーマ | Blue #3B82F6 |
+| ブランド | Ocean | プロフェッショナルで落ち着いた雰囲気 | Ocean Blue #0077BE |
+| ブランド | Forest | 自然で安定感のある印象 | Forest Green #2D5016 |
+| ブランド | Sunset | 温かくエネルギッシュな印象 | Coral Orange #FF6B35 |
+| ブランド | PurpleHaze | 創造的でイノベーティブな印象 | Royal Purple #7209B7 |
+| ブランド | Monochrome | ミニマルでエレガントな印象 | Charcoal #2D3748 |
+| アクセシビリティ | HighContrast | 最大限のコントラスト（WCAG AAA） | Pure Black #000000 |
 
 ### 5. テーマの動的切り替え
 
 ```swift
-struct SettingsView: View {
+struct ThemePickerView: View {
     @Environment(ThemeProvider.self) private var themeProvider
 
     var body: some View {
-        VStack {
-            Button("ライトテーマ") {
-                themeProvider.switchToLight()
+        VStack(spacing: 16) {
+            // テーマピッカー
+            Picker("テーマ", selection: Binding(
+                get: { themeProvider.currentTheme.id },
+                set: { themeProvider.switchToTheme(id: $0) }
+            )) {
+                ForEach(themeProvider.availableThemes, id: \.id) { theme in
+                    Text(theme.name).tag(theme.id)
+                }
             }
+            .pickerStyle(.menu)
 
-            Button("ダークテーマ") {
-                themeProvider.switchToDark()
-            }
+            // モード切り替え
+            Toggle("ダークモード", isOn: Binding(
+                get: { themeProvider.themeMode == .dark },
+                set: { _ in themeProvider.toggleMode() }
+            ))
 
-            Button("システムに従う") {
-                themeProvider.followSystem()
+            // アニメーション付き切り替え
+            Button("Oceanテーマに切り替え") {
+                withAnimation {
+                    themeProvider.switchToTheme(id: "ocean")
+                }
             }
+        }
+        .padding()
+    }
+}
+```
+
+### 6. カスタムテーマの作成
+
+独自のテーマを作成できます：
+
+```swift
+// カスタムカラーパレット（ライトモード）
+struct MyBrandLightPalette: ColorPalette {
+    var primary: Color { Color(hex: "#007AFF") }
+    var onPrimary: Color { .white }
+    var secondary: Color { Color(hex: "#5856D6") }
+    var onSecondary: Color { .white }
+    var background: Color { Color(hex: "#F5F5F7") }
+    var onBackground: Color { Color(hex: "#1D1D1F") }
+    // ... 全27色を定義
+}
+
+// カスタムカラーパレット（ダークモード）
+struct MyBrandDarkPalette: ColorPalette {
+    var primary: Color { Color(hex: "#0A84FF") }
+    var onPrimary: Color { .white }
+    // ... 全27色を定義
+}
+
+// カスタムテーマ
+struct MyBrandTheme: Theme {
+    let id = "myBrand"
+    let name = "マイブランド"
+    let description = "当社ブランドカラーのテーマ"
+    let category: ThemeCategory = .brandPersonality
+    let previewColors = [
+        Color(hex: "#007AFF"),
+        Color(hex: "#5856D6"),
+        Color(hex: "#FF9500")
+    ]
+
+    func colorPalette(for mode: ThemeMode) -> any ColorPalette {
+        switch mode {
+        case .light: return MyBrandLightPalette()
+        case .dark: return MyBrandDarkPalette()
+        }
+    }
+}
+
+// カスタムテーマを登録
+@main
+struct MyApp: App {
+    @State private var themeProvider = ThemeProvider(
+        additionalThemes: [MyBrandTheme()]
+    )
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .theme(themeProvider)
         }
     }
 }
@@ -267,8 +346,24 @@ Card(elevation: .level2) { ... }  // ✅
 
 ### Theme System
 
-- `ThemeProvider` - テーマ管理クラス
-- `LightColorPalette` / `DarkColorPalette` - デフォルトパレット
+#### Core
+- `ThemeProvider` - テーマとモードの管理（@Observable対応）
+- `Theme` - テーマプロトコル
+- `ThemeMode` - ライト/ダークモードの列挙型
+- `ThemeCategory` - テーマカテゴリ（標準/ブランド/アクセシビリティ）
+- `ThemeRegistry` - ビルトインテーマのレジストリ
+
+#### Built-in Themes (7種類)
+- `DefaultTheme` - 標準テーマ
+- `OceanTheme` - Ocean（深い青）
+- `ForestTheme` - Forest（自然な緑）
+- `SunsetTheme` - Sunset（温かいオレンジ）
+- `PurpleHazeTheme` - PurpleHaze（創造的な紫）
+- `MonochromeTheme` - Monochrome（ミニマルなグレー）
+- `HighContrastTheme` - HighContrast（WCAG AAA準拠）
+
+#### Color Palettes
+- 各テーマに対応するLight/Darkパレット（14種類）
 - `DefaultSpacingScale` / `DefaultRadiusScale` - デフォルトスケール
 
 ### Components

@@ -126,10 +126,6 @@ struct ButtonCatalogView: View {
 #Preview {
     NavigationStack {
         ButtonCatalogView()
-            .theme(ThemeProvider(
-                colorScheme: .light,
-                lightPalette: LightColorPalette(),
-                darkPalette: DarkColorPalette()
-            ))
+            .theme(ThemeProvider())
     }
 }

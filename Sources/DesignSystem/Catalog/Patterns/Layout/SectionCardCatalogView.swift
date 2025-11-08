@@ -199,10 +199,6 @@ struct SectionCardCatalogView: View {
 #Preview {
     NavigationStack {
         SectionCardCatalogView()
-            .theme(ThemeProvider(
-                colorScheme: .light,
-                lightPalette: LightColorPalette(),
-                darkPalette: DarkColorPalette()
-            ))
+            .theme(ThemeProvider())
     }
 }
