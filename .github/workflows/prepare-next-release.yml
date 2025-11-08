@@ -67,9 +67,27 @@ jobs:
         run: |
           git push origin chore/prepare-next-release
 
-      - name: Output information
+      - name: Create draft PR
         if: steps.update_changelog.outputs.updated == 'true'
         run: |
-          echo "✅ ブランチ 'chore/prepare-next-release' を作成しました"
-          echo "📝 次のステップ: GitHub UIで以下のURLからPRを作成してください"
-          echo "https://github.com/no-problem-dev/swift-design-system/compare/chore/prepare-next-release?quick_pull=1"
+          gh pr create \
+            --draft \
+            --title "chore: prepare for next release" \
+            --body "$(cat <<'EOF'
+          次のリリースに向けた準備PRです。
+
+          ## 変更内容
+          - CHANGELOG.mdに新しい「未リリース」セクションを追加
+
+          ## 開発フロー
+          1. このPRをマージ
+          2. 新機能・修正を開発する際、CHANGELOG.mdの「未リリース」セクションに変更を記録
+          3. リリース準備時に「未リリース」→ バージョンセクションに変換してリリース
+
+          このPRはドラフト状態で作成されています。準備ができたらレビュー依頼してください。
+          EOF
+          )" \
+            --base main \
+            --head chore/prepare-next-release
+        env:
+          GH_TOKEN: ${{ github.token }}

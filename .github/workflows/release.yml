@@ -29,6 +29,7 @@ jobs:
         id: changelog
         run: |
           VERSION=${{ steps.version.outputs.version }}
+          TAG=${{ steps.version.outputs.tag }}
 
           # CHANGELOG.mdから該当バージョンのセクションを抽出
           if grep -q "## \[$VERSION\]" CHANGELOG.md; then
@@ -40,20 +41,43 @@ jobs:
             if [ -n "$NEXT_LINE" ]; then
               # 次のセクションがある場合
               END_LINE=$((START_LINE + NEXT_LINE - 1))
-              sed -n "${START_LINE},${END_LINE}p" CHANGELOG.md > release_notes.md
+              sed -n "${START_LINE},${END_LINE}p" CHANGELOG.md > changelog_section.md
             else
               # 最後のセクションの場合
-              sed -n "${START_LINE},\$p" CHANGELOG.md > release_notes.md
+              sed -n "${START_LINE},\$p" CHANGELOG.md > changelog_section.md
             fi
 
             # バージョン見出しを削除
-            sed -i '1d' release_notes.md
+            sed -i '1d' changelog_section.md
 
             # リンクセクションを削除
-            sed -i '/^\[.*\]: http/d' release_notes.md
+            sed -i '/^\[.*\]: http/d' changelog_section.md
 
             # 空行を整理
-            sed -i '/^$/N;/^\n$/D' release_notes.md
+            sed -i '/^$/N;/^\n$/D' changelog_section.md
+
+            # リリースノートを整形して作成
+            cat > release_notes.md <<EOF
+          # 🎉 ${TAG} リリース
+
+          swift-design-system ${TAG} がリリースされました。
+
+          ## 📝 変更内容
+
+          $(cat changelog_section.md)
+
+          ## 📦 インストール
+
+          \`\`\`swift
+          dependencies: [
+              .package(url: "https://github.com/no-problem-dev/swift-design-system.git", .upToNextMajor(from: "1.0.0"))
+          ]
+          \`\`\`
+
+          ## 🔗 リンク
+          - [変更履歴](https://github.com/no-problem-dev/swift-design-system/blob/main/CHANGELOG.md)
+          - [ドキュメント](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/)
+          EOF
 
             echo "found=true" >> $GITHUB_OUTPUT
           else

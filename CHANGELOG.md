@@ -9,6 +9,18 @@
 
 なし
 
+## [1.0.7] - 2025-11-08
+
+### 変更
+- **リリースワークフローの改善** - GitHub Releaseに定型文とメタ情報を追加
+  - リリースタイトル、インストール方法、リンクを自動生成
+  - より分かりやすいリリースノート形式に変更
+
+### 修正
+- **prepare-next-releaseワークフロー** - ドラフトPR自動作成を実装
+  - タグプッシュトリガーに変更（release:publishedイベントは動作しないため）
+  - ドラフトPRの自動作成まで完全自動化
+
 ## [1.0.6] - 2025-11-08
 
 ### 追加
@@ -181,7 +193,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.6...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.7...HEAD
+[1.0.7]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.6...v1.0.7
 [1.0.6]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.3...v1.0.4
