@@ -188,6 +188,8 @@ jobs:
 
       - name: Update CHANGELOG for next version
         run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          VERSION_TAG="${{ steps.version.outputs.version_tag }}"
           NEXT_VERSION="${{ steps.next_version.outputs.next_version }}"
 
           # 「未リリース」セクションが存在しない場合のみ追加
@@ -209,6 +211,11 @@ jobs:
           else
             echo "ℹ️ CHANGELOG.mdに既に「未リリース」セクションが存在します"
           fi
+
+          # 比較リンクを最新バージョンに更新（必ず変更を発生させる）
+          sed -i "s|\[未リリース\]: .*|\[未リリース\]: https://github.com/no-problem-dev/swift-design-system/compare/$VERSION_TAG...HEAD|" CHANGELOG.md
+
+          echo "✅ CHANGELOG.mdの比較リンクを $VERSION_TAG に更新しました"
 
       - name: Commit and push next release branch
         run: |
