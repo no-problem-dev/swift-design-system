@@ -9,6 +9,14 @@
 
 なし
 
+## [1.0.14] - 2025-11-08
+
+### 修正
+- **PR自動作成の確実化（最終版）** - タイムスタンプコメント追加
+  - CHANGELOG.mdの末尾に自動生成タイムスタンプコメントを追加
+  - 比較リンクが既に正しい値でも必ず変更が発生
+  - 確実にコミットが作成され、PR作成が成功する
+
 ## [1.0.13] - 2025-11-08
 
 ### 修正
@@ -261,7 +269,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.13...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.14...HEAD
+[1.0.14]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.13...v1.0.14
 [1.0.13]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.12...v1.0.13
 [1.0.12]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.11...v1.0.12
 [1.0.11]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.10...v1.0.11
