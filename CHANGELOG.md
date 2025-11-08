@@ -9,6 +9,17 @@
 
 なし
 
+## [1.0.13] - 2025-11-08
+
+### 修正
+- **リリースノート生成の改善** - インストール例のバージョンを動的に設定
+  - ハードコードされた "1.0.0" を実際のリリースバージョンに変更
+  - より正確で分かりやすいインストール手順を提供
+- **PR自動作成の確実化** - CHANGELOG比較リンク更新ロジックを追加
+  - リリース後に必ず比較リンクを最新バージョンに更新
+  - 「未リリース」セクションが既に存在する場合でも確実にコミットが作成される
+  - 次のリリース用ドラフトPRが確実に作成されるように改善
+
 ## [1.0.12] - 2025-11-08
 
 ### 修正
@@ -250,7 +261,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.12...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.13...HEAD
+[1.0.13]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.12...v1.0.13
 [1.0.12]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.11...v1.0.12
 [1.0.11]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.10...v1.0.11
 [1.0.10]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.9...v1.0.10
