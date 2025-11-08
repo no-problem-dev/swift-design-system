@@ -9,6 +9,21 @@
 
 なし
 
+## [1.0.12] - 2025-11-08
+
+### 修正
+- **リリースワークフローの統合** - GitHub Release作成をauto-release-on-merge.ymlに統合
+  - タグ作成と同時にGitHub Releaseが作成されるように改善
+  - release.ymlワークフローを削除（機能を統合）
+  - PAT（Personal Access Token）の設定が不要に
+  - すべてがGITHUB_TOKENで完結する完全自動化を実現
+
+### ドキュメント
+- **RELEASE_PROCESS.mdを大幅に簡素化** - 本質的な情報のみに絞り込み
+  - 冗長なセクションを削除
+  - リリース手順を6ステップに簡素化
+  - トラブルシューティングを必要最小限に整理
+
 ## [1.0.11] - 2025-11-08
 
 ### 変更
@@ -235,7 +250,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.11...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.12...HEAD
+[1.0.12]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.11...v1.0.12
 [1.0.11]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.10...v1.0.11
 [1.0.10]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.9...v1.0.10
 [1.0.9]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.8...v1.0.9
