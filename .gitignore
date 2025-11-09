@@ -97,3 +97,9 @@ playwright/.auth
 
 # macOS
 .DS_Store
+
+# iCloud
+CloudDocs/
+
+# Claude documentation
+claudedocs/

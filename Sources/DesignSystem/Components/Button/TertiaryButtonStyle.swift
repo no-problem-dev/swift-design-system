@@ -28,6 +28,7 @@ public struct TertiaryButtonStyle: ButtonStyle {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.buttonSize) private var buttonSize
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.motion) private var motion
 
     public init() {}
 
@@ -44,7 +45,7 @@ public struct TertiaryButtonStyle: ButtonStyle {
             )
             .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
             .opacity(isEnabled ? 1.0 : 0.6)
-            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+            .animate(motion.tap, value: configuration.isPressed)
     }
 }
 

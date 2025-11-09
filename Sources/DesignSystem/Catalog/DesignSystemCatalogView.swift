@@ -122,6 +122,8 @@ public struct DesignSystemCatalogView: View {
                 SpacingCatalogView()
             case "角丸":
                 RadiusCatalogView()
+            case "モーション":
+                MotionCatalogView()
             default:
                 EmptyView()
             }
