@@ -9,6 +9,25 @@
 
 なし
 
+## [1.0.17] - 2025-11-09
+
+### 追加
+- **タイポグラフィトークンシステムの実装** (#23)
+  - `Typography.Font.Design`プロトコルによる柔軟なフォント管理
+  - 日本語フォント切り替え機能
+    - `JapaneseRoundedFontDesign`: SF Rounded（丸ゴシック）スタイル
+    - `JapaneseSerifFontDesign`: 游明朝体（セリフ）スタイル
+  - `FontDesignProvider`による動的フォント切り替え
+  - カタログアプリに「タイポグラフィ」セクション追加
+  - フォントスタイルプレビューとフォントデザイン切り替えUI実装
+
+- **iPad Split View対応の実装** (#24)
+  - 包括的なリファクタリングによる適応的レイアウト
+  - `AdaptiveLayoutProvider`による画面サイズ認識
+  - `LayoutContext`による動的レイアウト調整
+  - カタログアプリの全ビューをiPad Split View対応に改善
+  - Compact/Regular幅に応じたスペーシングとレイアウトの最適化
+
 ## [1.0.16] - 2025-11-09
 
 ### 追加
@@ -375,7 +394,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.16...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.17...HEAD
+[1.0.17]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.16...v1.0.17
 [1.0.16]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.15...v1.0.16
 [1.0.15]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.14...v1.0.15
 [1.0.14]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.13...v1.0.14
