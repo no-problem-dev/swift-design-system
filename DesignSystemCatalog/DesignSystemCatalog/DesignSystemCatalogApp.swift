@@ -97,7 +97,6 @@ struct DesignSystemCatalogApp: App {
         initialTheme: SimpleRedTheme(),
         additionalThemes: [
             SimpleBlueTheme()
-            // SimpleRedTheme は initialTheme として既に設定済み
         ]
     )
 
