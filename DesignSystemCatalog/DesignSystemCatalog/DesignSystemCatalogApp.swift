@@ -96,8 +96,8 @@ struct DesignSystemCatalogApp: App {
     @State private var themeProvider = ThemeProvider(
         initialTheme: SimpleRedTheme(),
         additionalThemes: [
-            SimpleBlueTheme(),
-            SimpleRedTheme()
+            SimpleBlueTheme()
+            // SimpleRedTheme は initialTheme として既に設定済み
         ]
     )
 
