@@ -69,6 +69,7 @@ private struct ThemeCategorySection: View {
     @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.motion) private var motion
 
     let category: ThemeCategory
     let themes: [any Theme]
@@ -110,7 +111,7 @@ private struct ThemeCategorySection: View {
                             theme: theme,
                             isActive: themeProvider.currentTheme.id == theme.id,
                             onTap: {
-                                withAnimation(.easeInOut(duration: 0.3)) {
+                                withAnimation(motion.slow) {
                                     themeProvider.applyTheme(theme)
                                 }
                             }
@@ -132,6 +133,7 @@ private struct AppearanceModeSection: View {
     @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.motion) private var motion
     
     var body: some View {
         VStack(alignment: .leading, spacing: spacing.md) {
@@ -149,7 +151,7 @@ private struct AppearanceModeSection: View {
             Picker("外観モード", selection: Binding(
                 get: { themeProvider.themeMode },
                 set: { newMode in
-                    withAnimation(.easeInOut(duration: 0.3)) {
+                    withAnimation(motion.slow) {
                         themeProvider.themeMode = newMode
                     }
                 }

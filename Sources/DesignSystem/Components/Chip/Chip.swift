@@ -42,6 +42,7 @@ public struct Chip: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.spacingScale) private var spacingScale
     @Environment(\.radiusScale) private var radiusScale
+    @Environment(\.motion) private var motion
 
     private let label: String
     private let systemImage: String?
@@ -120,7 +121,8 @@ public struct Chip: View {
             size: size,
             colorPalette: colorPalette,
             spacingScale: spacingScale,
-            radiusScale: radiusScale
+            radiusScale: radiusScale,
+            motion: motion
         )
 
         Group {
@@ -145,7 +147,7 @@ public struct Chip: View {
             onDelete()
         } else {
             // 選択トグル
-            withAnimation(.easeInOut(duration: 0.2)) {
+            withAnimation(motion.toggle) {
                 isSelected.toggle()
             }
         }

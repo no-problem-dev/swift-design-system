@@ -38,3 +38,29 @@ extension EnvironmentValues {
         set { self[RadiusScaleKey.self] = newValue }
     }
 }
+
+// MARK: - Motion
+
+private struct MotionKey: EnvironmentKey {
+    static let defaultValue: any Motion = DefaultMotion()
+}
+
+extension EnvironmentValues {
+    /// モーションタイミング設定
+    ///
+    /// 一貫したアニメーションタイミングを提供します。
+    /// `.animate()` モディファイアと組み合わせて使用します。
+    ///
+    /// ## 使用例
+    /// ```swift
+    /// @Environment(\.motion) var motion
+    ///
+    /// Button("タップ") { }
+    ///     .scaleEffect(isPressed ? 0.98 : 1.0)
+    ///     .animate(motion.tap, value: isPressed)
+    /// ```
+    public var motion: any Motion {
+        get { self[MotionKey.self] }
+        set { self[MotionKey.self] = newValue }
+    }
+}

@@ -69,6 +69,9 @@ public struct ChipStyleConfiguration {
 
     /// 角丸スケール
     public let radiusScale: any RadiusScale
+
+    /// モーションタイミング
+    public let motion: any Motion
 }
 
 /// ChipStyle用のEnvironmentKey

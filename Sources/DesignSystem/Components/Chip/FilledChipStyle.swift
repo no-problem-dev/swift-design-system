@@ -54,8 +54,8 @@ public struct FilledChipStyle: ChipStyle, Sendable {
         )
         .clipShape(Capsule())
         .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
-        .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
-        .animation(.easeInOut(duration: 0.2), value: configuration.isSelected)
+        .animate(configuration.motion.tap, value: configuration.isPressed)
+        .animate(configuration.motion.toggle, value: configuration.isSelected)
     }
 
     private func backgroundOpacity(for configuration: ChipStyleConfiguration) -> some ShapeStyle {
