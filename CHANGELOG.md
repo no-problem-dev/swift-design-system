@@ -9,6 +9,54 @@
 
 なし
 
+## [1.0.15] - 2025-11-09
+
+### 追加
+- **Chipコンポーネント** - Material Design 3とLiquid Glassデザイン言語に準拠 (#15)
+  - プロトコルベースのChipStyleシステム (ButtonStyleと同様)
+  - サイズバリアント: Small (24pt), Medium (32pt)
+  - 4つの初期化パターン: 静的、アイコン付き、削除可能、選択可能
+  - インタラクティブ状態: pressed, selected
+  - 完全なアクセシビリティサポート
+  - 3つのスタイルバリアント:
+    - **Filled**: 10-20%不透明度背景（ステータス/カテゴリラベル用）
+    - **Outlined**: 1.5ptボーダー（フィルターとセカンダリカテゴリ用）
+    - **Liquid Glass**: iOS 26+ネイティブ `.glassEffect()` API（インタラクティブサポート付き）
+  - Swift 6並行性対応（全スタイルが`Sendable`に準拠、`@MainActor`メソッド）
+  - トークンシステムとの統合（3層トークンアーキテクチャを活用）
+
+- **AspectGridレイアウトパターン** - アスペクト比固定グリッドレイアウト (#16)
+  - **GridSpacingトークン**: xs, sm, md, lg, xlの5段階の間隔設定
+  - **適応サイジング**: 画面サイズに応じた自動調整 (minItemWidth, maxItemWidth)
+  - **一般的なユースケース対応**: 商品一覧、写真ギャラリー、動画サムネイル
+  - **サポートされるアスペクト比**:
+    - 1:1 - 商品サムネイル、プロフィール画像、アイコン
+    - 3:4 - 写真、ポートレート
+    - 16:9 - 動画サムネイル、ワイドコンテンツ
+  - LazyVGridベースの効率的なレンダリング
+  - GridItem.adaptiveによる自動カラム調整
+  - 完全なドキュメントコメントとコード例
+
+- **カスタムテーマカテゴリ** - テーマ分類の拡張 (#17)
+  - 新しい`.custom`カテゴリを追加
+    - 名前: "カスタム"
+    - 説明: "アプリ固有のカスタムテーマ"
+    - アイコン: `wand.and.stars` ✨
+  - テーマギャラリーでビルトインとカスタムを明確に区別
+  - サンプルカスタムテーマの実装例（SimpleBlueTheme, SimpleRedTheme）
+
+### 修正
+- **テーマ動的切り替えの改善** (#17)
+  - `ThemeEnvironmentView`のリアクティブ更新を修正
+    - 問題: カラーパレットが静的に評価され、テーマ切り替え時に更新されなかった
+    - 解決: `resolvedColorPalette`計算プロパティを追加し、`@Observable`の変更検知を活用
+  - `ThemeGalleryView`の動的テーマ表示を改善
+    - 問題: `ThemeRegistry.themesByCategory`（ビルトインのみ）を使用していた
+    - 解決: `themeProvider.availableThemes`を使用してビルトイン + カスタムテーマを動的に表示
+  - リアクティブシステム: `@Observable`と計算プロパティによる自動更新
+  - 拡張性: カスタムテーマを簡単に追加できる設計
+  - 初期テーマ指定: `initialTheme`パラメータで起動時のテーマを制御可能
+
 ## [1.0.14] - 2025-11-08
 
 ### 修正
@@ -269,7 +317,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.14...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.15...HEAD
+[1.0.15]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.14...v1.0.15
 [1.0.14]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.13...v1.0.14
 [1.0.13]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.12...v1.0.13
 [1.0.12]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.11...v1.0.12
@@ -285,3 +334,5 @@
 [1.0.2]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/no-problem-dev/swift-design-system/releases/tag/v1.0.0
+
+<!-- Auto-generated on 2025-11-08T11:54:43Z by release workflow -->

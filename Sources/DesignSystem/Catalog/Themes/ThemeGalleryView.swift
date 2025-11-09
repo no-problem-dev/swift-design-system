@@ -41,10 +41,11 @@ public struct ThemeGalleryView: View {
 
                 // カテゴリ別テーマリスト
                 ForEach(ThemeCategory.allCases) { category in
-                    if let themes = ThemeRegistry.themesByCategory[category], !themes.isEmpty {
+                    let categoryThemes = themeProvider.availableThemes.filter { $0.category == category }
+                    if !categoryThemes.isEmpty {
                         ThemeCategorySection(
                             category: category,
-                            themes: themes
+                            themes: categoryThemes
                         )
                     }
                 }

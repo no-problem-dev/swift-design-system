@@ -69,8 +69,24 @@ public final class ThemeProvider {
         initialMode: ThemeMode = .system,
         additionalThemes: [any Theme] = []
     ) {
-        // ビルトインテーマを登録
-        let themes = ThemeRegistry.builtInThemes + additionalThemes
+        // ビルトインテーマを基本リストとして開始
+        var themes = ThemeRegistry.builtInThemes
+        
+        // initialThemeが提供されている場合、利用可能テーマに追加
+        if let initialTheme {
+            // 重複チェック: 同じIDのテーマが既に存在しない場合のみ追加
+            if !themes.contains(where: { $0.id == initialTheme.id }) {
+                themes.append(initialTheme)
+            }
+        }
+        
+        // additionalThemesを追加（重複排除）
+        for theme in additionalThemes {
+            if !themes.contains(where: { $0.id == theme.id }) {
+                themes.append(theme)
+            }
+        }
+        
         self.availableThemes = themes
 
         // 初期テーマを設定
