@@ -36,6 +36,7 @@ enum CatalogCategory: String, CaseIterable, Identifiable {
         case .foundations:
             return [
                 CatalogItem(name: "カラー", icon: "paintpalette.fill", description: "カラーパレットとセマンティックカラー"),
+                CatalogItem(name: "タイポグラフィ", icon: "textformat.size", description: "フォントサイズと行間のスケール"),
                 CatalogItem(name: "スペーシング", icon: "arrow.left.and.right", description: "レイアウト用のスペーシングスケール"),
                 CatalogItem(name: "角丸", icon: "square.fill", description: "コーナー半径のスケール"),
                 CatalogItem(name: "モーション", icon: "waveform.path", description: "アニメーションタイミングとモーション")

@@ -100,29 +100,29 @@ public enum Typography {
     public var size: CGFloat {
         switch self {
         // Display
-        case .displayLarge: return 57
-        case .displayMedium: return 45
-        case .displaySmall: return 36
+        case .displayLarge: return PrimitiveTypography.size57
+        case .displayMedium: return PrimitiveTypography.size45
+        case .displaySmall: return PrimitiveTypography.size36
 
         // Headline
-        case .headlineLarge: return 32
-        case .headlineMedium: return 28
-        case .headlineSmall: return 24
+        case .headlineLarge: return PrimitiveTypography.size32
+        case .headlineMedium: return PrimitiveTypography.size28
+        case .headlineSmall: return PrimitiveTypography.size24
 
         // Title
-        case .titleLarge: return 22
-        case .titleMedium: return 16
-        case .titleSmall: return 14
+        case .titleLarge: return PrimitiveTypography.size22
+        case .titleMedium: return PrimitiveTypography.size16
+        case .titleSmall: return PrimitiveTypography.size14
 
         // Body
-        case .bodyLarge: return 16
-        case .bodyMedium: return 14
-        case .bodySmall: return 12
+        case .bodyLarge: return PrimitiveTypography.size16
+        case .bodyMedium: return PrimitiveTypography.size14
+        case .bodySmall: return PrimitiveTypography.size12
 
         // Label
-        case .labelLarge: return 14
-        case .labelMedium: return 12
-        case .labelSmall: return 11
+        case .labelLarge: return PrimitiveTypography.size14
+        case .labelMedium: return PrimitiveTypography.size12
+        case .labelSmall: return PrimitiveTypography.size11
         }
     }
 
@@ -157,34 +157,41 @@ public enum Typography {
         .system(size: size, weight: weight, design: .default)
     }
 
+    /// SwiftUI Font with custom design
+    /// - Parameter design: フォントデザイン（.default, .serif, .rounded, .monospaced）
+    /// - Returns: 指定されたデザインのフォント
+    public func font(design: Font.Design) -> Font {
+        .system(size: size, weight: weight, design: design)
+    }
+
     /// 行の高さ（Line Height）
     /// Material Design 3仕様に基づく
     public var lineHeight: CGFloat {
         switch self {
         // Display
-        case .displayLarge: return 64
-        case .displayMedium: return 52
-        case .displaySmall: return 44
+        case .displayLarge: return PrimitiveTypography.lineHeight64
+        case .displayMedium: return PrimitiveTypography.lineHeight52
+        case .displaySmall: return PrimitiveTypography.lineHeight44
 
         // Headline
-        case .headlineLarge: return 40
-        case .headlineMedium: return 36
-        case .headlineSmall: return 32
+        case .headlineLarge: return PrimitiveTypography.lineHeight40
+        case .headlineMedium: return PrimitiveTypography.lineHeight36
+        case .headlineSmall: return PrimitiveTypography.lineHeight32
 
         // Title
-        case .titleLarge: return 28
-        case .titleMedium: return 24
-        case .titleSmall: return 20
+        case .titleLarge: return PrimitiveTypography.lineHeight28
+        case .titleMedium: return PrimitiveTypography.lineHeight24
+        case .titleSmall: return PrimitiveTypography.lineHeight20
 
         // Body
-        case .bodyLarge: return 24
-        case .bodyMedium: return 20
-        case .bodySmall: return 16
+        case .bodyLarge: return PrimitiveTypography.lineHeight24
+        case .bodyMedium: return PrimitiveTypography.lineHeight20
+        case .bodySmall: return PrimitiveTypography.lineHeight16
 
         // Label
-        case .labelLarge: return 20
-        case .labelMedium: return 16
-        case .labelSmall: return 16
+        case .labelLarge: return PrimitiveTypography.lineHeight20
+        case .labelMedium: return PrimitiveTypography.lineHeight16
+        case .labelSmall: return PrimitiveTypography.lineHeight16
         }
     }
 }

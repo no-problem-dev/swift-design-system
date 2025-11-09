@@ -44,20 +44,19 @@ struct ColorSwatchView: View {
 
                 VStack(alignment: .leading, spacing: spacing.xs) {
                     Text(name)
-                        .font(.subheadline)
-                        .fontWeight(.medium)
+                        .typography(.titleSmall)
                         .foregroundStyle(colors.onSurface)
 
                     if let hexCode {
                         Text(hexCode)
-                            .font(.caption)
+                            .typography(.labelMedium)
                             .foregroundStyle(colors.onSurfaceVariant)
                             .fontDesign(.monospaced)
                     }
 
                     if let description {
                         Text(description)
-                            .font(.caption2)
+                            .typography(.labelSmall)
                             .foregroundStyle(colors.onSurfaceVariant.opacity(0.7))
                     }
                 }
@@ -65,7 +64,7 @@ struct ColorSwatchView: View {
                 Spacer()
 
                 Image(systemName: "doc.on.doc")
-                    .font(.caption)
+                    .typography(.labelMedium)
                     .foregroundStyle(colors.onSurfaceVariant)
             }
             .padding(.vertical, spacing.sm)

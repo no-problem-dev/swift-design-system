@@ -19,7 +19,7 @@ struct SpacingDemoView: View {
                 Spacer()
 
                 Text("\(Int(value))pt")
-                    .font(.caption)
+                    .typography(.labelMedium)
                     .fontDesign(.monospaced)
                     .foregroundStyle(colors.onSurfaceVariant)
             }
