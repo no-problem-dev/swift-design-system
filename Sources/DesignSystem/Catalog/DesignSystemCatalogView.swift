@@ -12,7 +12,7 @@ public struct DesignSystemCatalogView: View {
     public var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: spacing.xl) {
+                VStack(spacing: spacing.xxl) {
                     // カテゴリセクション
                     ForEach(CatalogCategory.allCases) { category in
                         VStack(alignment: .leading, spacing: spacing.md) {
@@ -25,12 +25,10 @@ public struct DesignSystemCatalogView: View {
                                     .typography(.titleMedium)
                                     .foregroundStyle(colorPalette.onSurface)
                             }
-                            .padding(.horizontal, spacing.lg)
 
                             Text(category.description)
                                 .typography(.bodySmall)
                                 .foregroundStyle(colorPalette.onSurfaceVariant)
-                                .padding(.horizontal, spacing.lg)
 
                             VStack(spacing: spacing.sm) {
                                 ForEach(category.items) { item in
@@ -59,16 +57,18 @@ public struct DesignSystemCatalogView: View {
                                                 .font(.caption)
                                                 .foregroundStyle(colorPalette.onSurfaceVariant)
                                         }
-                                        .padding(.horizontal, spacing.lg)
+                                        .padding(.horizontal, spacing.md)
                                         .padding(.vertical, spacing.md)
-                                        .background(colorPalette.surface)
-                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                        .background(colorPalette.background)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
                                     }
                                     .buttonStyle(.plain)
                                 }
                             }
-                            .padding(.horizontal, spacing.lg)
                         }
+                        .padding(spacing.lg)
+                        .background(colorPalette.surface)
+                        .shadow(color: .black.opacity(0.03), radius: 4, y: 2)
                     }
 
                     // 情報セクション
@@ -95,6 +95,7 @@ public struct DesignSystemCatalogView: View {
                         }
                         .background(colorPalette.surface)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .shadow(color: .black.opacity(0.03), radius: 4, y: 2)
                         .padding(.horizontal, spacing.lg)
                     }
                 }

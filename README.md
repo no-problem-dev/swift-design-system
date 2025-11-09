@@ -229,52 +229,141 @@ struct ThemePickerView: View {
 
 ### 6. カスタムテーマの作成
 
-独自のテーマを作成できます：
+独自のブランドカラーでテーマを作成できます：
+
+#### ステップ1: ColorPaletteの実装
 
 ```swift
-// カスタムカラーパレット（ライトモード）
-struct MyBrandLightPalette: ColorPalette {
-    var primary: Color { Color(hex: "#007AFF") }
-    var onPrimary: Color { .white }
-    var secondary: Color { Color(hex: "#5856D6") }
-    var onSecondary: Color { .white }
-    var background: Color { Color(hex: "#F5F5F7") }
-    var onBackground: Color { Color(hex: "#1D1D1F") }
-    // ... 全27色を定義
-}
+// ライトモード用のカラーパレット
+struct MyBrandColorPalette: ColorPalette {
+    let primary: Color
+    let onPrimary: Color
+    let primaryContainer: Color
+    let onPrimaryContainer: Color
 
-// カスタムカラーパレット（ダークモード）
-struct MyBrandDarkPalette: ColorPalette {
-    var primary: Color { Color(hex: "#0A84FF") }
-    var onPrimary: Color { .white }
-    // ... 全27色を定義
-}
+    let secondary: Color
+    let onSecondary: Color
+    let secondaryContainer: Color
+    let onSecondaryContainer: Color
 
-// カスタムテーマ
+    let tertiary: Color
+    let onTertiary: Color
+
+    let background: Color
+    let onBackground: Color
+    let surface: Color
+    let onSurface: Color
+    let surfaceVariant: Color
+    let onSurfaceVariant: Color
+
+    let error: Color
+    let warning: Color
+    let success: Color
+    let info: Color
+
+    let outline: Color
+    let outlineVariant: Color
+
+    // ライトモード用の静的インスタンス
+    static let light = MyBrandColorPalette(
+        primary: Color(red: 0.0, green: 0.48, blue: 1.0),  // #007AFF
+        onPrimary: .white,
+        primaryContainer: Color(red: 0.0, green: 0.48, blue: 1.0).opacity(0.1),
+        onPrimaryContainer: Color(red: 0.0, green: 0.48, blue: 1.0),
+
+        secondary: Color(red: 0.35, green: 0.34, blue: 0.84),  // #5856D6
+        onSecondary: .white,
+        secondaryContainer: Color(red: 0.35, green: 0.34, blue: 0.84).opacity(0.1),
+        onSecondaryContainer: Color(red: 0.35, green: 0.34, blue: 0.84),
+
+        tertiary: Color(red: 1.0, green: 0.58, blue: 0.0),  // #FF9500
+        onTertiary: .white,
+
+        background: .white,
+        onBackground: .black,
+        surface: Color(white: 0.98),
+        onSurface: Color(white: 0.1),
+        surfaceVariant: Color(white: 0.95),
+        onSurfaceVariant: Color(white: 0.3),
+
+        error: .red,
+        warning: .orange,
+        success: .green,
+        info: .blue,
+
+        outline: Color(white: 0.8),
+        outlineVariant: Color(white: 0.9)
+    )
+
+    // ダークモード用の静的インスタンス
+    static let dark = MyBrandColorPalette(
+        primary: Color(red: 0.04, green: 0.52, blue: 1.0),  // より明るい青
+        onPrimary: Color(white: 0.1),
+        primaryContainer: Color(red: 0.0, green: 0.48, blue: 1.0).opacity(0.2),
+        onPrimaryContainer: Color(red: 0.5, green: 0.7, blue: 1.0),
+
+        secondary: Color(red: 0.45, green: 0.44, blue: 0.94),  // より明るい紫
+        onSecondary: Color(white: 0.1),
+        secondaryContainer: Color(red: 0.35, green: 0.34, blue: 0.84).opacity(0.2),
+        onSecondaryContainer: Color(red: 0.6, green: 0.58, blue: 0.95),
+
+        tertiary: Color(red: 1.0, green: 0.68, blue: 0.3),  // より明るいオレンジ
+        onTertiary: Color(white: 0.1),
+
+        background: Color(white: 0.05),
+        onBackground: Color(white: 0.95),
+        surface: Color(white: 0.12),
+        onSurface: Color(white: 0.9),
+        surfaceVariant: Color(white: 0.18),
+        onSurfaceVariant: Color(white: 0.7),
+
+        error: Color(red: 1.0, green: 0.4, blue: 0.4),
+        warning: Color(red: 1.0, green: 0.7, blue: 0.3),
+        success: Color(red: 0.4, green: 0.9, blue: 0.4),
+        info: Color(red: 0.5, green: 0.7, blue: 1.0),
+
+        outline: Color(white: 0.3),
+        outlineVariant: Color(white: 0.2)
+    )
+}
+```
+
+#### ステップ2: Themeプロトコルの実装
+
+```swift
 struct MyBrandTheme: Theme {
-    let id = "myBrand"
-    let name = "マイブランド"
-    let description = "当社ブランドカラーのテーマ"
-    let category: ThemeCategory = .brandPersonality
-    let previewColors = [
-        Color(hex: "#007AFF"),
-        Color(hex: "#5856D6"),
-        Color(hex: "#FF9500")
-    ]
+    var id: String { "myBrand" }
+    var name: String { "マイブランド" }
+    var description: String { "当社ブランドカラーのテーマ" }
+    var category: ThemeCategory { .brandPersonality }
+    var previewColors: [Color] {
+        [
+            Color(red: 0.0, green: 0.48, blue: 1.0),   // Primary
+            Color(red: 0.35, green: 0.34, blue: 0.84),  // Secondary
+            Color(red: 1.0, green: 0.58, blue: 0.0)     // Tertiary
+        ]
+    }
 
     func colorPalette(for mode: ThemeMode) -> any ColorPalette {
         switch mode {
-        case .light: return MyBrandLightPalette()
-        case .dark: return MyBrandDarkPalette()
+        case .system, .light:
+            MyBrandColorPalette.light
+        case .dark:
+            MyBrandColorPalette.dark
         }
     }
 }
+```
 
-// カスタムテーマを登録
+#### ステップ3: ThemeProviderへの登録
+
+##### パターンA: 初期テーマとして設定
+
+```swift
 @main
 struct MyApp: App {
     @State private var themeProvider = ThemeProvider(
-        additionalThemes: [MyBrandTheme()]
+        initialTheme: MyBrandTheme()  // カスタムテーマを初期テーマに
     )
 
     var body: some Scene {
@@ -285,6 +374,79 @@ struct MyApp: App {
     }
 }
 ```
+
+##### パターンB: 追加テーマとして登録（デフォルトテーマが初期）
+
+```swift
+@main
+struct MyApp: App {
+    @State private var themeProvider = ThemeProvider(
+        additionalThemes: [MyBrandTheme()]  // 追加テーマとして登録
+    )
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .theme(themeProvider)
+        }
+    }
+}
+```
+
+##### パターンC: 複数のカスタムテーマを登録
+
+```swift
+@main
+struct MyApp: App {
+    @State private var themeProvider = ThemeProvider(
+        initialTheme: MyBrandTheme(),
+        additionalThemes: [
+            MyOtherBrandTheme(),
+            SeasonalTheme()
+        ]
+    )
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .theme(themeProvider)
+        }
+    }
+}
+```
+
+#### ステップ4: テーマの切り替え
+
+```swift
+struct ThemeSettingsView: View {
+    @Environment(ThemeProvider.self) private var themeProvider
+
+    var body: some View {
+        VStack {
+            // テーマ一覧から選択
+            ForEach(themeProvider.availableThemes, id: \.id) { theme in
+                Button(theme.name) {
+                    themeProvider.switchToTheme(id: theme.id)
+                }
+            }
+
+            // ライト/ダークモード切り替え
+            Button("モード切り替え") {
+                themeProvider.toggleMode()
+            }
+        }
+    }
+}
+```
+
+#### カスタムテーマのサンプル
+
+カタログアプリには、完全に動作するカスタムテーマのサンプルがあります：
+
+- `DesignSystemCatalog/Themes/SimpleBlueTheme.swift` - 青を基調としたテーマ
+- `DesignSystemCatalog/Themes/SimpleRedTheme.swift` - 赤を基調としたテーマ
+
+これらのファイルを参考に、独自のブランドテーマを作成できます。
 
 ## アーキテクチャ
 
