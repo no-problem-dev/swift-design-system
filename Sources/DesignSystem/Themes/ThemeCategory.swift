@@ -12,6 +12,9 @@ public enum ThemeCategory: String, Sendable, CaseIterable, Identifiable {
     /// 標準テーマ（デフォルト）
     case standard = "標準"
 
+    /// カスタムテーマ（ユーザー定義）
+    case custom = "カスタム"
+
     /// ブランドパーソナリティテーマ
     case brandPersonality = "ブランドパーソナリティ"
 
@@ -29,6 +32,8 @@ public enum ThemeCategory: String, Sendable, CaseIterable, Identifiable {
             return "ブランドの個性を表現する多彩なテーマ"
         case .accessibility:
             return "アクセシビリティを重視した高コントラストテーマ"
+        case .custom:
+            return "アプリ固有のカスタムテーマ"
         }
     }
 
@@ -41,6 +46,8 @@ public enum ThemeCategory: String, Sendable, CaseIterable, Identifiable {
             return "paintpalette.fill"
         case .accessibility:
             return "eye.fill"
+        case .custom:
+            return "wand.and.stars"
         }
     }
 }
