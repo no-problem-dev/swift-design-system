@@ -12,14 +12,14 @@ public enum ThemeCategory: String, Sendable, CaseIterable, Identifiable {
     /// 標準テーマ（デフォルト）
     case standard = "標準"
 
+    /// カスタムテーマ（ユーザー定義）
+    case custom = "カスタム"
+
     /// ブランドパーソナリティテーマ
     case brandPersonality = "ブランドパーソナリティ"
 
     /// アクセシビリティテーマ
     case accessibility = "アクセシビリティ"
-
-    /// カスタムテーマ（ユーザー定義）
-    case custom = "カスタム"
 
     public var id: String { rawValue }
 
