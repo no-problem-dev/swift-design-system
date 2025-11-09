@@ -9,6 +9,64 @@
 
 なし
 
+## [1.0.16] - 2025-11-09
+
+### 追加
+- **Motionシステム** - 統一されたアニメーションタイミングシステム (#20)
+  - 10種類の最適化されたアニメーションタイミング
+  - マイクロインタラクション: `quick` (70ms), `tap` (110ms)
+  - 状態変化: `toggle`, `fadeIn`, `fadeOut` (150ms)
+  - トランジション: `slide` (240ms), `slow` (300ms), `slower` (375ms)
+  - スプリング: `spring`, `bounce`
+  - Material Design 3、IBM Carbon、Apple HIGの業界標準に準拠
+  - `.animate()` modifierによる簡単適用
+  - 自動Reduce Motion対応（WCAG 2.1 SC 2.3.3準拠）
+  - Sendable準拠で並行処理安全
+
+- **Motionカタログビュー** - 包括的なアニメーションカタログ (#20)
+  - 概要セクション: システム説明と主な機能
+  - インタラクティブデモ: 4カテゴリ別の体験可能なアニメーション
+  - 仕様表: 全10モーションの詳細スペック
+  - 使用例: 3パターンのコード例
+  - アクセシビリティ説明: Reduce Motion自動対応
+  - ベストプラクティス: 推奨パターンとアンチパターン
+  - MotionDemoCard: AspectGridパターンでレスポンシブデザイン
+
+### 変更
+- **カタログUIの改善** (#21)
+  - セクション間スペーシングを24pt → 32ptに増加（2025年デザインシステムベストプラクティス準拠）
+  - カード風セクションデザインの導入（微妙なエレベーション効果）
+  - フルブリードセクション（画面端まで）には角丸なし（iOS標準パターン）
+  - 情報セクションには角丸あり（浮いているカード風）
+  - Material Design 3、Fluent 2、Carbon Design Systemの2025年ベストプラクティスを調査・適用
+
+- **既存コンポーネントのMotionシステム移行** (#20)
+  - Button styles (Primary, Secondary, Tertiary) → Motionトークン使用
+  - Chip styles (Filled, Outlined, LiquidGlass) → Motionトークン使用
+  - ThemeGalleryView → Motionトークン使用
+
+- **カスタムテーマのダークモード対応** (#21)
+  - `SimpleBlueTheme`と`SimpleRedTheme`に完全なダークモード対応を追加
+  - `ThemeMode`の全ケース（`.system`, `.light`, `.dark`）を適切に処理
+  - ダークモードでは明るい色調に調整してコントラストを確保
+
+### 修正
+- **GitHub ActionsのXcode環境更新** (#19)
+  - macOS 15 → macOS 26 (arm64)
+  - Xcode 16.1 → Xcode 26.0.1
+  - iOS 26 SDKサポート（`.glassEffect()` API使用のため）
+  - DocCデプロイメントのコンパイルエラーを解消
+
+### ドキュメント
+- **カスタムテーマドキュメントの大幅改善** (#21)
+  - `SimpleBlueTheme`と`SimpleRedTheme`に詳細なDocCコメント追加
+  - README.mdの「カスタムテーマの作成」セクション刷新
+    - ステップ1: ColorPaletteの実装（全27色の完全な例）
+    - ステップ2: Themeプロトコルの実装
+    - ステップ3: ThemeProviderへの登録（3パターン）
+    - ステップ4: テーマの切り替え実装例
+  - エントリーポイントへのドキュメント追加
+
 ## [1.0.15] - 2025-11-09
 
 ### 追加
@@ -317,7 +375,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.15...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.16...HEAD
+[1.0.16]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.15...v1.0.16
 [1.0.15]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.14...v1.0.15
 [1.0.14]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.13...v1.0.14
 [1.0.13]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.12...v1.0.13
