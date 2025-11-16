@@ -65,11 +65,20 @@ struct CatalogDetailView: View {
             case .chip:
                 ChipCatalogView()
                     .id(component)
+            case .colorPicker:
+                ColorPickerCatalogView()
+                    .id(component)
+            case .emojiPicker:
+                EmojiPickerCatalogView()
+                    .id(component)
             case .fab:
                 FloatingActionButtonCatalogView()
                     .id(component)
             case .iconButton:
                 IconButtonCatalogView()
+                    .id(component)
+            case .iconPicker:
+                IconPickerCatalogView()
                     .id(component)
             case .imagePicker:
                 #if canImport(UIKit)

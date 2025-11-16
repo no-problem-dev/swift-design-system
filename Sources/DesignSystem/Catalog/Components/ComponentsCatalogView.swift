@@ -88,10 +88,16 @@ struct ComponentsCatalogView: View {
             CardCatalogView()
         case .chip:
             ChipCatalogView()
+        case .colorPicker:
+            ColorPickerCatalogView()
+        case .emojiPicker:
+            EmojiPickerCatalogView()
         case .fab:
             FloatingActionButtonCatalogView()
         case .iconButton:
             IconButtonCatalogView()
+        case .iconPicker:
+            IconPickerCatalogView()
         case .imagePicker:
             #if canImport(UIKit)
             ImagePickerCatalogView()
