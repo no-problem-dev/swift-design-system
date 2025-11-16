@@ -7,7 +7,6 @@ enum ComponentType: String, CaseIterable, Identifiable {
     case chip = "Chip"
     case fab = "FloatingActionButton"
     case iconButton = "IconButton"
-    case imagePicker = "ImagePicker"
     case snackbar = "Snackbar"
     case textField = "TextField"
 
@@ -20,7 +19,6 @@ enum ComponentType: String, CaseIterable, Identifiable {
         case .chip: return "tag.fill"
         case .fab: return "plus.circle.fill"
         case .iconButton: return "heart.circle.fill"
-        case .imagePicker: return "photo.on.rectangle.angled"
         case .snackbar: return "message.fill"
         case .textField: return "textformat.abc"
         }
@@ -33,7 +31,6 @@ enum ComponentType: String, CaseIterable, Identifiable {
         case .chip: return "ステータス、カテゴリ、フィルター用のコンパクトなラベル"
         case .fab: return "画面上の主要アクションボタン"
         case .iconButton: return "アイコンのみのコンパクトなボタン"
-        case .imagePicker: return "カメラと写真ライブラリから画像を選択"
         case .snackbar: return "一時的な通知とフィードバックを表示"
         case .textField: return "テキスト入力フィールド"
         }

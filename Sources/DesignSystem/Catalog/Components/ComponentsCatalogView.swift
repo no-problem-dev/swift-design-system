@@ -92,16 +92,6 @@ struct ComponentsCatalogView: View {
             FloatingActionButtonCatalogView()
         case .iconButton:
             IconButtonCatalogView()
-        case .imagePicker:
-            #if canImport(UIKit)
-            ImagePickerCatalogView()
-            #else
-            ContentUnavailableView {
-                Label("iOS Only", systemImage: "iphone")
-            } description: {
-                Text("画像ピッカーはiOSでのみ利用可能です")
-            }
-            #endif
         case .snackbar:
             SnackbarCatalogView()
         case .textField:
