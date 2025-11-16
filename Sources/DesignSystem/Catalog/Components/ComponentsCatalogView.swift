@@ -92,6 +92,8 @@ struct ComponentsCatalogView: View {
             FloatingActionButtonCatalogView()
         case .iconButton:
             IconButtonCatalogView()
+        case .snackbar:
+            SnackbarCatalogView()
         case .textField:
             TextFieldCatalogView()
         }

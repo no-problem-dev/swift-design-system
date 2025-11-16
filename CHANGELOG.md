@@ -5,9 +5,18 @@
 フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に基づいており、
 このプロジェクトは [セマンティックバージョニング](https://semver.org/lang/ja/spec/v2.0.0.html) に準拠しています。
 
-## [未リリース]
+## [1.0.18] - 2025-11-16
 
-なし
+### 追加
+- **Snackbarコンポーネント** - Material Design準拠の一時的通知UI (#26)
+  - 画面下部から表示される一時的な通知UI
+  - `SnackbarState`による`@Observable`ベースの状態管理
+  - 自動消滅機能（デフォルト5秒、カスタマイズ可能）
+  - 最大2つのアクションボタンサポート（プライマリ、セカンダリ）
+  - スプリングアニメーション付き表示/非表示トランジション
+  - アクセシビリティサポート（accessibilityLabel対応）
+  - デザインシステムトークンとの完全統合（カラー、スペーシング、角丸）
+  - カタログアプリに「Snackbar」セクション追加
 
 ## [1.0.17] - 2025-11-09
 
@@ -394,7 +403,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.17...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.18...HEAD
+[1.0.18]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.17...v1.0.18
 [1.0.17]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.16...v1.0.17
 [1.0.16]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.15...v1.0.16
 [1.0.15]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.14...v1.0.15
@@ -419,3 +429,5 @@
 <!-- Auto-generated on 2025-11-09T00:21:22Z by release workflow -->
 
 <!-- Auto-generated on 2025-11-09T08:30:33Z by release workflow -->
+
+<!-- Auto-generated on 2025-11-09T13:28:30Z by release workflow -->
