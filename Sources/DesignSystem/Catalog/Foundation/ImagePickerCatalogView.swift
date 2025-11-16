@@ -85,23 +85,19 @@ struct ImagePickerCatalogView: View {
                     VStack(alignment: .leading, spacing: spacing.md) {
                         FeatureRow(
                             icon: "camera.fill",
-                            title: "カメラ撮影",
-                            description: "カメラで新しい写真を撮影"
+                            title: "カメラで新しい写真を撮影"
                         )
                         FeatureRow(
                             icon: "photo.fill",
-                            title: "写真ライブラリ",
-                            description: "既存の写真から選択"
+                            title: "既存の写真から選択"
                         )
                         FeatureRow(
                             icon: "lock.shield.fill",
-                            title: "権限管理",
-                            description: "適切な権限リクエストとエラーハンドリング"
+                            title: "適切な権限リクエストとエラーハンドリング"
                         )
                         FeatureRow(
                             icon: "gearshape.fill",
-                            title: "設定画面への誘導",
-                            description: "権限拒否時は設定画面へ誘導"
+                            title: "権限拒否時は設定画面へ誘導"
                         )
                     }
                 }
@@ -154,11 +150,11 @@ struct ImagePickerCatalogView: View {
 
                         VStack(alignment: .leading, spacing: spacing.sm) {
                             InfoRow(
-                                title: "NSCameraUsageDescription",
+                                label: "NSCameraUsageDescription",
                                 value: "カメラへのアクセス理由を記述"
                             )
                             InfoRow(
-                                title: "NSPhotoLibraryUsageDescription",
+                                label: "NSPhotoLibraryUsageDescription",
                                 value: "写真ライブラリへのアクセス理由を記述"
                             )
                         }
@@ -172,16 +168,28 @@ struct ImagePickerCatalogView: View {
                 SectionCard(title: "ベストプラクティス") {
                     VStack(alignment: .leading, spacing: spacing.sm) {
                         BestPracticeItem(
-                            text: "選択された画像はJPEG形式のDataとして返されます（品質80%）"
+                            icon: "checkmark.circle.fill",
+                            title: "画像形式",
+                            description: "選択された画像はJPEG形式のDataとして返されます（品質80%）",
+                            isGood: true
                         )
                         BestPracticeItem(
-                            text: "シミュレーターではカメラが利用できないため、実機でのテストが推奨されます"
+                            icon: "exclamationmark.triangle.fill",
+                            title: "シミュレーター制限",
+                            description: "シミュレーターではカメラが利用できないため、実機でのテストが推奨されます",
+                            isGood: true
                         )
                         BestPracticeItem(
-                            text: "権限リクエストは一度のみ表示されます。拒否後はアラートで設定画面への誘導を行います"
+                            icon: "checkmark.circle.fill",
+                            title: "権限リクエスト",
+                            description: "権限リクエストは一度のみ表示されます。拒否後はアラートで設定画面への誘導を行います",
+                            isGood: true
                         )
                         BestPracticeItem(
-                            text: "画像データはメモリに保持されるため、大きな画像を扱う場合は適切な圧縮やリサイズを検討してください"
+                            icon: "exclamationmark.triangle.fill",
+                            title: "メモリ管理",
+                            description: "画像データはメモリに保持されるため、大きな画像を扱う場合は適切な圧縮やリサイズを検討してください",
+                            isGood: true
                         )
                     }
                 }
