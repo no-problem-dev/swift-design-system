@@ -5,6 +5,10 @@
 フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に基づいており、
 このプロジェクトは [セマンティックバージョニング](https://semver.org/lang/ja/spec/v2.0.0.html) に準拠しています。
 
+## [未リリース]
+
+なし
+
 ## [1.0.18] - 2025-11-16
 
 ### 追加
@@ -431,3 +435,5 @@
 <!-- Auto-generated on 2025-11-09T08:30:33Z by release workflow -->
 
 <!-- Auto-generated on 2025-11-09T13:28:30Z by release workflow -->
+
+<!-- Auto-generated on 2025-11-16T09:24:46Z by release workflow -->
