@@ -57,7 +57,7 @@ public struct Snackbar: View {
                 HStack(spacing: spacing.md) {
                     // メッセージ
                     Text(state.message)
-                        .typography(.bodyMedium)
+                        .typography(.bodyLarge)
                         .foregroundStyle(colors.onSurface)
                         .lineLimit(2)
                         .fixedSize(horizontal: false, vertical: true)
@@ -74,7 +74,7 @@ public struct Snackbar: View {
                                 state.dismiss()
                             } label: {
                                 Text(primary.title)
-                                    .typography(.labelMedium)
+                                    .typography(.labelLarge)
                                     .foregroundStyle(colors.primary)
                             }
                             .buttonStyle(.borderless)
@@ -88,7 +88,7 @@ public struct Snackbar: View {
                                 state.dismiss()
                             } label: {
                                 Text(secondary.title)
-                                    .typography(.labelMedium)
+                                    .typography(.labelLarge)
                                     .foregroundStyle(colors.error)
                             }
                             .buttonStyle(.borderless)
