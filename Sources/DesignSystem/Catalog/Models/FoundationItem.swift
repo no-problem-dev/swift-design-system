@@ -7,7 +7,6 @@ enum FoundationItem: String, CaseIterable, Identifiable {
     case spacing = "スペーシング"
     case radius = "角丸"
     case motion = "モーション"
-    case imagePicker = "画像ピッカー"
 
     var id: String { rawValue }
 
@@ -18,7 +17,6 @@ enum FoundationItem: String, CaseIterable, Identifiable {
         case .spacing: return "arrow.left.and.right"
         case .radius: return "square.fill"
         case .motion: return "waveform.path"
-        case .imagePicker: return "photo.on.rectangle.angled"
         }
     }
 
@@ -29,7 +27,6 @@ enum FoundationItem: String, CaseIterable, Identifiable {
         case .spacing: return "レイアウト用のスペーシングスケール"
         case .radius: return "コーナー半径のスケール"
         case .motion: return "アニメーションタイミングとモーション"
-        case .imagePicker: return "カメラと写真ライブラリから画像を選択"
         }
     }
 }
