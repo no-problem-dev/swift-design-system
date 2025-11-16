@@ -16,6 +16,8 @@ import PhotosUI
 ///   - `NSCameraUsageDescription`: カメラ使用の説明
 ///   - `NSPhotoLibraryUsageDescription`: フォトライブラリアクセスの説明
 public struct ImagePickerModifier: ViewModifier {
+    @Environment(\.colorPalette) private var colorPalette
+
     @Binding var isPresented: Bool
     @Binding var selectedImageData: Data?
 
@@ -41,9 +43,13 @@ public struct ImagePickerModifier: ViewModifier {
                 Button("カメラで撮影") {
                     requestPermissionAndShowPicker(for: .camera)
                 }
+                .tint(Color(colorPalette.primary))
+
                 Button("写真ライブラリから選択") {
                     requestPermissionAndShowPicker(for: .photoLibrary)
                 }
+                .tint(Color(colorPalette.primary))
+
                 Button("キャンセル", role: .cancel) {
                     isPresented = false
                 }
