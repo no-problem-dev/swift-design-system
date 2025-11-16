@@ -9,6 +9,43 @@
 
 なし
 
+## [1.0.20] - 2025-11-17
+
+### 追加
+- **IconPicker、EmojiPicker、ColorPickerコンポーネント** - 選択UI用の3種類のピッカーモディファイア (#32)
+  - **IconPicker (SF Symbols専用)**
+    - `.iconPicker()` ViewModifierによるシンプルなAPI
+    - `Image(systemName:)`による正しいSF Symbols表示
+    - カテゴリベースの組織化（IconCategory/IconItem）
+    - ハーフモーダル表示（`.medium`, `.large`デテント）
+    - 検索機能とカテゴリフィルタリング
+    - 選択状態の視覚的フィードバック
+  - **EmojiPicker (絵文字専用)**
+    - `.emojiPicker()` ViewModifierによるシンプルなAPI
+    - 大きめのフォントサイズ（32pt）で絵文字を表示
+    - カテゴリベースの組織化（EmojiCategory/EmojiItem）
+    - ハーフモーダル表示（`.medium`, `.large`デテント）
+    - 検索機能とカテゴリフィルタリング
+    - 顔・感情、動物・自然、食べ物、活動などのカテゴリ
+  - **ColorPicker (プリセットカラー)**
+    - `.colorPicker()` ViewModifierによるシンプルなAPI
+    - プリセットカラーシステム（ColorPreset）
+    - `.tagFriendly`: タグやカテゴリに適した10色
+    - `.allPrimitives`: プリミティブカラー全体
+    - ハーフモーダル表示（`.medium`, `.large`デテント）
+    - 検索機能とカテゴリフィルタリング
+  - 全ピッカー共通の特徴
+    - ViewModifierパターンによる一貫したAPI
+    - ハーフモーダルシート（`.presentationDetents`使用）
+    - カテゴリ別タブナビゲーション
+    - 検索フィールドによるフィルタリング
+    - 選択/キャンセルボタン配置
+    - デザインシステムトークンとの完全統合
+  - カタログアプリに3つの新しいセクション追加
+    - ColorPickerCatalogView: カラーピッカーのデモと使用例
+    - EmojiPickerCatalogView: 絵文字ピッカーのデモと使用例
+    - IconPickerCatalogView: アイコンピッカーのデモと使用例
+
 ## [1.0.19] - 2025-11-17
 
 ### 追加
@@ -434,7 +471,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.19...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.20...HEAD
+[1.0.20]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.19...v1.0.20
 [1.0.19]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.18...v1.0.19
 [1.0.18]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.17...v1.0.18
 [1.0.17]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.16...v1.0.17
