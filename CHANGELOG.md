@@ -5,6 +5,33 @@
 フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に基づいており、
 このプロジェクトは [セマンティックバージョニング](https://semver.org/lang/ja/spec/v2.0.0.html) に準拠しています。
 
+## [1.0.19] - 2025-11-17
+
+### 追加
+- **ImagePickerコンポーネント** - カメラと写真ライブラリから画像を選択するモディファイア (#28)
+  - `.imagePicker()` ViewModifierによるシンプルなAPI
+  - カメラ撮影と写真ライブラリ選択の統合UI
+  - 包括的な権限管理（カメラとフォトライブラリ）
+  - `.addOnly`権限レベルによる最小権限アクセス
+  - カメラ利用可能性チェック（iPad等非搭載デバイス対応）
+  - 画像圧縮戦略（`maxSizeInBytes`パラメータ）
+    - 再帰的品質調整による目標サイズへの最適化
+    - 既に上限以下の場合は圧縮をスキップ
+  - エラーハンドリング（`onCompressionError`コールバック）
+  - `.restricted`状態の明示的処理（MDM/ペアレンタルコントロール）
+  - JPEG形式での画像データ返却
+  - カタログアプリに「ImagePicker」セクション追加
+
+- **Snackbarコンポーネント** - Material Design準拠の一時的通知UI (#26)
+  - 画面下部から表示される一時的な通知UI
+  - `SnackbarState`による`@Observable`ベースの状態管理
+  - 自動消滅機能（デフォルト5秒、カスタマイズ可能）
+  - 最大2つのアクションボタンサポート（プライマリ、セカンダリ）
+  - スプリングアニメーション付き表示/非表示トランジション
+  - アクセシビリティサポート（accessibilityLabel対応）
+  - デザインシステムトークンとの完全統合（カラー、スペーシング、角丸）
+  - カタログアプリに「Snackbar」セクション追加
+
 ## [1.0.18] - 2025-11-16
 
 ### 追加
@@ -403,7 +430,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.18...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.19...HEAD
+[1.0.19]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.18...v1.0.19
 [1.0.18]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.17...v1.0.18
 [1.0.17]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.16...v1.0.17
 [1.0.16]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.15...v1.0.16
@@ -431,3 +459,5 @@
 <!-- Auto-generated on 2025-11-09T08:30:33Z by release workflow -->
 
 <!-- Auto-generated on 2025-11-09T13:28:30Z by release workflow -->
+
+<!-- Auto-generated on 2025-11-16T09:24:46Z by release workflow -->

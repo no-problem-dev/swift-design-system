@@ -71,6 +71,17 @@ struct CatalogDetailView: View {
             case .iconButton:
                 IconButtonCatalogView()
                     .id(component)
+            case .imagePicker:
+                #if canImport(UIKit)
+                ImagePickerCatalogView()
+                    .id(component)
+                #else
+                ContentUnavailableView {
+                    Label("iOS Only", systemImage: "iphone")
+                } description: {
+                    Text("画像ピッカーはiOSでのみ利用可能です")
+                }
+                #endif
             case .snackbar:
                 SnackbarCatalogView()
                     .id(component)
