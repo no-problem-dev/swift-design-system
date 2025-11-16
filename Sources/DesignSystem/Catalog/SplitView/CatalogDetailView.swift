@@ -71,6 +71,9 @@ struct CatalogDetailView: View {
             case .iconButton:
                 IconButtonCatalogView()
                     .id(component)
+            case .snackbar:
+                SnackbarCatalogView()
+                    .id(component)
             case .textField:
                 TextFieldCatalogView()
                     .id(component)
