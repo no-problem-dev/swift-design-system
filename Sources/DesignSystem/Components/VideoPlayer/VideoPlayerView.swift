@@ -38,8 +38,8 @@ public struct VideoPlayerView: View {
     @State private var videoMetadata: VideoMetadata?
     @State private var loadError: Error?
     @State private var showingShareSheet = false
-    @State private var showingAlert = false
-    @State private var alertMessage = ""
+    @State private var snackbarState = SnackbarState()
+    @State private var isSaving = false
 
     // MARK: - Initializers
 
@@ -109,10 +109,8 @@ public struct VideoPlayerView: View {
                 ShareSheet(items: [url])
             }
         }
-        .alert("通知", isPresented: $showingAlert) {
-            Button("OK") {}
-        } message: {
-            Text(alertMessage)
+        .overlay(alignment: .bottom) {
+            Snackbar(state: snackbarState)
         }
     }
 
@@ -189,9 +187,15 @@ public struct VideoPlayerView: View {
                 Button {
                     saveToPhotos()
                 } label: {
-                    Label("保存", systemImage: "square.and.arrow.down")
+                    if isSaving {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Label("保存", systemImage: "square.and.arrow.down")
+                    }
                 }
                 .buttonStyle(.bordered)
+                .disabled(isSaving)
             }
         }
     }
@@ -288,16 +292,30 @@ public struct VideoPlayerView: View {
     }
 
     private func saveToPhotos() {
-        guard let url = tempFileURL ?? source.localURL else { return }
+        guard let url = tempFileURL ?? source.localURL else {
+            snackbarState.show(message: "保存する動画がありません")
+            return
+        }
+
+        isSaving = true
 
         Task { @MainActor in
+            defer { isSaving = false }
+
             do {
                 // 権限を確認
                 let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
 
                 guard status == .authorized || status == .limited else {
-                    alertMessage = "写真ライブラリへのアクセスが許可されていません。設定アプリから許可してください。"
-                    showingAlert = true
+                    snackbarState.show(
+                        message: "写真ライブラリへのアクセスが許可されていません",
+                        primaryAction: SnackbarAction(title: "設定を開く") {
+                            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                                await UIApplication.shared.open(settingsURL)
+                            }
+                        },
+                        duration: 5.0
+                    )
                     return
                 }
 
@@ -306,11 +324,12 @@ public struct VideoPlayerView: View {
                     PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url)
                 }
 
-                alertMessage = "動画をカメラロールに保存しました"
-                showingAlert = true
+                snackbarState.show(message: "カメラロールに保存しました ✓", duration: 3.0)
             } catch {
-                alertMessage = "保存に失敗しました: \(error.localizedDescription)"
-                showingAlert = true
+                snackbarState.show(
+                    message: "保存に失敗しました: \(error.localizedDescription)",
+                    duration: 5.0
+                )
             }
         }
     }
