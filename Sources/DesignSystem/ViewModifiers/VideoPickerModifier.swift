@@ -3,6 +3,7 @@ import SwiftUI
 #if canImport(UIKit)
 import UIKit
 import AVFoundation
+import AVKit
 import Photos
 import PhotosUI
 import UniformTypeIdentifiers
@@ -69,7 +70,26 @@ public struct VideoPickerModifier: ViewModifier {
                     isPresented = false
                 }
             }
-            .sheet(item: $sourceType) { source in
+            // ライブラリからの選択はシートで表示
+            .sheet(item: Binding(
+                get: { sourceType == .photoLibrary ? sourceType : nil },
+                set: { sourceType = $0 }
+            )) { source in
+                VideoPickerViewController(
+                    sourceType: source.uiImagePickerSourceType,
+                    selectedVideoData: $selectedVideoData,
+                    isPresented: $sourceType,
+                    maxSize: maxSize,
+                    maxDuration: maxDuration,
+                    onError: onError
+                )
+                .ignoresSafeArea()
+            }
+            // カメラはフルスクリーンで表示（iPadでの画質問題を回避）
+            .fullScreenCover(item: Binding(
+                get: { sourceType == .camera ? sourceType : nil },
+                set: { sourceType = $0 }
+            )) { source in
                 VideoPickerViewController(
                     sourceType: source.uiImagePickerSourceType,
                     selectedVideoData: $selectedVideoData,
@@ -259,9 +279,17 @@ struct VideoPickerViewController: UIViewControllerRepresentable {
         picker.mediaTypes = [UTType.movie.identifier]
         picker.delegate = context.coordinator
 
+        // 高画質設定
+        picker.videoQuality = .typeHigh
+        picker.videoExportPreset = AVAssetExportPreset1920x1080
+
         // カメラの場合は動画撮影モード
         if sourceType == .camera {
             picker.cameraCaptureMode = .video
+            // 背面カメラをデフォルトに
+            if UIImagePickerController.isCameraDeviceAvailable(.rear) {
+                picker.cameraDevice = .rear
+            }
 
             // 最大録画時間を設定
             if let maxDuration = maxDuration {
