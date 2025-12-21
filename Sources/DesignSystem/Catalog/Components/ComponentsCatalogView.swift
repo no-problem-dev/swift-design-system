@@ -112,6 +112,26 @@ struct ComponentsCatalogView: View {
             SnackbarCatalogView()
         case .textField:
             TextFieldCatalogView()
+        case .videoPicker:
+            #if canImport(UIKit)
+            VideoPickerCatalogView()
+            #else
+            ContentUnavailableView {
+                Label("iOS Only", systemImage: "iphone")
+            } description: {
+                Text("動画ピッカーはiOSでのみ利用可能です")
+            }
+            #endif
+        case .videoPlayer:
+            #if canImport(UIKit)
+            VideoPlayerCatalogView()
+            #else
+            ContentUnavailableView {
+                Label("iOS Only", systemImage: "iphone")
+            } description: {
+                Text("動画プレイヤーはiOSでのみ利用可能です")
+            }
+            #endif
         }
     }
 }

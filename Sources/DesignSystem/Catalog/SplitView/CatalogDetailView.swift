@@ -97,6 +97,28 @@ struct CatalogDetailView: View {
             case .textField:
                 TextFieldCatalogView()
                     .id(component)
+            case .videoPicker:
+                #if canImport(UIKit)
+                VideoPickerCatalogView()
+                    .id(component)
+                #else
+                ContentUnavailableView {
+                    Label("iOS Only", systemImage: "iphone")
+                } description: {
+                    Text("動画ピッカーはiOSでのみ利用可能です")
+                }
+                #endif
+            case .videoPlayer:
+                #if canImport(UIKit)
+                VideoPlayerCatalogView()
+                    .id(component)
+                #else
+                ContentUnavailableView {
+                    Label("iOS Only", systemImage: "iphone")
+                } description: {
+                    Text("動画プレイヤーはiOSでのみ利用可能です")
+                }
+                #endif
             }
         } else {
             itemSelectionPrompt

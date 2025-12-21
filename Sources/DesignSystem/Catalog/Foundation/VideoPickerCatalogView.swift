@@ -2,25 +2,26 @@ import SwiftUI
 
 #if canImport(UIKit)
 
-/// 画像ピッカーモディファイアのカタログビュー
-struct ImagePickerCatalogView: View {
+/// 動画ピッカーモディファイアのカタログビュー
+struct VideoPickerCatalogView: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.spacingScale) private var spacing
 
     @State private var showPicker = false
-    @State private var selectedImageData: Data?
+    @State private var selectedVideoData: Data?
+    @State private var errorMessage: String?
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 // 概要
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("カメラまたは写真ライブラリから画像を選択できるモディファイア")
+                    Text("カメラまたは動画ライブラリから動画を選択できるモディファイア")
                         .typography(.bodyMedium)
                         .foregroundStyle(colorPalette.onSurfaceVariant)
                         .padding(.horizontal, spacing.lg)
 
-                    Text("適切な権限管理を行い、権限がない場合はアラートで通知します。")
+                    Text("適切な権限管理を行い、サイズや時間の制限をかけることができます。")
                         .typography(.bodySmall)
                         .foregroundStyle(colorPalette.onSurfaceVariant)
                         .padding(.horizontal, spacing.lg)
@@ -29,75 +30,92 @@ struct ImagePickerCatalogView: View {
                 // デモ
                 SectionCard(title: "デモ") {
                     VStack(spacing: spacing.lg) {
-                        // 選択された画像の表示
-                        if let imageData = selectedImageData,
-                           let uiImage = UIImage(data: imageData) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxHeight: 200)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        // 選択された動画の表示
+                        if let videoData = selectedVideoData {
+                            VideoPlayerView(data: videoData)
+                                .showMetadata(true)
+                                .showActions([.play])
+                                .frame(height: 250)
                         } else {
                             RoundedRectangle(cornerRadius: 12)
                                 .fill(colorPalette.surfaceVariant)
                                 .frame(height: 200)
                                 .overlay {
                                     VStack(spacing: spacing.sm) {
-                                        Image(systemName: "photo")
+                                        Image(systemName: "video")
                                             .font(.system(size: 48))
                                             .foregroundStyle(colorPalette.onSurfaceVariant)
-                                        Text("画像が選択されていません")
+                                        Text("動画が選択されていません")
                                             .typography(.bodySmall)
                                             .foregroundStyle(colorPalette.onSurfaceVariant)
                                     }
                                 }
                         }
 
-                        // 画像選択ボタン
+                        // エラーメッセージ
+                        if let error = errorMessage {
+                            Text(error)
+                                .typography(.bodySmall)
+                                .foregroundStyle(.red)
+                                .padding(spacing.sm)
+                                .background(Color.red.opacity(0.1))
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
+
+                        // 動画選択ボタン
                         Button {
                             showPicker = true
+                            errorMessage = nil
                         } label: {
                             Label(
-                                selectedImageData == nil ? "画像を選択" : "画像を変更",
-                                systemImage: "photo"
+                                selectedVideoData == nil ? "動画を選択" : "動画を変更",
+                                systemImage: "video"
                             )
                         }
                         .buttonStyle(.primary)
 
-                        // クリアボタン（画像が選択されている場合のみ）
-                        if selectedImageData != nil {
+                        // クリアボタン（動画が選択されている場合のみ）
+                        if selectedVideoData != nil {
                             Button {
-                                selectedImageData = nil
+                                selectedVideoData = nil
                             } label: {
                                 Label("クリア", systemImage: "trash")
                             }
                             .buttonStyle(.secondary)
                         }
                     }
-                    .imagePicker(
+                    .videoPicker(
                         isPresented: $showPicker,
-                        selectedImageData: $selectedImageData
-                    )
+                        selectedVideoData: $selectedVideoData,
+                        maxSize: 50.mb,
+                        maxDuration: 60
+                    ) { error in
+                        errorMessage = error.localizedDescription
+                    }
                 }
 
                 // 機能説明
                 SectionCard(title: "機能") {
                     VStack(alignment: .leading, spacing: spacing.md) {
                         FeatureRow(
-                            icon: "camera.fill",
-                            title: "カメラで新しい写真を撮影"
+                            icon: "video.fill",
+                            title: "カメラで新しい動画を撮影"
                         )
                         FeatureRow(
-                            icon: "photo.fill",
-                            title: "既存の写真から選択"
+                            icon: "photo.on.rectangle",
+                            title: "既存の動画から選択"
+                        )
+                        FeatureRow(
+                            icon: "timer",
+                            title: "最大録画時間の制限"
+                        )
+                        FeatureRow(
+                            icon: "doc.fill",
+                            title: "ファイルサイズの制限"
                         )
                         FeatureRow(
                             icon: "lock.shield.fill",
                             title: "適切な権限リクエストとエラーハンドリング"
-                        )
-                        FeatureRow(
-                            icon: "gearshape.fill",
-                            title: "権限拒否時は設定画面へ誘導"
                         )
                     }
                 }
@@ -111,26 +129,23 @@ struct ImagePickerCatalogView: View {
                         Text("""
                         struct ContentView: View {
                             @State private var showPicker = false
-                            @State private var imageData: Data?
+                            @State private var videoData: Data?
 
                             var body: some View {
                                 VStack {
-                                    if let imageData,
-                                       let uiImage = UIImage(data: imageData) {
-                                        Image(uiImage: uiImage)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(height: 200)
+                                    if let videoData {
+                                        VideoPlayerView(data: videoData)
                                     }
 
-                                    Button("画像を選択") {
+                                    Button("動画を選択") {
                                         showPicker = true
                                     }
                                 }
-                                .imagePicker(
+                                .videoPicker(
                                     isPresented: $showPicker,
-                                    selectedImageData: $imageData,
-                                    maxSize: 1.mb  // 1MB
+                                    selectedVideoData: $videoData,
+                                    maxSize: 50.mb,
+                                    maxDuration: 60
                                 )
                             }
                         }
@@ -158,6 +173,10 @@ struct ImagePickerCatalogView: View {
                                 label: "NSPhotoLibraryUsageDescription",
                                 value: "写真ライブラリへのアクセス理由を記述"
                             )
+                            InfoRow(
+                                label: "NSMicrophoneUsageDescription",
+                                value: "マイクへのアクセス理由を記述（動画撮影時に必要）"
+                            )
                         }
                         .padding(spacing.md)
                         .background(colorPalette.surfaceVariant)
@@ -170,8 +189,20 @@ struct ImagePickerCatalogView: View {
                     VStack(alignment: .leading, spacing: spacing.sm) {
                         BestPracticeItem(
                             icon: "checkmark.circle.fill",
-                            title: "画像形式",
-                            description: "選択された画像はJPEG形式のDataとして返されます（品質80%）",
+                            title: "ByteSize型",
+                            description: "ファイルサイズの指定には直感的なByteSize型を使用（例: 50.mb）",
+                            isGood: true
+                        )
+                        BestPracticeItem(
+                            icon: "checkmark.circle.fill",
+                            title: "時間制限",
+                            description: "maxDurationでカメラ撮影時の最大録画時間を制限できます",
+                            isGood: true
+                        )
+                        BestPracticeItem(
+                            icon: "exclamationmark.triangle.fill",
+                            title: "メモリ管理",
+                            description: "動画ファイルは大きくなりがちなため、適切なサイズ制限を設けてください",
                             isGood: true
                         )
                         BestPracticeItem(
@@ -180,28 +211,17 @@ struct ImagePickerCatalogView: View {
                             description: "シミュレーターではカメラが利用できないため、実機でのテストが推奨されます",
                             isGood: true
                         )
-                        BestPracticeItem(
-                            icon: "checkmark.circle.fill",
-                            title: "権限リクエスト",
-                            description: "権限リクエストは一度のみ表示されます。拒否後はアラートで設定画面への誘導を行います",
-                            isGood: true
-                        )
-                        BestPracticeItem(
-                            icon: "exclamationmark.triangle.fill",
-                            title: "メモリ管理",
-                            description: "画像データはメモリに保持されるため、大きな画像を扱う場合は適切な圧縮やリサイズを検討してください",
-                            isGood: true
-                        )
                     }
                 }
 
                 // 仕様
                 SectionCard(title: "仕様") {
                     VStack(alignment: .leading, spacing: spacing.sm) {
-                        SpecItem(label: "戻り値", value: "Data? (JPEG形式)")
-                        SpecItem(label: "JPEG品質", value: "80%")
-                        SpecItem(label: "必要な権限", value: "カメラ、写真ライブラリ")
+                        SpecItem(label: "戻り値", value: "Data?")
+                        SpecItem(label: "必要な権限", value: "カメラ、マイク、写真ライブラリ")
                         SpecItem(label: "対応プラットフォーム", value: "iOS 17.0+")
+                        SpecItem(label: "サイズ制限", value: "ByteSize型で指定可能")
+                        SpecItem(label: "時間制限", value: "TimeInterval（秒）で指定可能")
                     }
                 }
             }
@@ -211,7 +231,7 @@ struct ImagePickerCatalogView: View {
 }
 
 #Preview {
-    ImagePickerCatalogView()
+    VideoPickerCatalogView()
         .theme(ThemeProvider())
 }
 
