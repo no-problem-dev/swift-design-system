@@ -5,57 +5,62 @@ import UIKit
 import AVFoundation
 import Photos
 import PhotosUI
+import UniformTypeIdentifiers
 
-/// 画像ピッカーを表示するViewModifier
+/// 動画ピッカーを表示するViewModifier
 ///
-/// カメラまたは写真ライブラリから画像を選択できるモディファイア。
+/// カメラまたは写真ライブラリから動画を選択できるモディファイア。
 /// 適切な権限管理を行い、権限がない場合はアラートで通知します。
 ///
 /// - Note: カメラとフォトライブラリの使用許可が必要です。
 ///   Info.plistに以下のキーを追加してください：
 ///   - `NSCameraUsageDescription`: カメラ使用の説明
 ///   - `NSPhotoLibraryUsageDescription`: フォトライブラリアクセスの説明
-public struct ImagePickerModifier: ViewModifier {
+///   - `NSMicrophoneUsageDescription`: マイク使用の説明（動画撮影時に必要）
+public struct VideoPickerModifier: ViewModifier {
     @Environment(\.colorPalette) private var colorPalette
 
     @Binding var isPresented: Bool
-    @Binding var selectedImageData: Data?
+    @Binding var selectedVideoData: Data?
 
     @State private var sourceType: MediaSourceType?
     @State private var showPermissionAlert = false
     @State private var permissionAlertConfig: PermissionAlertConfig?
 
     let maxSize: ByteSize?
-    let onCompressionError: ((Error) -> Void)?
+    let maxDuration: TimeInterval?
+    let onError: ((VideoPickerError) -> Void)?
 
     public init(
         isPresented: Binding<Bool>,
-        selectedImageData: Binding<Data?>,
+        selectedVideoData: Binding<Data?>,
         maxSize: ByteSize? = nil,
-        onCompressionError: ((Error) -> Void)? = nil
+        maxDuration: TimeInterval? = nil,
+        onError: ((VideoPickerError) -> Void)? = nil
     ) {
         self._isPresented = isPresented
-        self._selectedImageData = selectedImageData
+        self._selectedVideoData = selectedVideoData
         self.maxSize = maxSize
-        self.onCompressionError = onCompressionError
+        self.maxDuration = maxDuration
+        self.onError = onError
     }
 
     public func body(content: Content) -> some View {
         content
             .confirmationDialog(
-                "画像を選択",
+                "動画を選択",
                 isPresented: $isPresented,
                 titleVisibility: .visible
             ) {
                 // カメラが利用可能な場合のみ表示
                 if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                    Button("カメラで撮影") {
+                    Button("動画を撮影") {
                         requestPermissionAndShowPicker(for: .camera)
                     }
                     .tint(Color(colorPalette.primary))
                 }
 
-                Button("写真ライブラリから選択") {
+                Button("動画ライブラリから選択") {
                     requestPermissionAndShowPicker(for: .photoLibrary)
                 }
                 .tint(Color(colorPalette.primary))
@@ -65,12 +70,13 @@ public struct ImagePickerModifier: ViewModifier {
                 }
             }
             .sheet(item: $sourceType) { source in
-                ImagePickerViewController(
+                VideoPickerViewController(
                     sourceType: source.uiImagePickerSourceType,
-                    selectedImageData: $selectedImageData,
+                    selectedVideoData: $selectedVideoData,
                     isPresented: $sourceType,
                     maxSize: maxSize,
-                    onCompressionError: onCompressionError
+                    maxDuration: maxDuration,
+                    onError: onError
                 )
                 .ignoresSafeArea()
             }
@@ -114,7 +120,10 @@ public struct ImagePickerModifier: ViewModifier {
     private func checkPermission(for source: MediaSourceType) async -> Bool {
         switch source {
         case .camera:
-            return await checkCameraPermission()
+            // カメラと音声の両方の権限が必要
+            let cameraPermission = await checkCameraPermission()
+            let audioPermission = await checkAudioPermission()
+            return cameraPermission && audioPermission
         case .photoLibrary:
             return await checkPhotoLibraryPermission()
         }
@@ -129,6 +138,24 @@ public struct ImagePickerModifier: ViewModifier {
             return true
         case .notDetermined:
             return await AVCaptureDevice.requestAccess(for: .video)
+        case .denied:
+            return false
+        case .restricted:
+            return false
+        @unknown default:
+            return false
+        }
+    }
+
+    /// マイク権限の確認とリクエスト
+    private func checkAudioPermission() async -> Bool {
+        let status = AVCaptureDevice.authorizationStatus(for: .audio)
+
+        switch status {
+        case .authorized:
+            return true
+        case .notDetermined:
+            return await AVCaptureDevice.requestAccess(for: .audio)
         case .denied:
             return false
         case .restricted:
@@ -161,15 +188,16 @@ public struct ImagePickerModifier: ViewModifier {
     private func getPermissionStatus(for source: MediaSourceType) async -> PermissionStatus {
         switch source {
         case .camera:
-            let status = AVCaptureDevice.authorizationStatus(for: .video)
-            switch status {
-            case .denied:
+            let cameraStatus = AVCaptureDevice.authorizationStatus(for: .video)
+            let audioStatus = AVCaptureDevice.authorizationStatus(for: .audio)
+
+            if cameraStatus == .denied || audioStatus == .denied {
                 return .denied
-            case .restricted:
-                return .restricted
-            default:
-                return .notDetermined
             }
+            if cameraStatus == .restricted || audioStatus == .restricted {
+                return .restricted
+            }
+            return .notDetermined
         case .photoLibrary:
             let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
             switch status {
@@ -191,85 +219,56 @@ public struct ImagePickerModifier: ViewModifier {
     }
 }
 
-// MARK: - Shared Types
+// MARK: - Video Picker Error
 
-/// メディアソースの種類
-enum MediaSourceType: Identifiable {
-    case camera
-    case photoLibrary
+/// 動画ピッカーのエラー
+public enum VideoPickerError: LocalizedError, Sendable {
+    /// 動画の読み込みに失敗
+    case loadFailed(String)
+    /// 動画が長すぎる
+    case durationExceeded(actual: TimeInterval, max: TimeInterval)
+    /// ファイルサイズが大きすぎる
+    case sizeExceeded(actual: ByteSize, max: ByteSize)
 
-    var id: String {
+    public var errorDescription: String? {
         switch self {
-        case .camera: return "camera"
-        case .photoLibrary: return "photoLibrary"
-        }
-    }
-
-    var uiImagePickerSourceType: UIImagePickerController.SourceType {
-        switch self {
-        case .camera: return .camera
-        case .photoLibrary: return .photoLibrary
+        case .loadFailed(let message):
+            return "動画の読み込みに失敗しました: \(message)"
+        case .durationExceeded(let actual, let max):
+            return String(format: "動画が長すぎます（%.0f秒）。最大%.0f秒までです。", actual, max)
+        case .sizeExceeded(let actual, let max):
+            return "ファイルサイズが大きすぎます（\(actual.formatted)）。最大\(max.formatted)までです。"
         }
     }
 }
 
-/// 権限の状態
-enum PermissionStatus {
-    case notDetermined
-    case denied
-    case restricted
-}
+// MARK: - Video Picker View Controller
 
-/// 権限アラートの設定
-struct PermissionAlertConfig {
-    let title: String
-    let message: String
-    let canOpenSettings: Bool
-
-    init(sourceType: MediaSourceType, status: PermissionStatus) {
-        switch sourceType {
-        case .camera:
-            self.title = "カメラへのアクセス許可が必要です"
-            switch status {
-            case .denied:
-                self.message = "設定からカメラへのアクセスを許可してください。"
-                self.canOpenSettings = true
-            case .restricted:
-                self.message = "カメラへのアクセスが制限されています。デバイスの設定またはペアレンタルコントロールを確認してください。"
-                self.canOpenSettings = false
-            case .notDetermined:
-                self.message = "カメラを使用するには、アクセス許可が必要です。"
-                self.canOpenSettings = false
-            }
-        case .photoLibrary:
-            self.title = "写真へのアクセス許可が必要です"
-            switch status {
-            case .denied:
-                self.message = "設定から写真へのアクセスを許可してください。"
-                self.canOpenSettings = true
-            case .restricted:
-                self.message = "写真へのアクセスが制限されています。デバイスの設定またはペアレンタルコントロールを確認してください。"
-                self.canOpenSettings = false
-            case .notDetermined:
-                self.message = "写真ライブラリを使用するには、アクセス許可が必要です。"
-                self.canOpenSettings = false
-            }
-        }
-    }
-}
-
-/// UIImagePickerControllerのSwiftUIラッパー
-struct ImagePickerViewController: UIViewControllerRepresentable {
+/// UIImagePickerControllerのSwiftUIラッパー（動画用）
+struct VideoPickerViewController: UIViewControllerRepresentable {
     let sourceType: UIImagePickerController.SourceType
-    @Binding var selectedImageData: Data?
+    @Binding var selectedVideoData: Data?
     @Binding var isPresented: MediaSourceType?
     let maxSize: ByteSize?
-    let onCompressionError: ((Error) -> Void)?
+    let maxDuration: TimeInterval?
+    let onError: ((VideoPickerError) -> Void)?
 
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
+        picker.mediaTypes = [UTType.movie.identifier]
         picker.delegate = context.coordinator
+
+        // カメラの場合は動画撮影モード
+        if sourceType == .camera {
+            picker.cameraCaptureMode = .video
+
+            // 最大録画時間を設定
+            if let maxDuration = maxDuration {
+                picker.videoMaximumDuration = maxDuration
+            }
+        }
+
         return picker
     }
 
@@ -282,9 +281,9 @@ struct ImagePickerViewController: UIViewControllerRepresentable {
     }
 
     class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        let parent: ImagePickerViewController
+        let parent: VideoPickerViewController
 
-        init(_ parent: ImagePickerViewController) {
+        init(_ parent: VideoPickerViewController) {
             self.parent = parent
         }
 
@@ -292,60 +291,50 @@ struct ImagePickerViewController: UIViewControllerRepresentable {
             _ picker: UIImagePickerController,
             didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
         ) {
-            if let image = info[.originalImage] as? UIImage {
-                // 画像をJPEGデータに変換
-                if let maxSize = parent.maxSize {
-                    // サイズ制限がある場合は再帰的に圧縮
-                    parent.selectedImageData = compressImageData(image, maxSize: maxSize)
-                } else {
-                    // サイズ制限がない場合はデフォルト品質で変換
-                    parent.selectedImageData = image.jpegData(compressionQuality: 0.8)
-                }
+            guard let videoURL = info[.mediaURL] as? URL else {
+                parent.onError?(.loadFailed("動画URLの取得に失敗しました"))
+                parent.isPresented = nil
+                return
+            }
 
-                // エラーチェック
-                if parent.selectedImageData == nil {
-                    let error = NSError(
-                        domain: "ImagePickerError",
-                        code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "画像の変換に失敗しました"]
-                    )
-                    parent.onCompressionError?(error)
+            Task { @MainActor in
+                do {
+                    // 動画の長さを確認
+                    let asset = AVURLAsset(url: videoURL)
+                    let duration = try await asset.load(.duration)
+                    let durationSeconds = CMTimeGetSeconds(duration)
+
+                    if let maxDuration = parent.maxDuration, durationSeconds > maxDuration {
+                        parent.onError?(.durationExceeded(actual: durationSeconds, max: maxDuration))
+                        parent.isPresented = nil
+                        return
+                    }
+
+                    // 動画データを読み込み
+                    let videoData = try Data(contentsOf: videoURL)
+
+                    // サイズを確認
+                    if let maxSize = parent.maxSize, videoData.count > maxSize.bytes {
+                        parent.onError?(.sizeExceeded(
+                            actual: ByteSize(bytes: videoData.count),
+                            max: maxSize
+                        ))
+                        parent.isPresented = nil
+                        return
+                    }
+
+                    parent.selectedVideoData = videoData
+                    parent.isPresented = nil
+
+                } catch {
+                    parent.onError?(.loadFailed(error.localizedDescription))
+                    parent.isPresented = nil
                 }
             }
-            parent.isPresented = nil
         }
 
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
             parent.isPresented = nil
-        }
-
-        /// 画像を指定されたサイズ以下に再帰的に圧縮
-        /// - Parameters:
-        ///   - image: 圧縮する画像
-        ///   - maxSize: 最大サイズ
-        ///   - currentQuality: 現在の圧縮品質（0.0〜1.0）
-        /// - Returns: 圧縮された画像データ、または変換に失敗した場合はnil
-        private func compressImageData(
-            _ image: UIImage,
-            maxSize: ByteSize,
-            currentQuality: CGFloat = 0.8
-        ) -> Data? {
-            guard let data = image.jpegData(compressionQuality: currentQuality) else {
-                return nil
-            }
-
-            // 既に上限以下なら何もしない
-            if data.count <= maxSize.bytes {
-                return data
-            }
-
-            // 品質が下限に達したら現在のデータを返す
-            if currentQuality <= 0.1 {
-                return data
-            }
-
-            // 品質を10%下げて再帰的に圧縮
-            return compressImageData(image, maxSize: maxSize, currentQuality: currentQuality - 0.1)
         }
     }
 }
@@ -353,33 +342,31 @@ struct ImagePickerViewController: UIViewControllerRepresentable {
 // MARK: - Public Extension
 
 public extension View {
-    /// 画像ピッカーモディファイアを適用
+    /// 動画ピッカーモディファイアを適用
     ///
-    /// カメラまたは写真ライブラリから画像を選択できるモディファイア。
-    /// 選択された画像はJPEG形式のDataとして返されます。
+    /// カメラまたは写真ライブラリから動画を選択できるモディファイア。
+    /// 選択された動画はDataとして返されます。
     ///
     /// ```swift
     /// struct ContentView: View {
     ///     @State private var showPicker = false
-    ///     @State private var imageData: Data?
+    ///     @State private var videoData: Data?
     ///
     ///     var body: some View {
     ///         VStack {
-    ///             if let imageData, let uiImage = UIImage(data: imageData) {
-    ///                 Image(uiImage: uiImage)
-    ///                     .resizable()
-    ///                     .scaledToFit()
-    ///                     .frame(height: 200)
+    ///             if let videoData {
+    ///                 Text("動画サイズ: \(videoData.count) bytes")
     ///             }
     ///
-    ///             Button("画像を選択") {
+    ///             Button("動画を選択") {
     ///                 showPicker = true
     ///             }
     ///         }
-    ///         .imagePicker(
+    ///         .videoPicker(
     ///             isPresented: $showPicker,
-    ///             selectedImageData: $imageData,
-    ///             maxSize: 1.mb  // 1MB
+    ///             selectedVideoData: $videoData,
+    ///             maxSize: 50.mb,    // 50MB
+    ///             maxDuration: 60    // 60秒
     ///         )
     ///     }
     /// }
@@ -387,21 +374,24 @@ public extension View {
     ///
     /// - Parameters:
     ///   - isPresented: ピッカーの表示状態を制御するバインディング
-    ///   - selectedImageData: 選択された画像のデータを受け取るバインディング
-    ///   - maxSize: 画像の最大サイズ。指定された場合、画像は自動的に圧縮されます。
-    ///   - onCompressionError: 画像の圧縮または変換に失敗した場合に呼ばれるコールバック
+    ///   - selectedVideoData: 選択された動画のデータを受け取るバインディング
+    ///   - maxSize: 動画の最大サイズ。指定された場合、超過するとエラーが発生します。
+    ///   - maxDuration: 動画の最大長（秒）。カメラ撮影時は録画時間を制限します。
+    ///   - onError: エラー発生時に呼ばれるコールバック
     /// - Returns: モディファイアが適用されたビュー
-    func imagePicker(
+    func videoPicker(
         isPresented: Binding<Bool>,
-        selectedImageData: Binding<Data?>,
+        selectedVideoData: Binding<Data?>,
         maxSize: ByteSize? = nil,
-        onCompressionError: ((Error) -> Void)? = nil
+        maxDuration: TimeInterval? = nil,
+        onError: ((VideoPickerError) -> Void)? = nil
     ) -> some View {
-        modifier(ImagePickerModifier(
+        modifier(VideoPickerModifier(
             isPresented: isPresented,
-            selectedImageData: selectedImageData,
+            selectedVideoData: selectedVideoData,
             maxSize: maxSize,
-            onCompressionError: onCompressionError
+            maxDuration: maxDuration,
+            onError: onError
         ))
     }
 }
