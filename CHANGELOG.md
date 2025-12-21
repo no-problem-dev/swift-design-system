@@ -9,6 +9,54 @@
 
 なし
 
+## [1.0.21] - 2025-12-21
+
+### 追加
+- **VideoPickerコンポーネント** - カメラまたは動画ライブラリから動画を選択するモディファイア (#34)
+  - `.videoPicker()` ViewModifierによるシンプルなAPI
+  - カメラ撮影と動画ライブラリ選択の統合UI
+  - 包括的な権限管理（カメラ、マイク、フォトライブラリ）
+  - 高画質撮影設定（1920x1080、typeHigh）
+  - iPadでのフルスクリーンカメラ表示対応
+  - ファイルサイズ制限（`maxSize: ByteSize`）
+  - 録画時間制限（`maxDuration: TimeInterval`）
+  - エラーハンドリング（`onError`コールバック）
+  - カタログアプリに「VideoPicker」セクション追加
+
+- **VideoPlayerViewコンポーネント** - 動画再生プレイヤー (#34)
+  - `Data`または`URL`から動画を再生
+  - AVPlayerViewControllerによるネイティブフルスクリーン対応
+  - メタデータ表示（長さ、解像度、ファイルサイズ）
+  - アクションChipによる操作UI（再生/一時停止、共有、保存）
+  - カメラロールへの保存機能（権限管理、Snackbarフィードバック）
+  - オーディオセッション自動設定
+  - 一時ファイルの自動クリーンアップ
+  - カタログアプリに「VideoPlayer」セクション追加
+
+- **ByteSize型** - ファイルサイズを扱う型安全なユーティリティ (#34)
+  - `Int.kb`, `Int.mb`, `Int.gb` 拡張による直感的なサイズ指定
+  - 人間可読なフォーマット出力（`formatted`プロパティ）
+  - 比較演算子サポート
+
+- **Action Chip** - タップアクション付きChipバリアント (#34)
+  - `Chip(label, systemImage:, action:)` イニシャライザ
+  - 削除可能Chipとの明確な区別
+
+### 変更
+- **ImagePickerのAPI改善** (#34)
+  - `maxSizeInBytes: Int`を`maxSize: ByteSize`に変更（破壊的変更）
+  - より直感的なファイルサイズ指定（例: `50.mb`）
+
+### 修正
+- **iPadでの動画撮影品質改善** (#34)
+  - `videoQuality = .typeHigh`と`videoExportPreset = AVAssetExportPreset1920x1080`を設定
+  - フルスクリーンカメラ表示に変更（シート表示から変更）
+
+- **動画保存時のクラッシュ修正** (#34)
+  - MainActorアイソレーション問題を解決（`@Sendable`クロージャ使用）
+  - ファイル存在チェックを追加
+  - 保存中の一時ファイル削除を防止
+
 ## [1.0.20] - 2025-11-17
 
 ### 追加
@@ -471,7 +519,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.20...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.21...HEAD
+[1.0.21]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.20...v1.0.21
 [1.0.20]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.19...v1.0.20
 [1.0.19]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.18...v1.0.19
 [1.0.18]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.17...v1.0.18
