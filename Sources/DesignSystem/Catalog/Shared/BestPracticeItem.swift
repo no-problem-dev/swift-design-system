@@ -13,7 +13,7 @@ struct BestPracticeItem: View {
     var body: some View {
         HStack(alignment: .top, spacing: spacing.md) {
             Image(systemName: icon)
-                .foregroundStyle(isGood ? Color.green : Color.red)
+                .foregroundStyle(isGood ? colors.success : colors.error)
                 .typography(.titleSmall)
 
             VStack(alignment: .leading, spacing: spacing.xs) {

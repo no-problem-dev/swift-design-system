@@ -7,6 +7,7 @@ import SwiftUI
 struct ThemeCardView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radius
 
     let theme: any Theme
     let isActive: Bool
@@ -31,7 +32,7 @@ struct ThemeCardView: View {
                 }
 
                 // プレビューカラードット
-                HStack(spacing: 6) {
+                HStack(spacing: spacing.sm) {
                     ForEach(0 ..< min(theme.previewColors.count, 5), id: \.self) { index in
                         Circle()
                             .fill(theme.previewColors[index])
@@ -53,13 +54,13 @@ struct ThemeCardView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(colors.surface)
             .overlay(
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: radius.lg)
                     .strokeBorder(
                         isActive ? colors.primary : colors.outline,
                         lineWidth: isActive ? 2 : 1
                     )
             )
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .clipShape(RoundedRectangle(cornerRadius: radius.lg))
         }
         .buttonStyle(.plain)
     }

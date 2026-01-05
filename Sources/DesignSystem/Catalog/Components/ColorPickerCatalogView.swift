@@ -4,6 +4,7 @@ import SwiftUI
 struct ColorPickerCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radius
 
     @State private var selectedColor1: String?
     @State private var selectedColor2: String?
@@ -92,7 +93,7 @@ struct ColorPickerCatalogView: View {
         }
         .padding(spacing.md)
         .background(colors.surfaceVariant.opacity(0.3))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: radius.lg))
     }
 }
 

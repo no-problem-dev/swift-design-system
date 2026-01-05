@@ -4,6 +4,7 @@ import SwiftUI
 struct AspectGridCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radius
 
     var body: some View {
         CatalogPageContainer(title: "AspectGrid") {
@@ -22,12 +23,12 @@ struct AspectGridCatalogView: View {
                         spacing: .sm
                     ) {
                         ForEach(0..<6, id: \.self) { index in
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(Color.blue.opacity(0.3))
+                            RoundedRectangle(cornerRadius: radius.md)
+                                .fill(colors.primary.opacity(0.3))
                                 .overlay {
                                     Text("\(index + 1)")
                                         .typography(.bodySmall)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(colors.onPrimary)
                                 }
                         }
                     }
@@ -47,12 +48,12 @@ struct AspectGridCatalogView: View {
                         spacing: .sm
                     ) {
                         ForEach(0..<6, id: \.self) { index in
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(Color.purple.opacity(0.3))
+                            RoundedRectangle(cornerRadius: radius.md)
+                                .fill(colors.secondary.opacity(0.3))
                                 .overlay {
                                     Text("\(index + 1)")
                                         .typography(.bodySmall)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(colors.onSecondary)
                                 }
                         }
                     }
@@ -72,12 +73,12 @@ struct AspectGridCatalogView: View {
                         spacing: .md
                     ) {
                         ForEach(0..<4, id: \.self) { index in
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(Color.orange.opacity(0.3))
+                            RoundedRectangle(cornerRadius: radius.md)
+                                .fill(colors.tertiary.opacity(0.3))
                                 .overlay {
                                     Text("\(index + 1)")
                                         .typography(.bodySmall)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(colors.onTertiary)
                                 }
                         }
                     }
@@ -104,11 +105,11 @@ struct AspectGridCatalogView: View {
                             ) {
                                 ForEach(0..<6, id: \.self) { index in
                                     Circle()
-                                        .fill(Color.blue.opacity(0.3))
+                                        .fill(colors.primary.opacity(0.3))
                                         .overlay {
                                             Text("\(index + 1)")
                                                 .typography(.bodySmall)
-                                                .foregroundStyle(.white)
+                                                .foregroundStyle(colors.onPrimary)
                                         }
                                 }
                             }

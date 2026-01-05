@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 
 /// コンポーネントの種類
 enum ComponentType: String, CaseIterable, Identifiable {

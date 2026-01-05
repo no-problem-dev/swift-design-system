@@ -37,11 +37,11 @@ struct CatalogSidebarView: View {
                         } label: {
                             HStack(spacing: spacing.md) {
                                 Image(systemName: category.icon)
-                                    .font(.title3)
+                                    .typography(.titleSmall)
                                     .foregroundStyle(colors.primary)
                                     .frame(width: 32)
 
-                                VStack(alignment: .leading, spacing: 2) {
+                                VStack(alignment: .leading, spacing: spacing.xxs) {
                                     Text(category.rawValue)
                                         .typography(.bodyLarge)
                                         .foregroundStyle(colors.onSurface)

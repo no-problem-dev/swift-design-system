@@ -4,6 +4,7 @@ import SwiftUI
 struct EmojiPickerCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radius
 
     @State private var selectedEmoji: String?
     @State private var showEmojiPicker = false
@@ -66,7 +67,7 @@ struct EmojiPickerCatalogView: View {
                     .font(.system(size: 48))
                     .frame(width: 60, height: 60)
                     .background(colors.primaryContainer)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .clipShape(RoundedRectangle(cornerRadius: radius.lg))
 
                 Text(emoji)
                     .typography(.headlineMedium)
@@ -81,7 +82,7 @@ struct EmojiPickerCatalogView: View {
         }
         .padding(spacing.md)
         .background(colors.surfaceVariant.opacity(0.3))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: radius.lg))
     }
 
     private var sampleEmojiCategories: [EmojiCategory] {

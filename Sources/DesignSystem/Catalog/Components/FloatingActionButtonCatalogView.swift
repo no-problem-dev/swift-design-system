@@ -4,6 +4,7 @@ import SwiftUI
 struct FloatingActionButtonCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radius
     @State private var tapCount = 0
 
     var body: some View {
@@ -67,7 +68,7 @@ struct FloatingActionButtonCatalogView: View {
             SectionCard(title: "レイアウト例") {
                 VariantShowcase(title: "右下配置", description: "典型的な使用パターン") {
                     ZStack(alignment: .bottomTrailing) {
-                        RoundedRectangle(cornerRadius: 12)
+                        RoundedRectangle(cornerRadius: radius.lg)
                             .fill(colors.surfaceVariant.opacity(0.3))
                             .frame(height: 200)
 

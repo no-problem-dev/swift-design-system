@@ -112,12 +112,13 @@ private struct TypographyDemoView: View {
 
 private struct SpecLabel: View {
     @Environment(\.colorPalette) private var colors
+    @Environment(\.spacingScale) private var spacing
 
     let label: String
     let value: String
 
     var body: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: spacing.xs) {
             Text(label)
                 .typography(.labelSmall)
                 .foregroundStyle(colors.onSurfaceVariant)

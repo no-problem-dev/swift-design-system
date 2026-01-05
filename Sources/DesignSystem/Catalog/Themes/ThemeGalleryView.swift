@@ -82,7 +82,7 @@ private struct ThemeCategorySection: View {
                     .font(.title3)
                     .foregroundStyle(colors.primary)
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: spacing.xxs) {
                     Text(category.rawValue)
                         .typography(.titleMedium)
                         .foregroundStyle(colors.onSurface)
@@ -133,21 +133,22 @@ private struct AppearanceModeSection: View {
     @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radius
     @Environment(\.motion) private var motion
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: spacing.md) {
             HStack(spacing: spacing.sm) {
                 Image(systemName: "circle.lefthalf.filled")
                     .font(.title3)
                     .foregroundStyle(colors.primary)
-                
+
                 Text("外観モード")
                     .typography(.titleMedium)
                     .foregroundStyle(colors.onSurface)
             }
             .padding(.horizontal, spacing.lg)
-            
+
             Picker("外観モード", selection: Binding(
                 get: { themeProvider.themeMode },
                 set: { newMode in
@@ -162,7 +163,7 @@ private struct AppearanceModeSection: View {
             }
             .pickerStyle(.segmented)
             .padding(.horizontal, spacing.lg)
-            
+
             Text(modeDescription(for: themeProvider.themeMode))
                 .typography(.bodySmall)
                 .foregroundStyle(colors.onSurfaceVariant)
@@ -170,7 +171,7 @@ private struct AppearanceModeSection: View {
         }
         .padding(.vertical, spacing.md)
         .background(colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: radius.lg))
         .padding(.horizontal, spacing.lg)
     }
     
@@ -195,6 +196,7 @@ private struct InfoSection: View {
     @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radius
 
     var body: some View {
         VStack(alignment: .leading, spacing: spacing.md) {
@@ -203,7 +205,7 @@ private struct InfoSection: View {
                 .foregroundStyle(colors.onSurface)
                 .padding(.horizontal, spacing.lg)
 
-            VStack(spacing: 0) {
+            VStack {
                 InfoRow(label: "テーマ", value: themeProvider.currentTheme.name)
                 Divider().padding(.leading, spacing.lg)
                 InfoRow(label: "モード", value: themeProvider.themeMode.rawValue)
@@ -214,7 +216,7 @@ private struct InfoSection: View {
                 )
             }
             .background(colors.surface)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .clipShape(RoundedRectangle(cornerRadius: radius.lg))
             .padding(.horizontal, spacing.lg)
         }
     }

@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 
 /// デザイントークン（Foundation）のアイテム
 enum FoundationItem: String, CaseIterable, Identifiable {

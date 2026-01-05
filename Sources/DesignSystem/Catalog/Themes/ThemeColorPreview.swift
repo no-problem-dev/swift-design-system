@@ -76,6 +76,7 @@ struct ThemeColorPreview: View {
 private struct ColorSection: View {
     @Environment(\.colorPalette) private var palette
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radius
 
     let title: String
     let colors: [(String, Color)]
@@ -86,13 +87,13 @@ private struct ColorSection: View {
                 .typography(.labelMedium)
                 .foregroundStyle(palette.onSurfaceVariant)
 
-            VStack(spacing: 1) {
+            VStack(spacing: spacing.xxs) {
                 ForEach(colors, id: \.0) { name, color in
                     ColorRow(name: name, color: color)
                 }
             }
             .background(palette.surface)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .clipShape(RoundedRectangle(cornerRadius: radius.md))
         }
     }
 }
@@ -102,6 +103,7 @@ private struct ColorSection: View {
 private struct ColorRow: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radius
 
     let name: String
     let color: Color
@@ -109,11 +111,11 @@ private struct ColorRow: View {
     var body: some View {
         HStack(spacing: spacing.md) {
             // カラースウォッチ
-            RoundedRectangle(cornerRadius: 6)
+            RoundedRectangle(cornerRadius: radius.sm)
                 .fill(color)
                 .frame(width: 40, height: 40)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 6)
+                    RoundedRectangle(cornerRadius: radius.sm)
                         .strokeBorder(colors.outline, lineWidth: 1)
                 )
 

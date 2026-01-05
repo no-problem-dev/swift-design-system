@@ -4,6 +4,7 @@ import SwiftUI
 struct IconPickerCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radius
 
     @State private var selectedIcon: String?
     @State private var showIconPicker = false
@@ -67,7 +68,7 @@ struct IconPickerCatalogView: View {
                     .foregroundStyle(colors.primary)
                     .frame(width: 50, height: 50)
                     .background(colors.primaryContainer)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .clipShape(RoundedRectangle(cornerRadius: radius.md))
 
                 Text(icon)
                     .typography(.bodyMedium)
@@ -83,7 +84,7 @@ struct IconPickerCatalogView: View {
         }
         .padding(spacing.md)
         .background(colors.surfaceVariant.opacity(0.3))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: radius.lg))
     }
 
     private var sampleSFSymbolsCategories: [IconCategory] {

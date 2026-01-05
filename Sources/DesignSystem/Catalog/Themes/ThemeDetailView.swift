@@ -7,6 +7,8 @@ public struct ThemeDetailView: View {
     @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radius
+    @Environment(\.motion) private var motion
 
     let theme: any Theme
 
@@ -52,7 +54,7 @@ public struct ThemeDetailView: View {
                     HStack(spacing: spacing.md) {
                         ForEach(ThemeMode.allCases, id: \.self) { mode in
                             Button {
-                                withAnimation(.easeInOut(duration: 0.3)) {
+                                withAnimation(motion.slow) {
                                     themeProvider.themeMode = mode
                                 }
                             } label: {
@@ -81,7 +83,7 @@ public struct ThemeDetailView: View {
 
                 // 適用ボタン
                 Button {
-                    withAnimation(.easeInOut(duration: 0.3)) {
+                    withAnimation(motion.slow) {
                         themeProvider.applyTheme(theme)
                     }
                 } label: {
@@ -91,7 +93,7 @@ public struct ThemeDetailView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, spacing.md)
                         .background(colors.primary)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .clipShape(RoundedRectangle(cornerRadius: radius.lg))
                 }
                 .disabled(themeProvider.currentTheme.id == theme.id)
                 .opacity(themeProvider.currentTheme.id == theme.id ? 0.5 : 1.0)
