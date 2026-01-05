@@ -1,64 +1,38 @@
 import SwiftUI
 
 /// 角丸カタログビュー
-/// 全角丸値をプレビュー表示
 struct RadiusCatalogView: View {
-    @Environment(\.radiusScale) private var radiusScale
-    @Environment(\.colorPalette) private var colorPalette
+    @Environment(\.radiusScale) private var radius
+    @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // 概要
-                Text("角丸スケール（Material Design 3 ベース）")
-                    .typography(.bodyMedium)
-                    .foregroundStyle(colorPalette.onSurfaceVariant)
-                    .padding(.horizontal, spacing.lg)
-                    .padding(.top, spacing.lg)
+        CatalogPageContainer(title: "角丸") {
+            CatalogOverview(description: "Material Design 3ベースの角丸スケール")
 
-                // Radius Scale
-                SectionCard(title: "Radius Scale") {
-                    VStack(spacing: spacing.md) {
-                        RadiusDemoView(name: "none", value: radiusScale.none)
-                        RadiusDemoView(name: "xs", value: radiusScale.xs)
-                        RadiusDemoView(name: "sm", value: radiusScale.sm)
-                        RadiusDemoView(name: "md", value: radiusScale.md)
-                        RadiusDemoView(name: "lg", value: radiusScale.lg)
-                        RadiusDemoView(name: "xl", value: radiusScale.xl)
-                        RadiusDemoView(name: "xxl", value: radiusScale.xxl)
-                        RadiusDemoView(name: "full", value: radiusScale.full)
-                    }
-                }
-
-                // 使用例
-                SectionCard(title: "使用例") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("SwiftUI での使用方法")
-                            .typography(.titleSmall)
-
-                        Text("""
-                        @Environment(\\.radiusScale) var radius
-
-                        RoundedRectangle(cornerRadius: radius.md)
-                            .fill(.blue)
-                            .frame(height: 100)
-                        """)
-                        .typography(.bodySmall)
-                        .fontDesign(.monospaced)
-                        .padding()
-                        .background(colorPalette.surfaceVariant.opacity(0.5))
-                        .cornerRadius(8)
-                    }
+            SectionCard(title: "Radius Scale") {
+                VStack(spacing: spacing.md) {
+                    RadiusDemoView(name: "none", value: radius.none)
+                    RadiusDemoView(name: "xs", value: radius.xs)
+                    RadiusDemoView(name: "sm", value: radius.sm)
+                    RadiusDemoView(name: "md", value: radius.md)
+                    RadiusDemoView(name: "lg", value: radius.lg)
+                    RadiusDemoView(name: "xl", value: radius.xl)
+                    RadiusDemoView(name: "xxl", value: radius.xxl)
+                    RadiusDemoView(name: "full", value: radius.full)
                 }
             }
-            .padding(.bottom, spacing.xl)
+
+            SectionCard(title: "使用例") {
+                CodeExample(code: """
+                    @Environment(\\.radiusScale) var radius
+
+                    RoundedRectangle(cornerRadius: radius.md)
+                        .fill(.blue)
+                        .frame(height: 100)
+                    """)
+            }
         }
-        .background(colorPalette.background)
-        .navigationTitle("角丸")
-        #if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-        #endif
     }
 }
 

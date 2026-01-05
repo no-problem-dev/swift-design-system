@@ -2,7 +2,7 @@ import SwiftUI
 
 /// ベストプラクティス項目を表示するビュー
 struct BestPracticeItem: View {
-    @Environment(\.colorPalette) private var colorPalette
+    @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
 
     let icon: String
@@ -14,16 +14,16 @@ struct BestPracticeItem: View {
         HStack(alignment: .top, spacing: spacing.md) {
             Image(systemName: icon)
                 .foregroundStyle(isGood ? Color.green : Color.red)
-                .font(.title3)
+                .typography(.titleSmall)
 
             VStack(alignment: .leading, spacing: spacing.xs) {
                 Text(title)
                     .typography(.bodyMedium)
-                    .foregroundStyle(colorPalette.onSurface)
+                    .foregroundStyle(colors.onSurface)
 
                 Text(description)
                     .typography(.bodySmall)
-                    .foregroundStyle(colorPalette.onSurfaceVariant)
+                    .foregroundStyle(colors.onSurfaceVariant)
             }
         }
     }

@@ -2,8 +2,9 @@ import SwiftUI
 
 /// コンポーネントカタログのエントリポイント
 struct ComponentsCatalogView: View {
-    @Environment(\.colorPalette) private var colorPalette
+    @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radius
 
     var body: some View {
         ScrollView {
@@ -12,24 +13,24 @@ struct ComponentsCatalogView: View {
                 VStack(spacing: spacing.sm) {
                     Image(systemName: "square.stack.3d.up.fill")
                         .font(.system(size: 48))
-                        .foregroundStyle(colorPalette.primary)
+                        .foregroundStyle(colors.primary)
 
                     Text("コンポーネントカタログ")
                         .typography(.headlineLarge)
-                        .foregroundStyle(colorPalette.onBackground)
+                        .foregroundStyle(colors.onBackground)
 
                     Text("再利用可能なUIコンポーネント")
                         .typography(.bodySmall)
-                        .foregroundStyle(colorPalette.onSurfaceVariant)
+                        .foregroundStyle(colors.onSurfaceVariant)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.top, spacing.xl)
 
                 // コンポーネントリスト
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: spacing.md) {
                     Text("コンポーネント")
                         .typography(.titleMedium)
-                        .foregroundStyle(colorPalette.onSurface)
+                        .foregroundStyle(colors.onSurface)
                         .padding(.horizontal, spacing.lg)
 
                     VStack(spacing: spacing.sm) {
@@ -39,30 +40,30 @@ struct ComponentsCatalogView: View {
                             } label: {
                                 HStack(spacing: spacing.md) {
                                     Image(systemName: component.icon)
-                                        .font(.title3)
-                                        .foregroundStyle(colorPalette.primary)
+                                        .typography(.titleSmall)
+                                        .foregroundStyle(colors.primary)
                                         .frame(width: 32)
 
-                                    VStack(alignment: .leading, spacing: 2) {
+                                    VStack(alignment: .leading, spacing: spacing.xs) {
                                         Text(component.rawValue)
                                             .typography(.bodyLarge)
-                                            .foregroundStyle(colorPalette.onSurface)
+                                            .foregroundStyle(colors.onSurface)
 
                                         Text(component.description)
                                             .typography(.bodySmall)
-                                            .foregroundStyle(colorPalette.onSurfaceVariant)
+                                            .foregroundStyle(colors.onSurfaceVariant)
                                     }
 
                                     Spacer()
 
                                     Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(colorPalette.onSurfaceVariant)
+                                        .typography(.labelSmall)
+                                        .foregroundStyle(colors.onSurfaceVariant)
                                 }
                                 .padding(.horizontal, spacing.lg)
-                                .padding(.vertical, 12)
-                                .background(colorPalette.surface)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .padding(.vertical, spacing.md)
+                                .background(colors.surface)
+                                .clipShape(RoundedRectangle(cornerRadius: radius.md))
                             }
                             .buttonStyle(.plain)
                         }
@@ -72,7 +73,7 @@ struct ComponentsCatalogView: View {
             }
             .padding(.bottom, spacing.xl)
         }
-        .background(colorPalette.background)
+        .background(colors.background)
         .navigationTitle("コンポーネント")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)

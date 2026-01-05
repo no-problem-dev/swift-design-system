@@ -2,7 +2,7 @@ import SwiftUI
 
 /// 情報行を表示するビュー
 struct InfoRow: View {
-    @Environment(\.colorPalette) private var colorPalette
+    @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
 
     let label: String
@@ -12,13 +12,13 @@ struct InfoRow: View {
         HStack {
             Text(label)
                 .typography(.bodyMedium)
-                .foregroundStyle(colorPalette.onSurface)
+                .foregroundStyle(colors.onSurface)
             Spacer()
             Text(value)
                 .typography(.bodyMedium)
-                .foregroundStyle(colorPalette.onSurfaceVariant)
+                .foregroundStyle(colors.onSurfaceVariant)
         }
         .padding(.horizontal, spacing.lg)
-        .padding(.vertical, 12)
+        .padding(.vertical, spacing.md)
     }
 }

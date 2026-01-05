@@ -2,120 +2,85 @@ import SwiftUI
 
 /// カードコンポーネントのカタログビュー
 struct CardCatalogView: View {
-    @Environment(\.colorPalette) private var colorPalette
+    @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // 概要
-                Text("カードは関連情報をグループ化する汎用コンテナです")
-                    .typography(.bodyMedium)
-                    .foregroundStyle(colorPalette.onSurfaceVariant)
-                    .padding(.horizontal, spacing.lg)
-                    .padding(.top, spacing.lg)
+        CatalogPageContainer(title: "Card") {
+            CatalogOverview(description: "関連情報をグループ化する汎用コンテナ")
 
-                // 基本カード
-                SectionCard(title: "基本カード") {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("デフォルトの設定（Elevation Level 1、パディング 16pt）")
-                            .typography(.bodySmall)
-                            .foregroundStyle(colorPalette.onSurfaceVariant)
-
-                        Card {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("カードタイトル")
-                                    .typography(.titleMedium)
-
-                                Text("カードの本文テキストです。関連する情報をグループ化して表示します。")
-                                    .typography(.bodyMedium)
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
+            SectionCard(title: "基本") {
+                VariantShowcase(
+                    title: "デフォルト設定",
+                    description: "Elevation Level 1、パディング 16pt"
+                ) {
+                    Card {
+                        VStack(alignment: .leading, spacing: spacing.sm) {
+                            Text("カードタイトル")
+                                .typography(.titleMedium)
+                            Text("カードの本文テキスト")
+                                .typography(.bodyMedium)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
+            }
 
-                // Elevation バリエーション
-                SectionCard(title: "Elevation バリエーション") {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("異なる深さで視覚的な階層を表現")
-                            .typography(.bodySmall)
-                            .foregroundStyle(colorPalette.onSurfaceVariant)
-
-                        VStack(spacing: spacing.md) {
-                            ForEach([Elevation.level0, .level1, .level2, .level3, .level4, .level5], id: \.self) { elevation in
-                                Card(elevation: elevation) {
-                                    HStack {
-                                        Text("Level \(elevationNumber(elevation))")
-                                            .typography(.bodyMedium)
-                                        Spacer()
-                                        Text("Elevation")
-                                            .typography(.labelSmall)
-                                            .foregroundStyle(colorPalette.onSurfaceVariant)
-                                    }
+            SectionCard(title: "Elevation") {
+                VariantShowcase(
+                    title: "深さバリエーション",
+                    description: "視覚的な階層を表現"
+                ) {
+                    VStack(spacing: spacing.md) {
+                        ForEach([Elevation.level0, .level1, .level2, .level3, .level4, .level5], id: \.self) { elevation in
+                            Card(elevation: elevation) {
+                                HStack {
+                                    Text("Level \(elevationNumber(elevation))")
+                                        .typography(.bodyMedium)
+                                    Spacer()
+                                    Text("Elevation")
+                                        .typography(.labelSmall)
+                                        .foregroundStyle(colors.onSurfaceVariant)
                                 }
                             }
                         }
                     }
                 }
+            }
 
-                // パディングバリエーション
-                SectionCard(title: "パディングバリエーション") {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("内容に応じてパディングを調整")
-                            .typography(.bodySmall)
-                            .foregroundStyle(colorPalette.onSurfaceVariant)
-
-                        VStack(spacing: spacing.md) {
-                            Card(allSides: 8) {
-                                Text("Compact (8pt)")
-                                    .typography(.bodySmall)
-                            }
-
-                            Card(allSides: 16) {
-                                Text("Default (16pt)")
-                                    .typography(.bodyMedium)
-                            }
-
-                            Card(allSides: 24) {
-                                Text("Comfortable (24pt)")
-                                    .typography(.bodyLarge)
-                            }
+            SectionCard(title: "パディング") {
+                VariantShowcase(
+                    title: "パディングバリエーション",
+                    description: "内容に応じて調整"
+                ) {
+                    VStack(spacing: spacing.md) {
+                        Card(allSides: 8) {
+                            Text("Compact (8pt)")
+                                .typography(.bodySmall)
                         }
-                    }
-                }
-
-                // 使用例
-                SectionCard(title: "使用例") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("SwiftUI での使用方法")
-                            .typography(.titleSmall)
-
-                        Text("""
-                        Card(elevation: .level2) {
-                            VStack(alignment: .leading) {
-                                Text("タイトル")
-                                    .typography(.titleMedium)
-                                Text("本文")
-                                    .typography(.bodyMedium)
-                            }
+                        Card(allSides: 16) {
+                            Text("Default (16pt)")
+                                .typography(.bodyMedium)
                         }
-                        """)
-                        .typography(.bodySmall)
-                        .fontDesign(.monospaced)
-                        .padding()
-                        .background(colorPalette.surfaceVariant.opacity(0.5))
-                        .cornerRadius(8)
+                        Card(allSides: 24) {
+                            Text("Comfortable (24pt)")
+                                .typography(.bodyLarge)
+                        }
                     }
                 }
             }
-            .padding(.bottom, spacing.xl)
+
+            SectionCard(title: "使用例") {
+                CodeExample(code: """
+                    Card(elevation: .level2) {
+                        VStack(alignment: .leading) {
+                            Text("タイトル")
+                            Text("本文")
+                        }
+                    }
+                    """)
+            }
         }
-        .background(colorPalette.background)
-        .navigationTitle("Card")
-        #if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-        #endif
     }
 
     private func elevationNumber(_ elevation: Elevation) -> Int {

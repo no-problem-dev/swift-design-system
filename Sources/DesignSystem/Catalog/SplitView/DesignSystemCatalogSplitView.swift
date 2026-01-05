@@ -4,8 +4,6 @@ import SwiftUI
 /// iPadに最適化された3カラムレイアウトで、デザインシステムの全要素を階層的に表示
 public struct DesignSystemCatalogSplitView: View {
     @Environment(ThemeProvider.self) private var themeProvider
-    @Environment(\.colorPalette) private var colorPalette
-    @Environment(\.spacingScale) private var spacing
 
     // カラム可視性
     @State private var columnVisibility: NavigationSplitViewVisibility = .all

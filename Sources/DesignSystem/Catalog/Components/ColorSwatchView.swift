@@ -5,6 +5,7 @@ import SwiftUI
 struct ColorSwatchView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radius
 
     let name: String
     let color: Color
@@ -26,18 +27,18 @@ struct ColorSwatchView: View {
         } label: {
             HStack(spacing: spacing.md) {
                 // 色見本
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: radius.sm)
                     .fill(color)
                     .frame(width: 48, height: 48)
                     .overlay {
-                        RoundedRectangle(cornerRadius: 8)
+                        RoundedRectangle(cornerRadius: radius.sm)
                             .stroke(colors.outline.opacity(0.3), lineWidth: 1)
                     }
                     .overlay {
                         if showCopiedFeedback {
                             Image(systemName: "checkmark")
                                 .foregroundStyle(.white)
-                                .font(.title3)
+                                .typography(.titleSmall)
                                 .transition(.scale.combined(with: .opacity))
                         }
                     }

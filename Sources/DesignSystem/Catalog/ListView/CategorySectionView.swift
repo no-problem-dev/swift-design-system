@@ -12,7 +12,7 @@ struct CategorySectionView: View {
             // カテゴリヘッダー
             HStack(spacing: spacing.sm) {
                 Image(systemName: category.icon)
-                    .font(.title3)
+                    .typography(.titleSmall)
                     .foregroundStyle(colors.primary)
 
                 Text(category.rawValue)
@@ -33,6 +33,6 @@ struct CategorySectionView: View {
         }
         .padding(spacing.lg)
         .background(colors.surface)
-        .shadow(color: .black.opacity(0.03), radius: 4, y: 2)
+        .elevation(.level1)
     }
 }

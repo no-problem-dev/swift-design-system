@@ -1,103 +1,48 @@
 import SwiftUI
 
 /// カラーカタログビュー
-/// 現在のテーマを表示し、リファレンスは折りたたみ式で提供
 struct ColorsCatalogView: View {
     @Environment(ThemeProvider.self) private var themeProvider
-    @Environment(\.colorPalette) private var colorPalette
+    @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: spacing.xl) {
-                // 現在のテーマ
-                currentThemeSection
+        CatalogPageContainer(title: "カラー") {
+            CatalogOverview(description: "現在のテーマ: \(themeProvider.themeMode == .light ? "ライト" : "ダーク")")
 
-                // リファレンス
-                referenceSection
+            SectionCard(title: "セマンティックカラー") {
+                semanticColorsGrid(palette: colors)
             }
-            .padding(.bottom, spacing.xl)
-        }
-        .background(colorPalette.background)
-        .navigationTitle("カラー")
-        #if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-        #endif
-    }
 
-    // MARK: - Current Theme Section
+            SectionCard(title: "リファレンス") {
+                VStack(spacing: spacing.md) {
+                    DisclosureGroup {
+                        semanticColorsGrid(palette: LightColorPalette())
+                            .padding(.top, spacing.sm)
+                    } label: {
+                        Text("デフォルトライトテーマ")
+                            .typography(.bodyLarge)
+                    }
 
-    @ViewBuilder
-    private var currentThemeSection: some View {
-        VStack(alignment: .leading, spacing: spacing.lg) {
-            VStack(alignment: .leading, spacing: spacing.sm) {
-                Text("現在適用されているテーマ")
-                    .typography(.bodyMedium)
-                    .foregroundStyle(colorPalette.onSurfaceVariant)
+                    DisclosureGroup {
+                        semanticColorsGrid(palette: DarkColorPalette())
+                            .padding(.top, spacing.sm)
+                    } label: {
+                        Text("デフォルトダークテーマ")
+                            .typography(.bodyLarge)
+                    }
 
-                Text("モード: \(themeProvider.themeMode == .light ? "ライト" : "ダーク")")
-                    .typography(.bodySmall)
-                    .foregroundStyle(colorPalette.onSurfaceVariant.opacity(0.7))
+                    DisclosureGroup {
+                        primitiveColorsContent
+                            .padding(.top, spacing.sm)
+                    } label: {
+                        Text("プリミティブカラー")
+                            .typography(.bodyLarge)
+                    }
+                }
             }
-            .padding(.horizontal, spacing.lg)
-            .padding(.top, spacing.lg)
-
-            VStack(spacing: spacing.sm) {
-                semanticColorsGrid(palette: colorPalette)
-            }
-            .padding(.horizontal, spacing.lg)
         }
     }
-
-    // MARK: - Reference Section
-
-    @ViewBuilder
-    private var referenceSection: some View {
-        VStack(alignment: .leading, spacing: spacing.lg) {
-            Text("リファレンス")
-                .typography(.titleMedium)
-                .foregroundStyle(colorPalette.onSurface)
-                .padding(.horizontal, spacing.lg)
-
-            VStack(spacing: spacing.md) {
-                DisclosureGroup {
-                    semanticColorsGrid(palette: LightColorPalette())
-                        .padding(.top, spacing.sm)
-                } label: {
-                    Text("デフォルトライトテーマ")
-                        .typography(.bodyLarge)
-                }
-                .padding(spacing.lg)
-                .background(colorPalette.surface)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-
-                DisclosureGroup {
-                    semanticColorsGrid(palette: DarkColorPalette())
-                        .padding(.top, spacing.sm)
-                } label: {
-                    Text("デフォルトダークテーマ")
-                        .typography(.bodyLarge)
-                }
-                .padding(spacing.lg)
-                .background(colorPalette.surface)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-
-                DisclosureGroup {
-                    primitiveColorsContent
-                        .padding(.top, spacing.sm)
-                } label: {
-                    Text("プリミティブカラー")
-                        .typography(.bodyLarge)
-                }
-                .padding(spacing.lg)
-                .background(colorPalette.surface)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-            }
-            .padding(.horizontal, spacing.lg)
-        }
-    }
-
-    // MARK: - Semantic Colors
 
     @ViewBuilder
     private func semanticColorsGrid(palette: any ColorPalette) -> some View {
@@ -126,19 +71,15 @@ struct ColorsCatalogView: View {
         }
     }
 
-    // MARK: - Primitive Colors
-
     @ViewBuilder
     private var primitiveColorsContent: some View {
         VStack(alignment: .leading, spacing: spacing.lg) {
             Text("参照用の基本カラーパレット（Tailwind CSS ベース）")
                 .typography(.bodySmall)
-                .foregroundStyle(colorPalette.onSurfaceVariant)
+                .foregroundStyle(colors.onSurfaceVariant)
 
-            // Blue
             VStack(alignment: .leading, spacing: spacing.sm) {
-                Text("Blue")
-                    .typography(.labelLarge)
+                Text("Blue").typography(.labelLarge)
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: spacing.sm) {
                     ColorSwatchView(name: "blue50", color: PrimitiveColors.blue50, hexCode: "#EFF6FF")
                     ColorSwatchView(name: "blue100", color: PrimitiveColors.blue100, hexCode: "#DBEAFE")
@@ -154,10 +95,8 @@ struct ColorsCatalogView: View {
                 }
             }
 
-            // Gray
             VStack(alignment: .leading, spacing: spacing.sm) {
-                Text("Gray")
-                    .typography(.labelLarge)
+                Text("Gray").typography(.labelLarge)
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: spacing.sm) {
                     ColorSwatchView(name: "gray50", color: PrimitiveColors.gray50, hexCode: "#F9FAFB")
                     ColorSwatchView(name: "gray100", color: PrimitiveColors.gray100, hexCode: "#F3F4F6")
@@ -173,11 +112,9 @@ struct ColorsCatalogView: View {
                 }
             }
 
-            // その他の色
             HStack(spacing: spacing.lg) {
                 VStack(alignment: .leading, spacing: spacing.sm) {
-                    Text("Red")
-                        .typography(.labelLarge)
+                    Text("Red").typography(.labelLarge)
                     VStack(spacing: spacing.sm) {
                         ColorSwatchView(name: "red500", color: PrimitiveColors.red500, hexCode: "#EF4444")
                         ColorSwatchView(name: "red600", color: PrimitiveColors.red600, hexCode: "#DC2626")
@@ -185,8 +122,7 @@ struct ColorsCatalogView: View {
                 }
 
                 VStack(alignment: .leading, spacing: spacing.sm) {
-                    Text("Green")
-                        .typography(.labelLarge)
+                    Text("Green").typography(.labelLarge)
                     VStack(spacing: spacing.sm) {
                         ColorSwatchView(name: "green500", color: PrimitiveColors.green500, hexCode: "#10B981")
                         ColorSwatchView(name: "green600", color: PrimitiveColors.green600, hexCode: "#059669")

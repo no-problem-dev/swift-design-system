@@ -2,7 +2,7 @@ import SwiftUI
 
 /// リンク付き情報行を表示するビュー
 struct InfoLinkRow: View {
-    @Environment(\.colorPalette) private var colorPalette
+    @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
 
     let label: String
@@ -13,19 +13,19 @@ struct InfoLinkRow: View {
         HStack {
             Text(label)
                 .typography(.bodyMedium)
-                .foregroundStyle(colorPalette.onSurface)
+                .foregroundStyle(colors.onSurface)
             Spacer()
             Link(destination: URL(string: url)!) {
-                HStack(spacing: 4) {
+                HStack(spacing: spacing.xs) {
                     Text(value)
                         .typography(.bodyMedium)
                     Image(systemName: "arrow.up.right.square")
                         .typography(.labelMedium)
                 }
-                .foregroundStyle(colorPalette.primary)
+                .foregroundStyle(colors.primary)
             }
         }
         .padding(.horizontal, spacing.lg)
-        .padding(.vertical, 12)
+        .padding(.vertical, spacing.md)
     }
 }

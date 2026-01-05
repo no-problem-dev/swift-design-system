@@ -2,7 +2,7 @@ import SwiftUI
 
 /// 仕様項目を表示するビュー
 struct SpecItem: View {
-    @Environment(\.colorPalette) private var colorPalette
+    @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
 
     let label: String
@@ -14,20 +14,20 @@ struct SpecItem: View {
             HStack {
                 Text(label)
                     .typography(.bodyMedium)
-                    .foregroundStyle(colorPalette.onSurface)
+                    .foregroundStyle(colors.onSurface)
 
                 Spacer()
 
                 Text(value)
                     .typography(.bodySmall)
                     .fontDesign(.monospaced)
-                    .foregroundStyle(colorPalette.onSurfaceVariant)
+                    .foregroundStyle(colors.onSurfaceVariant)
             }
 
             if let description {
                 Text(description)
                     .typography(.bodySmall)
-                    .foregroundStyle(colorPalette.onSurfaceVariant.opacity(0.7))
+                    .foregroundStyle(colors.onSurfaceVariant.opacity(0.7))
             }
         }
     }
