@@ -9,6 +9,53 @@
 
 なし
 
+## [1.0.22] - 2026-01-06
+
+### 追加
+- **IconBadgeコンポーネント** - 円形背景にSF Symbolアイコンを表示するバッジ (#36)
+  - 4つのサイズ: small (24pt), medium (32pt), large (48pt), extraLarge (64pt)
+  - カスタマイズ可能な前景色と背景色
+  - ステータス表示、機能ハイライト、カテゴリアイコンに最適
+  - カタログアプリに「IconBadge」セクション追加
+
+- **ProgressBarコンポーネント** - 水平プログレスインジケータ (#36)
+  - スプリングアニメーション付きの進捗表示
+  - カスタマイズ可能な高さと色
+  - 不確定状態（indeterminate）のサポート
+  - ローディング進捗、完了状況、目標トラッキングに最適
+  - カタログアプリに「ProgressBar」セクション追加
+
+- **StatDisplayコンポーネント** - メトリクス表示コンポーネント (#36)
+  - ラベル、値、オプションの単位を表示
+  - 縦・横レイアウトの選択
+  - トレンドインジケータ（上/下矢印）のサポート
+  - ダッシュボード統計、メトリクスカード、KPI表示に最適
+  - カタログアプリに「StatDisplay」セクション追加
+
+### 変更
+- **カタログアプリの大規模リファクタリング**
+  - 共通コンポーネントの導入: CatalogPageContainer, CatalogOverview, VariantShowcase, CodeExample
+  - 22のカタログ詳細ビューを統一された構造に移行
+  - ナビゲーション構造の統一: Foundation, Components, Patternsが同じリストビューパターンを使用
+  - CatalogItemRowContentによる行表示の共通化
+
+- **デザイントークンへの完全移行**
+  - ハードコードされたスペーシング値（1, 2, 4, 6）をspacing tokens（xxs, xs, sm, md）に置換
+  - ハードコードされた角丸値（4, 6, 8, 12）をradius tokens（xs, sm, md, lg）に置換
+  - ハードコードされた色（Color.green, Color.red等）をsemantic colors（colors.success, colors.error等）に置換
+  - ハードコードされたフォントをtypography tokensに置換
+  - ハードコードされたアニメーションをmotion tokensに置換
+
+- **Cardコンポーネントの簡素化** (#36)
+  - @ViewBuilderを使用したシンプルな実装に変更
+  - 冗長な内部状態管理を削除
+
+### 削除
+- **CatalogItem.swift** - 冗長な中間レイヤーを削除
+- **PatternType.swift** - 未使用のため削除
+- `CatalogCategory.items`プロパティ - CatalogCategoryの直接プロパティに統合
+- `CatalogRouter.destination(for:item:)`の`item`パラメータ - 未使用のため削除
+
 ## [1.0.21] - 2025-12-21
 
 ### 追加
@@ -519,7 +566,8 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.21...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.22...HEAD
+[1.0.22]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.21...v1.0.22
 [1.0.21]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.20...v1.0.21
 [1.0.20]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.19...v1.0.20
 [1.0.19]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.18...v1.0.19
