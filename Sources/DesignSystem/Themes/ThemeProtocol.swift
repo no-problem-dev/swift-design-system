@@ -8,16 +8,18 @@ import SwiftUI
 /// ## 使用例
 /// ```swift
 /// struct CustomTheme: Theme {
-///     let id = "custom"
-///     let name = "カスタム"
-///     let description = "独自のカラーテーマ"
-///     let category: ThemeCategory = .brandPersonality
-///     let previewColors = [.blue, .cyan, .teal]
+///     var id: String { "custom" }
+///     var name: String { "カスタム" }
+///     var description: String { "独自のカラーテーマ" }
+///     var category: ThemeCategory { .brandPersonality }
+///     var previewColors: [Color] { [.blue, .cyan, .teal] }
 ///
 ///     func colorPalette(for mode: ThemeMode) -> any ColorPalette {
 ///         switch mode {
-///         case .light: return CustomLightPalette()
-///         case .dark: return CustomDarkPalette()
+///         case .system, .light:
+///             CustomLightPalette()
+///         case .dark:
+///             CustomDarkPalette()
 ///         }
 ///     }
 /// }

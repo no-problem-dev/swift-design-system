@@ -167,11 +167,11 @@ ScrollView {
 themeProvider.switchToTheme(id: "ocean")      // Ocean（深い青）
 themeProvider.switchToTheme(id: "forest")     // Forest（自然な緑）
 themeProvider.switchToTheme(id: "sunset")     // Sunset（温かいオレンジ）
-themeProvider.switchToTheme(id: "purpleHaze") // PurpleHaze（創造的な紫）
-themeProvider.switchToTheme(id: "monochrome") // Monochrome（ミニマルなグレー）
-themeProvider.switchToTheme(id: "highContrast") // HighContrast（WCAG AAA準拠）
+themeProvider.switchToTheme(id: "purple-haze") // PurpleHaze（創造的な紫）
+themeProvider.switchToTheme(id: "monochrome")   // Monochrome（ミニマルなグレー）
+themeProvider.switchToTheme(id: "high-contrast") // HighContrast（WCAG AAA準拠）
 
-// ライト/ダークモードを切り替え
+// モードを切り替え（system → light → dark → system の順で循環）
 themeProvider.toggleMode()
 
 // 特定のモードに設定
@@ -188,7 +188,7 @@ themeProvider.themeMode = .dark
 | ブランド | Sunset | 温かくエネルギッシュな印象 | Coral Orange #FF6B35 |
 | ブランド | PurpleHaze | 創造的でイノベーティブな印象 | Royal Purple #7209B7 |
 | ブランド | Monochrome | ミニマルでエレガントな印象 | Charcoal #2D3748 |
-| アクセシビリティ | HighContrast | 最大限のコントラスト（WCAG AAA） | Pure Black #000000 |
+| アクセシビリティ | HighContrast | 最大限のコントラスト（WCAG AAA） | Deep Blue #0050B3 |
 
 ### 5. テーマの動的切り替え
 
@@ -495,16 +495,20 @@ Card(elevation: .level2) { ... }  // ✅
 - `ColorPalette` - カラーパレットプロトコル
 - `SpacingScale` - スペーシングスケールプロトコル
 - `RadiusScale` - 角丸スケールプロトコル
-- `Typography` - タイポグラフィトークン
+- `Typography` - タイポグラフィトークン（15種類のスタイル）
+- `Motion` - アニメーションタイミングプロトコル
 
 #### Component Tokens
-- `ButtonSize` - ボタンサイズバリアント
-- `Elevation` - 影のレベル定義
+- `ButtonSize` - ボタンサイズバリアント（small / medium / large）
+- `ChipSize` - チップサイズバリアント（small / medium / large）
+- `Elevation` - 影のレベル定義（level0〜level5）
+- `GridSpacing` - グリッドスペーシング
 
 #### Primitive Tokens (内部使用)
 - `PrimitiveColors` - 基本的な色パレット
 - `PrimitiveSpacing` - 基本的なスペーシング値
 - `PrimitiveRadius` - 基本的な角丸値
+- `PrimitiveTypography` - 基本的なタイポグラフィ値
 
 ### Theme System
 
@@ -526,25 +530,61 @@ Card(elevation: .level2) { ... }  // ✅
 
 #### Color Palettes
 - 各テーマに対応するLight/Darkパレット（14種類）
-- `DefaultSpacingScale` / `DefaultRadiusScale` - デフォルトスケール
+- `DefaultSpacingScale` / `DefaultRadiusScale` / `DefaultMotion` - デフォルト実装
 
 ### Components
 
-- Button Styles: `PrimaryButtonStyle`, `SecondaryButtonStyle`, `TertiaryButtonStyle`, `TextButtonStyle`
-- `Card` - 汎用カードコンポーネント
-- `IconButton` - アイコンボタン
-- `FloatingActionButton` - フローティングアクションボタン
-- `DSTextField` - デザインシステム対応テキストフィールド
+#### Button
+- `PrimaryButtonStyle` - プライマリボタン（`.buttonStyle(.primary)`）
+- `SecondaryButtonStyle` - セカンダリボタン（`.buttonStyle(.secondary)`）
+- `TertiaryButtonStyle` - ターシャリボタン（`.buttonStyle(.tertiary)`）
+
+#### Input
+- `DSTextField` - ラベル・アイコン・エラー表示対応テキストフィールド
+- `Chip` - フィルター・選択・アクション用チップ
+- `ChipStyle` - チップスタイルプロトコル（`FilledChipStyle` / `OutlinedChipStyle` / `LiquidGlassChipStyle`）
+
+#### Display
+- `Card` - Elevation対応の汎用カードコンテナ
+- `IconBadge` - アイコン付きバッジ
+- `StatDisplay` - 統計値の表示
+- `ProgressBar` - プログレスバー（単色・グラデーション対応）
+- `Snackbar` / `SnackbarState` - 一時的な通知メッセージ
+
+#### Action
+- `IconButton` - アイコンボタン（filled / tonal / outlined / standard）
+- `FloatingActionButton` - フローティングアクションボタン（small / regular / large）
+
+#### Media
+- `VideoPlayerView` - 動画再生プレーヤー
 
 ### Layout Patterns
 
 - `SectionCard` - タイトル付きカードセクション
+- `AspectGrid` - アスペクト比を保持するグリッドレイアウト
 
 ### View Modifiers
 
+#### Theme / Token
 - `.theme(_:)` - テーマ適用
 - `.buttonSize(_:)` - ボタンサイズ指定
-- `.typography(_:)` - タイポグラフィ適用
+- `.chipSize(_:)` - チップサイズ指定
+- `.typography(_:design:)` - タイポグラフィ適用
+- `.elevation(_:)` - 影の適用
+
+#### Animation
+- `.animate(_:value:)` - Motionトークンベースのアニメーション
+
+#### Picker
+- `.imagePicker(isPresented:maxSize:onPicked:)` - 画像ピッカー
+- `.videoPicker(isPresented:maxSize:maxDuration:onPicked:)` - 動画ピッカー
+- `.emojiPicker(isPresented:selected:categories:onSelect:)` - 絵文字ピッカー
+- `.iconPicker(isPresented:selected:categories:onSelect:)` - アイコンピッカー（SF Symbols）
+- `.colorPicker(isPresented:selected:presets:onSelect:)` - カラーピッカー
+
+### Utilities
+
+- `ByteSize` - バイトサイズの表現と変換
 
 ## 使用例
 
@@ -567,15 +607,17 @@ struct LoginView: View {
 
             VStack(spacing: spacing.md) {
                 DSTextField(
+                    "メールアドレス",
                     text: $email,
-                    placeholder: "メールアドレス",
-                    keyboardType: .emailAddress
+                    placeholder: "example@email.com",
+                    leadingIcon: "envelope"
                 )
 
                 DSTextField(
+                    "パスワード",
                     text: $password,
-                    placeholder: "パスワード",
-                    isSecure: true
+                    placeholder: "8文字以上",
+                    leadingIcon: "lock"
                 )
             }
 
@@ -584,7 +626,7 @@ struct LoginView: View {
                 .buttonSize(.large)
 
             Button("パスワードを忘れた場合") { resetPassword() }
-                .buttonStyle(.text)
+                .buttonStyle(.tertiary)
         }
         .padding(spacing.xl)
         .background(colors.background)

@@ -8,6 +8,7 @@ import Foundation
 /// - **standard**: デフォルトの基本テーマ
 /// - **brandPersonality**: ブランドの個性を表現する多彩なテーマ（Ocean, Forest, Sunsetなど）
 /// - **accessibility**: WCAG準拠の高コントラストテーマ
+/// - **custom**: アプリ固有のカスタムテーマ
 public enum ThemeCategory: String, Sendable, CaseIterable, Identifiable {
     /// 標準テーマ（デフォルト）
     case standard = "標準"

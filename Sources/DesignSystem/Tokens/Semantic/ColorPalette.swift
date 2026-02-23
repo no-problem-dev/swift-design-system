@@ -24,11 +24,27 @@ import SwiftUI
 ///     var primary: Color { Color(hex: "#007AFF") }
 ///     var background: Color { .white }
 ///     var surface: Color { Color(hex: "#F2F2F7") }
-///     // ... 他のプロパティを実装
+///     // ... 他の必須プロパティを実装
 /// }
 ///
-/// // アプリで使用
-/// ThemeProvider(lightPalette: MyBrandPalette())
+/// // Themeプロトコルでパレットを使用
+/// struct MyBrandTheme: Theme {
+///     var id: String { "myBrand" }
+///     var name: String { "My Brand" }
+///     var description: String { "ブランドカラーテーマ" }
+///     var category: ThemeCategory { .brandPersonality }
+///     var previewColors: [Color] { [Color(hex: "#007AFF")] }
+///
+///     func colorPalette(for mode: ThemeMode) -> any ColorPalette {
+///         switch mode {
+///         case .system, .light: MyBrandPalette()
+///         case .dark: MyBrandDarkPalette()
+///         }
+///     }
+/// }
+///
+/// // ThemeProviderに登録
+/// ThemeProvider(initialTheme: MyBrandTheme())
 /// ```
 public protocol ColorPalette: Sendable {
     // MARK: - Primary Colors
