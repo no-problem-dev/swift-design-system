@@ -96,9 +96,9 @@ themeProvider.toggleMode()
 
 | ガイド | 内容 |
 |-------|------|
-| [Getting Started](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/gettingstarted) | セットアップと基本的な使い方 |
-| [Token Architecture](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/tokenarchitecture) | 3層トークンシステムの設計思想 |
-| [Custom Theme](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/customtheme) | カスタムテーマの作成方法 |
+| [Getting Started](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/gettingstarted/) | セットアップと基本的な使い方 |
+| [Token Architecture](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/tokenarchitecture/) | 3層トークンシステムの設計思想 |
+| [Custom Theme](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/customtheme/) | カスタムテーマの作成方法 |
 | [API Reference](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/) | 全パブリック API |
 
 ## 要件
