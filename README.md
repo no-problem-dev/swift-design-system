@@ -2,7 +2,7 @@
 
 SwiftUI向けの型安全で拡張可能なデザインシステム
 
-![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)
+![Swift](https://img.shields.io/badge/Swift-6.2-orange.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-iOS%2017.0+%20%7C%20macOS%2014.0+-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
@@ -666,7 +666,7 @@ struct SettingsView: View {
 ## 要件
 
 - iOS 17.0+ / macOS 14.0+
-- Swift 6.0+
+- Swift 6.2+
 - Xcode 16.0+
 
 ## ライセンス
