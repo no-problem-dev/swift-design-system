@@ -36,6 +36,14 @@ import SwiftUI
 ///         text: $username,
 ///         supportingText: "英数字のみ使用可能"
 ///     )
+///
+///     // 複数行入力
+///     DSTextField(
+///         "コメント",
+///         text: $comment,
+///         placeholder: "コメントを入力...",
+///         axis: .vertical
+///     )
 /// }
 /// ```
 ///
@@ -50,16 +58,30 @@ public struct DSTextField: View {
     private let title: String
     private let text: Binding<String>
     private let placeholder: String
+    private let axis: Axis
     private let style: TextFieldStyle
     private let supportingText: String?
     private let error: String?
     private let leadingIcon: String?
     private let trailingIcon: String?
 
+    /// DSTextField を作成
+    ///
+    /// - Parameters:
+    ///   - title: ラベルテキスト
+    ///   - text: テキストのバインディング
+    ///   - placeholder: プレースホルダー
+    ///   - axis: 入力の展開方向。`.vertical` で複数行入力に対応（デフォルト: `.horizontal`）
+    ///   - style: Outlined / Filled
+    ///   - supportingText: 補助テキスト
+    ///   - error: エラーメッセージ
+    ///   - leadingIcon: 先頭アイコン（SF Symbols）
+    ///   - trailingIcon: 末尾アイコン（SF Symbols）
     public init(
         _ title: String = "",
         text: Binding<String>,
         placeholder: String = "",
+        axis: Axis = .horizontal,
         style: TextFieldStyle = .outlined,
         supportingText: String? = nil,
         error: String? = nil,
@@ -69,6 +91,7 @@ public struct DSTextField: View {
         self.title = title
         self.text = text
         self.placeholder = placeholder
+        self.axis = axis
         self.style = style
         self.supportingText = supportingText
         self.error = error
@@ -93,7 +116,7 @@ public struct DSTextField: View {
                         .foregroundStyle(iconColor)
                 }
 
-                TextField(placeholder, text: text)
+                TextField(placeholder, text: text, axis: axis)
                     .typography(.bodyLarge)
                     .foregroundStyle(colorPalette.onSurface)
                     .focused($isFocused)
