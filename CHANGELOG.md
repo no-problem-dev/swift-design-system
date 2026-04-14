@@ -9,6 +9,22 @@
 
 なし
 
+## [1.0.24] - 2026-04-14
+
+### 追加
+- **Sectionコンポーネント群** - 設定画面・ハブ画面用の surface カード (ADR-014)
+  - `SectionCard(_ header:, footer:)` - 小さな uppercase ヘッダー + 角丸 surface + footer 説明文
+  - `SectionRow` - 統一 padding の HStack 行。`contentShape(Rectangle())` で余白部分もタップ可能
+  - `SectionRowDivider` - `outlineVariant` カラーの 0.5pt ヘアライン区切り
+  - `SectionNavigationLabel` - chevron 付き NavigationLink 用ラベル
+  - 4 コンポーネントとも DS トークン（spacing / radius / typography / colorPalette）のみで構成
+  - iOS 26 Liquid Glass 相当の surface material 表現に対応
+
+### 変更
+- **SectionCard** - 既存の `SectionCard(title:, elevation:)` 初期化子は互換維持のため残存。
+  新規利用は `SectionCard(_ header:, footer:)` の Surface Section スタイルを推奨
+- `Sources/DesignSystem/Layout/Patterns/SectionCard.swift` を `Sources/DesignSystem/Components/Section/SectionCard.swift` に統合移動（タイプ重複回避）
+
 ## [1.0.22] - 2026-01-06
 
 ### 追加
