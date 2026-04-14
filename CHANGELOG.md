@@ -582,7 +582,7 @@
 - DocC 対応
   - GitHub Pages での自動ドキュメント公開
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.22...HEAD
+[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.24...HEAD
 [1.0.22]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.21...v1.0.22
 [1.0.21]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.20...v1.0.21
 [1.0.20]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.19...v1.0.20
@@ -622,3 +622,5 @@
 <!-- Auto-generated on 2025-11-16T23:22:19Z by release workflow -->
 
 <!-- Auto-generated on 2025-12-21T03:25:36Z by release workflow -->
+
+<!-- Auto-generated on 2026-04-14T14:34:47Z by release workflow -->
