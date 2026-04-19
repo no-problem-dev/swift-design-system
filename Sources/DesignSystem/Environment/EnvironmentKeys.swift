@@ -39,6 +39,23 @@ extension EnvironmentValues {
     }
 }
 
+// MARK: - IconSizeScale
+
+private struct IconSizeScaleKey: EnvironmentKey {
+    static let defaultValue: any IconSizeScale = DefaultIconSizeScale()
+}
+
+extension EnvironmentValues {
+    /// アイコンサイズスケール。
+    ///
+    /// Image / Text emoji の表示サイズを token 化するためのスケール。
+    /// `.iconSize(.sm/.md/.lg/...)` モディファイアが内部で参照する。
+    public var iconSizeScale: any IconSizeScale {
+        get { self[IconSizeScaleKey.self] }
+        set { self[IconSizeScaleKey.self] = newValue }
+    }
+}
+
 // MARK: - Motion
 
 private struct MotionKey: EnvironmentKey {
