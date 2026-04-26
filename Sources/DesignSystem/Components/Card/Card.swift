@@ -43,10 +43,11 @@ import SwiftUI
 public struct Card<Content: View>: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.radiusScale) private var radiusScale
+    @Environment(\.spacingScale) private var spacingScale
 
     private let content: Content
     private let elevation: Elevation
-    private let padding: EdgeInsets
+    private let padding: EdgeInsets?
     private let cornerRadius: CGFloat?
     private let backgroundColor: Color?
 
@@ -54,13 +55,13 @@ public struct Card<Content: View>: View {
     ///
     /// - Parameters:
     ///   - elevation: 影のレベル（デフォルト: `.level1`）
-    ///   - padding: コンテンツの内側余白（デフォルト: 上下左右16pt）
+    ///   - padding: コンテンツの内側余白（`nil`の場合は`SpacingScale.lg`を上下左右に適用）
     ///   - cornerRadius: 角丸の半径（`nil`の場合は`RadiusScale.lg`を使用）
     ///   - backgroundColor: 背景色（`nil`の場合は`ColorPalette.surface`を使用）
     ///   - content: カード内に表示するコンテンツ
     public init(
         elevation: Elevation = .level1,
-        padding: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
+        padding: EdgeInsets? = nil,
         cornerRadius: CGFloat? = nil,
         backgroundColor: Color? = nil,
         @ViewBuilder content: () -> Content
@@ -73,9 +74,15 @@ public struct Card<Content: View>: View {
     }
 
     public var body: some View {
+        let resolvedPadding = padding ?? EdgeInsets(
+            top: spacingScale.lg,
+            leading: spacingScale.lg,
+            bottom: spacingScale.lg,
+            trailing: spacingScale.lg
+        )
         content
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(padding)
+            .padding(resolvedPadding)
             .background(backgroundColor ?? colorPalette.surface)
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius ?? radiusScale.lg))
             .elevation(elevation)
