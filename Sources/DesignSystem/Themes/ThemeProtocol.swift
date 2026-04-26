@@ -44,6 +44,20 @@ public protocol Theme: Sendable, Identifiable, Equatable {
     /// - Parameter mode: ライトモードまたはダークモード
     /// - Returns: 対応するカラーパレット
     func colorPalette(for mode: ThemeMode) -> any ColorPalette
+
+    /// テーマのアイコンサイズスケール
+    ///
+    /// `Image(systemName:).iconSize(.sm/.md/...)` などで参照される token。
+    /// デフォルト実装は ``DefaultIconSizeScale`` を返すため、特別なカスタマイズ
+    /// が不要なテーマは override する必要はない。
+    var iconSizeScale: any IconSizeScale { get }
+
+    /// テーマのモーションタイミング
+    ///
+    /// `.animate(motion.tap, value:)` などで参照される token。
+    /// デフォルト実装は ``DefaultMotion`` を返すため、特別なカスタマイズ
+    /// が不要なテーマは override する必要はない。
+    var motion: any Motion { get }
 }
 
 // MARK: - Equatable Default Implementation
@@ -51,5 +65,17 @@ public protocol Theme: Sendable, Identifiable, Equatable {
 public extension Theme {
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
+    }
+}
+
+// MARK: - Default Token Implementations
+
+public extension Theme {
+    var iconSizeScale: any IconSizeScale {
+        DefaultIconSizeScale()
+    }
+
+    var motion: any Motion {
+        DefaultMotion()
     }
 }
