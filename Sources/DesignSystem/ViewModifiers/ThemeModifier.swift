@@ -49,6 +49,8 @@ private struct ThemeEnvironmentView<Content: View>: View {
             .environment(\.colorPalette, resolvedColorPalette)
             .environment(\.spacingScale, DefaultSpacingScale())
             .environment(\.radiusScale, DefaultRadiusScale())
+            .environment(\.iconSizeScale, provider.currentTheme.iconSizeScale)
+            .environment(\.motion, provider.currentTheme.motion)
             .colorScheme(resolvedColorScheme)
     }
 }
