@@ -19,7 +19,6 @@ public extension View {
 struct SkeletonModifier: ViewModifier {
     var isRedacted: Bool
     var tint: Color?
-    @State private var isAnimating: Bool = false
     @Environment(\.colorScheme) private var scheme
 
     func body(content: Content) -> some View {
@@ -27,53 +26,49 @@ struct SkeletonModifier: ViewModifier {
             .redacted(reason: isRedacted ? .placeholder : [])
             .overlay {
                 if isRedacted {
-                    GeometryReader {
-                        let size = $0.size
-                        let skeletonWidth = size.width / 2
-                        // ブラー半径は 30 以上を保証
-                        let blurRadius = max(skeletonWidth / 2, 30)
-                        let blurDiameter = blurRadius * 2
-                        // 移動の端点
-                        let minX = -(skeletonWidth + blurDiameter)
-                        let maxX = size.width + skeletonWidth + blurDiameter
+                    // 時刻駆動（TimelineView）: @State + withAnimation(.repeatForever) は
+                    // 祖先の再描画・挿入トランジションにアニメーションを殺される脆さがある。
+                    // 時刻から毎フレーム位置を導出すれば、何に再描画されても止まらない。
+                    TimelineView(.animation) { timeline in
+                        GeometryReader {
+                            let size = $0.size
+                            let skeletonWidth = size.width / 2
+                            // ブラー半径は 30 以上を保証
+                            let blurRadius = max(skeletonWidth / 2, 30)
+                            let blurDiameter = blurRadius * 2
+                            // 移動の端点
+                            let minX = -(skeletonWidth + blurDiameter)
+                            let maxX = size.width + skeletonWidth + blurDiameter
+                            let progress = Self.easeInOut(
+                                timeline.date.timeIntervalSinceReferenceDate
+                                    .truncatingRemainder(dividingBy: period) / period
+                            )
 
-                        Rectangle()
-                            .fill(tint ?? (scheme == .dark ? .white : .black))
-                            .frame(width: skeletonWidth, height: size.height * 2)
-                            .frame(height: size.height)
-                            .blur(radius: blurRadius)
-                            .rotationEffect(.degrees(rotation))
-                            // 左 → 右へ無限に流す
-                            .offset(x: isAnimating ? maxX : minX)
+                            Rectangle()
+                                .fill(tint ?? (scheme == .dark ? .white : .black))
+                                .frame(width: skeletonWidth, height: size.height * 2)
+                                .frame(height: size.height)
+                                .blur(radius: blurRadius)
+                                .rotationEffect(.degrees(rotation))
+                                // 左 → 右へ無限に流す
+                                .offset(x: minX + (maxX - minX) * progress)
+                        }
                     }
                     .mask {
                         content
                             .redacted(reason: .placeholder)
                     }
                     .blendMode(.softLight)
-                    .task { @MainActor in
-                        guard !isAnimating else { return }
-                        withAnimation(animation) {
-                            isAnimating = true
-                        }
-                    }
-                    .onDisappear {
-                        isAnimating = false
-                    }
-                    .transaction {
-                        // 親のトランザクションが repeatForever を上書きするのを防ぐ
-                        if $0.animation != animation {
-                            $0.animation = .none
-                        }
-                    }
                 }
             }
     }
 
     var rotation: Double { 5 }
+    var period: Double { 1.5 }
 
-    var animation: Animation {
-        .easeInOut(duration: 1.5).repeatForever(autoreverses: false)
+    /// 旧実装の .easeInOut(duration: 1.5) と同じ緩急。
+    private static func easeInOut(_ t: Double) -> Double {
+        t < 0.5 ? 2 * t * t : 1 - pow(-2 * t + 2, 2) / 2
     }
 }
 
