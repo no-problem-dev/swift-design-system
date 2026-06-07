@@ -9,6 +9,26 @@
 
 なし
 
+## [1.3.2] - 2026-06-07
+
+### 追加
+- **StatusIndicatorコンポーネント** - 非同期の作業状態を 1 グリフで表すインジケーター
+  - `StatusKind` (pending / running / success / failure / canceled) をセマンティックカラーへ写像
+  - `StatusKind.color(in:)` で周辺要素（バッジ等）の色をインジケーターと揃えられる
+  - 実行中はシステム `ProgressView`、各状態に accessibilityLabel 自動付与
+- **StepIndicatorコンポーネント** - N ステップの現在位置を表すドット列
+  - 現在 = primary、通過 = 薄い primary、未来 = outlineVariant
+  - `currentIndex: nil` = 全ステップ終了。アクセシビリティラベル「ステップ N / M」を自動生成
+- **TimelineRowコンポーネント** - 時系列フィード（アクティビティログ）の 1 行
+  - 左にマーカー + 縦コネクタ線、右に任意コンテンツ。`VStack(spacing: 0)` で連続タイムライン
+  - マーカーは `StatusIndicator`（status: 指定）または任意ビュー（marker: クロージャ）
+- **LinkCardコンポーネント** - URL 参照（出典・関連リンク）のカード
+  - タイトル + ドメイン + 任意アクセサリ（Chip 等）。action 付きはタップ可能
+  - メタデータ取得は呼び出し側の責務（LinkPresentation 非依存）
+- **EmptyStateコンポーネント** - 空リスト・空検索結果の明示ステート
+  - アイコン + 見出し + 任意の説明文。accessibilityElement(children: .combine)
+- カタログアプリに上記 5 コンポーネントのセクションを追加
+
 ## [1.0.24] - 2026-04-14
 
 ### 追加

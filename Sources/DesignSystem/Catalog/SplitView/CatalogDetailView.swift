@@ -71,6 +71,9 @@ struct CatalogDetailView: View {
             case .emojiPicker:
                 EmojiPickerCatalogView()
                     .id(component)
+            case .emptyState:
+                EmptyStateCatalogView()
+                    .id(component)
             case .fab:
                 FloatingActionButtonCatalogView()
                     .id(component)
@@ -94,6 +97,9 @@ struct CatalogDetailView: View {
                     Text("画像ピッカーはiOSでのみ利用可能です")
                 }
                 #endif
+            case .linkCard:
+                LinkCardCatalogView()
+                    .id(component)
             case .progressBar:
                 ProgressBarCatalogView()
                     .id(component)
@@ -103,8 +109,17 @@ struct CatalogDetailView: View {
             case .statDisplay:
                 StatDisplayCatalogView()
                     .id(component)
+            case .statusIndicator:
+                StatusIndicatorCatalogView()
+                    .id(component)
+            case .stepIndicator:
+                StepIndicatorCatalogView()
+                    .id(component)
             case .textField:
                 TextFieldCatalogView()
+                    .id(component)
+            case .timelineRow:
+                TimelineRowCatalogView()
                     .id(component)
             case .videoPicker:
                 #if canImport(UIKit)
