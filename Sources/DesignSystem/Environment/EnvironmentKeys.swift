@@ -39,6 +39,79 @@ extension EnvironmentValues {
     }
 }
 
+// MARK: - TypographyScale
+
+private struct TypographyScaleKey: EnvironmentKey {
+    static let defaultValue: any TypographyScale = DefaultTypographyScale()
+}
+
+extension EnvironmentValues {
+    /// 型ランプ（役割 → スタイルの写像）。
+    ///
+    /// `.typography(.bodyMedium)` モディファイアが内部で参照する。テーマが供給し、
+    /// 未適用時は ``DefaultTypographyScale``（既存 enum 由来）が使われるため見た目は不変。
+    public var typographyScale: any TypographyScale {
+        get { self[TypographyScaleKey.self] }
+        set { self[TypographyScaleKey.self] = newValue }
+    }
+}
+
+// MARK: - BorderScale
+
+private struct BorderScaleKey: EnvironmentKey {
+    static let defaultValue: any BorderScale = DefaultBorderScale()
+}
+
+extension EnvironmentValues {
+    /// 線幅スケール。`@Environment(\.borderScale)` で参照する。
+    public var borderScale: any BorderScale {
+        get { self[BorderScaleKey.self] }
+        set { self[BorderScaleKey.self] = newValue }
+    }
+}
+
+// MARK: - StateLayer
+
+private struct StateLayerKey: EnvironmentKey {
+    static let defaultValue: any StateLayer = DefaultStateLayer()
+}
+
+extension EnvironmentValues {
+    /// 状態レイヤー不透明度。hover/pressed/focus 等のオーバーレイ濃度。
+    public var stateLayer: any StateLayer {
+        get { self[StateLayerKey.self] }
+        set { self[StateLayerKey.self] = newValue }
+    }
+}
+
+// MARK: - GradientTokens
+
+private struct GradientTokensKey: EnvironmentKey {
+    static let defaultValue: any GradientTokens = DefaultGradientTokens()
+}
+
+extension EnvironmentValues {
+    /// 意味的グラデーション。`@Environment(\.gradients)` で参照する。
+    public var gradients: any GradientTokens {
+        get { self[GradientTokensKey.self] }
+        set { self[GradientTokensKey.self] = newValue }
+    }
+}
+
+// MARK: - ElevationScale
+
+private struct ElevationScaleKey: EnvironmentKey {
+    static let defaultValue: any ElevationScale = DefaultElevationScale()
+}
+
+extension EnvironmentValues {
+    /// 影ランプ。`.elevation(.levelN)` が内部で参照する。テーマが影の重さを差し替えられる。
+    public var elevationScale: any ElevationScale {
+        get { self[ElevationScaleKey.self] }
+        set { self[ElevationScaleKey.self] = newValue }
+    }
+}
+
 // MARK: - IconSizeScale
 
 private struct IconSizeScaleKey: EnvironmentKey {

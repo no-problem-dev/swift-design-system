@@ -38,7 +38,10 @@ public struct SecondaryButtonStyle: ButtonStyle {
             .foregroundStyle(colorPalette.onSecondaryContainer)
             .padding(.horizontal, buttonSize.horizontalPadding)
             .frame(height: buttonSize.height)
+            // macOS は内容幅（HIG: フルワイド塗りは watchOS のイディオム。macOS は幅を内容に合わせる）。
+            #if os(iOS)
             .frame(maxWidth: .infinity)
+            #endif
             .background(
                 RoundedRectangle(cornerRadius: 100)
                     .fill(colorPalette.secondaryContainer)

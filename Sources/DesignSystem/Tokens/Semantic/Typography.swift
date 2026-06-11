@@ -23,7 +23,7 @@ import SwiftUI
 /// - **Title**: タイトル（22pt〜14pt）- カードタイトル、ダイアログ
 /// - **Body**: 本文（16pt〜12pt）- 段落、説明文
 /// - **Label**: ラベル（14pt〜11pt）- ボタン、タブ、フォーム
-public enum Typography {
+public enum Typography: CaseIterable, Sendable {
     // MARK: - Display
 
     /// Display Large - 最大かつ最も目立つテキスト

@@ -5,13 +5,15 @@ struct ElevationModifier: ViewModifier {
     let level: Elevation
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.elevationScale) private var elevationScale
 
     func body(content: Content) -> some View {
-        content.shadow(
-            color: colorPalette.shadow.opacity(level.opacity(for: colorScheme)),
-            radius: level.radius,
-            x: level.offset.width,
-            y: level.offset.height
+        let style = elevationScale.style(for: level)
+        return content.shadow(
+            color: colorPalette.shadow.opacity(style.opacity(for: colorScheme)),
+            radius: style.radius,
+            x: style.offset.width,
+            y: style.offset.height
         )
     }
 }

@@ -127,8 +127,14 @@ public struct DSTextField: View {
                         .foregroundStyle(iconColor)
                 }
             }
+            // macOS はポインタ操作前提でフィールド高を標準コントロールに寄せる（縦余白を縮小）。
+            #if os(macOS)
+            .padding(.horizontal, spacing.md)
+            .padding(.vertical, spacing.xs)
+            #else
             .padding(.horizontal, spacing.lg)
             .padding(.vertical, spacing.md)
+            #endif
             .background(backgroundColor)
             .overlay(border)
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))

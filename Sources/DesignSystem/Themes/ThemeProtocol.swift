@@ -58,6 +58,39 @@ public protocol Theme: Sendable, Identifiable, Equatable {
     /// デフォルト実装は ``DefaultMotion`` を返すため、特別なカスタマイズ
     /// が不要なテーマは override する必要はない。
     var motion: any Motion { get }
+
+    /// テーマの型ランプ（タイポグラフィスケール）。
+    ///
+    /// `.typography(.bodyMedium)` などで参照される token を供給する。
+    /// デフォルト実装は ``DefaultTypographyScale``（既存値由来）を返すため、型を
+    /// カスタマイズしないテーマは override 不要で見た目も変わらない。ブランドテーマは
+    /// ここを override して固有の型（サイズ・行間・書体）を差し込む。
+    var typographyScale: any TypographyScale { get }
+
+    /// テーマの余白スケール。
+    ///
+    /// `@Environment(\.spacingScale)` 経由でコンポーネントが参照する token。
+    /// デフォルト実装は ``DefaultSpacingScale`` を返すため override 不要で見た目も不変。
+    /// ブランドテーマはここを override して固有の余白（例: SmartHR の char-relative）を差し込む。
+    var spacingScale: any SpacingScale { get }
+
+    /// テーマの角丸スケール。
+    ///
+    /// `@Environment(\.radiusScale)` 経由でコンポーネントが参照する token。
+    /// デフォルト実装は ``DefaultRadiusScale`` を返すため override 不要で見た目も不変。
+    var radiusScale: any RadiusScale { get }
+
+    /// 線幅スケール。デフォルトは ``DefaultBorderScale``。
+    var borderScale: any BorderScale { get }
+
+    /// 状態レイヤー不透明度。デフォルトは ``DefaultStateLayer``。
+    var stateLayer: any StateLayer { get }
+
+    /// 意味的グラデーション。デフォルトは ``DefaultGradientTokens``。ブランドが固有を差し込む。
+    var gradients: any GradientTokens { get }
+
+    /// 影ランプ。デフォルトは ``DefaultElevationScale``（既存 enum 由来）。
+    var elevationScale: any ElevationScale { get }
 }
 
 // MARK: - Equatable Default Implementation
@@ -77,5 +110,33 @@ public extension Theme {
 
     var motion: any Motion {
         DefaultMotion()
+    }
+
+    var typographyScale: any TypographyScale {
+        DefaultTypographyScale()
+    }
+
+    var spacingScale: any SpacingScale {
+        DefaultSpacingScale()
+    }
+
+    var radiusScale: any RadiusScale {
+        DefaultRadiusScale()
+    }
+
+    var borderScale: any BorderScale {
+        DefaultBorderScale()
+    }
+
+    var stateLayer: any StateLayer {
+        DefaultStateLayer()
+    }
+
+    var gradients: any GradientTokens {
+        DefaultGradientTokens()
+    }
+
+    var elevationScale: any ElevationScale {
+        DefaultElevationScale()
     }
 }

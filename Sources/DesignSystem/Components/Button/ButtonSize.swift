@@ -34,21 +34,41 @@ public enum ButtonSize: Sendable {
     case small
 
     /// ボタンの高さ
+    ///
+    /// macOS はポインタ操作前提のため、タッチ用の大きな高さ（56/48/40）ではなく
+    /// 標準コントロールに近い寸法へ縮める（HIG: 44pt は hit region の最小値であって
+    /// ボタン本体サイズではない）。iOS の寸法は従来どおり維持する。
     var height: CGFloat {
+        #if os(macOS)
+        switch self {
+        case .large: return 32
+        case .medium: return 28
+        case .small: return 22
+        }
+        #else
         switch self {
         case .large: return 56
         case .medium: return 48
         case .small: return 40
         }
+        #endif
     }
 
     /// 水平パディング
     var horizontalPadding: CGFloat {
+        #if os(macOS)
+        switch self {
+        case .large: return 16
+        case .medium: return 12
+        case .small: return 10
+        }
+        #else
         switch self {
         case .large: return 24
         case .medium: return 20
         case .small: return 16
         }
+        #endif
     }
 
     /// タイポグラフィトークン

@@ -19,7 +19,10 @@ public struct GlassButtonStyle: ButtonStyle {
             .foregroundStyle(colorPalette.onSurface)
             .padding(.horizontal, buttonSize.horizontalPadding)
             .frame(height: buttonSize.height)
+            // macOS は内容幅（HIG: フルワイド塗りは watchOS のイディオム。macOS は幅を内容に合わせる）。
+            #if os(iOS)
             .frame(maxWidth: .infinity)
+            #endif
             .background {
                 backgroundShape
             }
