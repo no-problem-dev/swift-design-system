@@ -17,10 +17,10 @@ import SwiftUI
 ///     .chipStyle(.filled)
 ///     .foregroundColor(.green)
 ///
-/// // 削除可能なチップ
-/// Chip("Swift", systemImage: "tag.fill") {
+/// // 削除可能なチップ（onDelete: ラベルが必須）
+/// Chip("Swift", systemImage: "tag.fill", onDelete: {
 ///     removeTag("Swift")
-/// }
+/// })
 /// .chipStyle(.filled)
 ///
 /// // 選択可能なフィルターチップ

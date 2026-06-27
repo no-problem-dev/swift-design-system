@@ -93,13 +93,20 @@ struct MyView: View {
 - ``PrimaryButtonStyle``
 - ``SecondaryButtonStyle``
 - ``TertiaryButtonStyle``
+- ``GlassButtonStyle``
+- ``PrimaryGlassButtonStyle``
+- ``PrimaryTonalButtonStyle``
 - ``ButtonSize``
 
 ### Components - Input
 
 - ``DSTextField``
+- ``DSTextFieldStyle``
 - ``Chip``
+- ``ParameterChip``
 - ``ChipStyle``
+- ``ChipStyleConfiguration``
+- ``AnyChipStyle``
 - ``ChipSize``
 - ``FilledChipStyle``
 - ``OutlinedChipStyle``
@@ -108,14 +115,23 @@ struct MyView: View {
 ### Components - Display
 
 - ``Card``
+- ``LinkCard``
 - ``IconBadge``
 - ``IconBadgeSize``
 - ``StatDisplay``
 - ``StatDisplaySize``
 - ``ProgressBar``
+- ``Spinner``
+- ``StatusIndicator``
+- ``StatusKind``
+- ``StepIndicator``
 - ``Snackbar``
 - ``SnackbarState``
 - ``SnackbarAction``
+- ``AttachmentStrip``
+- ``AttachmentThumbnail``
+- ``MediaViewerItem``
+- ``TimelineRow``
 
 ### Components - Action
 
@@ -124,11 +140,23 @@ struct MyView: View {
 - ``IconButtonSize``
 - ``FloatingActionButton``
 - ``FABSize``
+- ``FABStyle``
+
+### Segmented Control
+
+- ``SegmentedControl``
+- ``GlassSegmentedControl``
 
 ### Layout Patterns
 
 - ``SectionCard``
+- ``SectionRow``
+- ``SectionRowDivider``
+- ``SectionNavigationLabel``
 - ``AspectGrid``
+- ``StaggeredView``
+- ``StaggeredConfig``
+- ``LoopingScrollView``
 
 ### Pickers
 
@@ -136,6 +164,31 @@ struct MyView: View {
 - ``IconPickerModifier``
 - ``ColorPickerModifier``
 
+### Token Protocols
+
+- ``TypographyScale``
+- ``BorderScale``
+- ``ElevationScale``
+- ``GradientTokens``
+- ``StateLayer``
+- ``IconSizeScale``
+
+### Token Defaults
+
+- ``DefaultSpacingScale``
+- ``DefaultRadiusScale``
+- ``DefaultMotion``
+- ``DefaultIconSizeScale``
+- ``DefaultBorderScale``
+- ``DefaultElevationScale``
+- ``DefaultGradientTokens``
+- ``DefaultStateLayer``
+- ``DefaultTypographyScale``
+
 ### Utilities
 
+- ``SurfaceStyle``
+- ``ThemeColorScheme``
+- ``IconSizeToken``
 - ``ByteSize``
+- ``TitleTextRenderer``

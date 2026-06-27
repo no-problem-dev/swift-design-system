@@ -52,10 +52,10 @@ struct MyView: View {
         VStack(spacing: spacing.lg) {
             Text("見出し")
                 .typography(.headlineLarge)
-                .foregroundColor(colors.primary)
+                .foregroundStyle(colors.primary)
             Text("本文")
                 .typography(.bodyMedium)
-                .foregroundColor(colors.onSurface)
+                .foregroundStyle(colors.onSurface)
         }
         .padding(spacing.xl)
         .background(colors.surface)

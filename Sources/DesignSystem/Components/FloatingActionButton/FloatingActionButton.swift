@@ -53,6 +53,13 @@ public struct FloatingActionButton: View {
     private let style: FABStyle
     private let action: () -> Void
 
+    /// FloatingActionButton を作成します。
+    ///
+    /// - Parameters:
+    ///   - icon: SF Symbols のシステムアイコン名（例: `"plus"`, `"pencil"`）
+    ///   - size: ボタンサイズ（デフォルト: `.regular`、直径 56pt）
+    ///   - style: 表示スタイル（デフォルト: `.primary`、テーマの Primary container 色）
+    ///   - action: タップ時に呼び出されるクロージャ
     public init(
         icon: String,
         size: FABSize = .regular,

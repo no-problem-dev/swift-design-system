@@ -45,6 +45,12 @@ public struct Snackbar: View {
     @Environment(\.spacingScale) private var spacing
     @Environment(\.radiusScale) private var radius
 
+    /// Snackbar を作成します。
+    ///
+    /// `SnackbarState` は `@Observable` クラスです。Snackbar ビューは状態への参照を保持し、
+    /// `state.show(message:)` を呼ぶと自動的に表示されます。
+    ///
+    /// - Parameter state: Snackbar の表示状態を管理する ``SnackbarState`` インスタンス
     public init(state: SnackbarState) {
         self._state = Bindable(state)
     }

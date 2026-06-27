@@ -74,6 +74,9 @@ public struct TypeStyle: Codable, Sendable, Equatable {
     }
 }
 
+/// フォントウェイトトークン。CSS `font-weight` のキーワード相当。
+///
+/// `thin` (100) から `black` (900) までの 8 段階で字体の太さを指定する。
 public enum FontWeightToken: String, Codable, Sendable, Equatable {
     case thin, light, regular, medium, semibold, bold, heavy, black
 }

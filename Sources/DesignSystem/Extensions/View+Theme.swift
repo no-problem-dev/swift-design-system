@@ -32,7 +32,7 @@ extension View {
     ///
     ///     var body: some View {
     ///         Text("Hello")
-    ///             .foregroundColor(colors.primary)
+    ///             .foregroundStyle(colors.primary)
     ///             .padding(spacing.lg)
     ///     }
     /// }

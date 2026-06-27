@@ -34,10 +34,13 @@ public struct CatalogEntry: Identifiable {
     public let id: String
     /// ブランド識別子（例: "smarthr"）
     public let brandId: String
+    /// ブランドの表示名（例: "SmartHR"）
     public let brandName: String
     /// 横断比較の軸（例: "FormControl", "FocusIndicator", "ProductCard"）
     public let archetype: String
+    /// このエントリのタイトル（ギャラリーカードのヘッドライン）
     public let title: String
+    /// 設計の「なぜ」を保持する示唆注釈。横断比較の燃料になる
     public let annotation: DesignAnnotation
     /// このエントリを描画するブランドテーマ
     public let theme: any Theme

@@ -53,13 +53,14 @@ import SwiftUI
 public struct DSTextField: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.spacingScale) private var spacing
+    @Environment(\.radiusScale) private var radiusScale
     @FocusState private var isFocused: Bool
 
     private let title: String
     private let text: Binding<String>
     private let placeholder: String
     private let axis: Axis
-    private let style: TextFieldStyle
+    private let style: DSTextFieldStyle
     private let supportingText: String?
     private let error: String?
     private let leadingIcon: String?
@@ -82,7 +83,7 @@ public struct DSTextField: View {
         text: Binding<String>,
         placeholder: String = "",
         axis: Axis = .horizontal,
-        style: TextFieldStyle = .outlined,
+        style: DSTextFieldStyle = .outlined,
         supportingText: String? = nil,
         error: String? = nil,
         leadingIcon: String? = nil,
@@ -199,14 +200,14 @@ public struct DSTextField: View {
 
     private var cornerRadius: CGFloat {
         switch style {
-        case .filled: return 4
-        case .outlined: return 4
+        case .filled: return radiusScale.sm
+        case .outlined: return radiusScale.sm
         }
     }
 }
 
-/// TextFieldのスタイル
-public enum TextFieldStyle {
+/// DSTextFieldのスタイル
+public enum DSTextFieldStyle {
     /// 塗りつぶしスタイル
     case filled
     /// アウトラインスタイル

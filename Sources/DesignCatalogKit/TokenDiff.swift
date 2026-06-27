@@ -1,15 +1,20 @@
-import SwiftUI
+import Foundation
 import DesignSystem
 
 /// 2 テーマのトークン差分。それ自体が示唆計器（「なぜこの企業はこう違うのか」を数値で見る）。
 /// UI 非依存の純ロジックなので単体テスト可能。
 public enum TokenDiff {
 
+    /// 1 トークンの差分行。`a` と `b` の値を比較し、乖離の有無を `differs` で示す。
     public struct Row: Sendable, Equatable, Identifiable {
         public var id: String { label }
+        /// トークンのロール名（例: "bodyMedium", "lg", "card"）
         public var label: String
+        /// 比較元テーマのトークン値（文字列表現）
         public var a: String
+        /// 比較先テーマのトークン値（文字列表現）
         public var b: String
+        /// `a != b` のとき `true`。差分のある行を絞り込む ``differing(_:)`` と組み合わせて使う
         public var differs: Bool
 
         public init(label: String, a: String, b: String) {
