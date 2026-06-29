@@ -1,16 +1,16 @@
-# Creating a Custom Theme
+# カスタムテーマの作成
 
 独自のブランドカラーでカスタムテーマを作成する方法。
 
 ## Overview
 
-DesignSystemのテーマシステムはプロトコルベースで設計されており、
-``Theme``プロトコルと``ColorPalette``プロトコルを実装することで
-独自のテーマを追加できます。
+DesignSystem のテーマシステムはプロトコルベースで設計されており、
+``Theme`` プロトコルと ``ColorPalette`` プロトコルを実装することで
+独自のテーマを追加できる。
 
-## Step 1: Implement ColorPalette
+## ステップ 1: ColorPalette を実装する
 
-ライトモードとダークモード用のカラーパレットを作成します:
+ライトモードとダークモード用のカラーパレットを作成する:
 
 ```swift
 struct MyBrandLightPalette: ColorPalette {
@@ -50,9 +50,9 @@ struct MyBrandLightPalette: ColorPalette {
 }
 ```
 
-## Step 2: Implement Theme Protocol
+## ステップ 2: Theme プロトコルを実装する
 
-``Theme``プロトコルを実装し、モードに応じたパレットを返すようにします:
+``Theme`` プロトコルを実装し、モードに応じたパレットを返す:
 
 ```swift
 struct MyBrandTheme: Theme {
@@ -75,9 +75,9 @@ struct MyBrandTheme: Theme {
 }
 ```
 
-## Step 3: Register with ThemeProvider
+## ステップ 3: ThemeProvider に登録する
 
-### As Initial Theme
+### 初期テーマとして
 
 ```swift
 @State private var themeProvider = ThemeProvider(
@@ -85,7 +85,7 @@ struct MyBrandTheme: Theme {
 )
 ```
 
-### As Additional Theme
+### 追加テーマとして
 
 ```swift
 @State private var themeProvider = ThemeProvider(
@@ -93,7 +93,7 @@ struct MyBrandTheme: Theme {
 )
 ```
 
-### Multiple Custom Themes
+### 複数のカスタムテーマ
 
 ```swift
 @State private var themeProvider = ThemeProvider(
@@ -104,7 +104,7 @@ struct MyBrandTheme: Theme {
 
 ## Topics
 
-### Related
+### 関連
 
 - ``Theme``
 - ``ThemeProvider``

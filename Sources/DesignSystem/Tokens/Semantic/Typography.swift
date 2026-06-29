@@ -3,7 +3,7 @@ import SwiftUI
 /// タイポグラフィトークン
 ///
 /// 一貫したテキストスタイリングを提供する定義済みのフォントスケール。
-/// フォントサイズ、ウェイト、行間が最適化されており、`.typography()` モディファイアで簡単に適用できます。
+/// フォントサイズ、ウェイト、行間が最適化されており、`.typography()` モディファイアで簡単に適用できる。
 ///
 /// ## 使用例
 /// ```swift
@@ -157,7 +157,7 @@ public enum Typography: CaseIterable, Sendable {
         .system(size: size, weight: weight, design: .default)
     }
 
-    /// SwiftUI Font with custom design
+    /// デザインを指定して SwiftUI Font を生成する。
     /// - Parameter design: フォントデザイン（.default, .serif, .rounded, .monospaced）
     /// - Returns: 指定されたデザインのフォント
     public func font(design: Font.Design) -> Font {

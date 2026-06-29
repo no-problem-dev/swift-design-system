@@ -3,7 +3,7 @@ import SwiftUI
 /// Floating Action Button (FAB)
 ///
 /// 画面の主要アクションを表す円形の浮遊ボタン。
-/// 通常、画面右下に配置され、最も重要な操作（作成、追加など）をトリガーします。
+/// 通常は画面右下に配置し、最も重要な操作（作成・追加など）をトリガーする。
 ///
 /// ## 使用例
 /// ```swift
@@ -53,7 +53,7 @@ public struct FloatingActionButton: View {
     private let style: FABStyle
     private let action: () -> Void
 
-    /// FloatingActionButton を作成します。
+    /// FloatingActionButton を作成する。
     ///
     /// - Parameters:
     ///   - icon: SF Symbols のシステムアイコン名（例: `"plus"`, `"pencil"`）

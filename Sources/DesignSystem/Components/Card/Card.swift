@@ -3,14 +3,14 @@ import SwiftUI
 /// カードコンポーネント
 ///
 /// Elevation（影）、角丸、背景色を備えた汎用コンテナ。
-/// コンテンツをグルーピングし、視覚的な階層を表現するために使用します。
+/// コンテンツをグルーピングし、視覚的な階層を表現する。
 ///
-/// 環境の ``SurfaceStyle`` に応じて描画が切り替わります:
+/// 環境の ``SurfaceStyle`` に応じて描画が切り替わる:
 /// - `.solid`（デフォルト）: 従来の不透明サーフェス + Elevation 影
 /// - `.glass` / `.glassProminent`: Liquid Glass。背景を透かし、グラデーション
 ///   ボーダーで縁の光を表現。Elevation は影の濃さではなく「ボーダーの輝度」と
-///   「ティント強度」に再解釈されます。ネストされたカード（深度 1 以上）は
-///   ガラスの重なりによる濁りを避けるため、薄いティント面へ自動降格します。
+///   「ティント強度」に再解釈される。ネストされたカード（深度 1 以上）は
+///   ガラスの重なりによる濁りを避けるため、薄いティント面へ自動降格する。
 ///
 /// ## 使用例
 /// ```swift
@@ -65,7 +65,7 @@ public struct Card<Content: View>: View {
     private let cornerRadius: CGFloat?
     private let backgroundColor: Color?
 
-    /// カードを作成します
+    /// カードを作成する
     ///
     /// - Parameters:
     ///   - elevation: 影のレベル（デフォルト: `.level1`）
@@ -248,7 +248,7 @@ public struct Card<Content: View>: View {
 }
 
 public extension Card {
-    /// 均一なパディングでカードを作成します
+    /// 均一なパディングでカードを作成する
     ///
     /// - Parameters:
     ///   - elevation: 影のレベル（デフォルト: `.level1`）

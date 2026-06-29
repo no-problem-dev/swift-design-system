@@ -3,7 +3,7 @@ import SwiftUI
 /// テーマカードビュー
 ///
 /// テーマギャラリーで表示される個別のテーマカード。
-/// テーマ名、説明、プレビューカラーを表示します。
+/// テーマ名、説明、プレビューカラーを表示する。
 struct ThemeCardView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

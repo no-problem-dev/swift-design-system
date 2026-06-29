@@ -6,13 +6,13 @@ import AVFoundation
 import Photos
 import PhotosUI
 
-/// 画像ピッカーを表示するViewModifier
+/// 画像ピッカーを表示する ViewModifier。
 ///
 /// カメラまたは写真ライブラリから画像を選択できるモディファイア。
-/// 適切な権限管理を行い、権限がない場合はアラートで通知します。
+/// 適切な権限管理を行い、権限がない場合はアラートで通知する。
 ///
-/// - Note: カメラとフォトライブラリの使用許可が必要です。
-///   Info.plistに以下のキーを追加してください：
+/// - Note: カメラとフォトライブラリの使用許可が必要。
+///   Info.plist に以下のキーを追加すること：
 ///   - `NSCameraUsageDescription`: カメラ使用の説明
 ///   - `NSPhotoLibraryUsageDescription`: フォトライブラリアクセスの説明
 public struct ImagePickerModifier: ViewModifier {
@@ -388,10 +388,10 @@ struct ImagePickerViewController: UIViewControllerRepresentable {
 // MARK: - Public Extension
 
 public extension View {
-    /// 画像ピッカーモディファイアを適用
+    /// 画像ピッカーモディファイアを適用する。
     ///
     /// カメラまたは写真ライブラリから画像を選択できるモディファイア。
-    /// 選択された画像はJPEG形式のDataとして返されます。
+    /// 選択された画像は JPEG 形式の Data として返される。
     ///
     /// ```swift
     /// struct ContentView: View {
@@ -424,7 +424,7 @@ public extension View {
     ///   - isPresented: ピッカーの表示状態を制御するバインディング
     ///   - selectedImageData: 選択された画像のデータを受け取るバインディング
     ///   - source: 提示ソース。`.camera` / `.photoLibrary` を指定すると選択ダイアログを出さず直接提示する。
-    ///   - maxSize: 画像の最大サイズ。指定された場合、画像は自動的に圧縮されます。
+    ///   - maxSize: 画像の最大サイズ。指定された場合、自動的に圧縮される。
     ///   - onCompressionError: 画像の圧縮または変換に失敗した場合に呼ばれるコールバック
     /// - Returns: モディファイアが適用されたビュー
     func imagePicker(

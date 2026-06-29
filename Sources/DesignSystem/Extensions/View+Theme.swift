@@ -1,13 +1,12 @@
 import SwiftUI
 
 extension View {
-    /// デザインシステムのテーマを適用
+    /// View 階層全体にテーマを適用する。
     ///
-    /// ThemeProviderを使用してView階層全体にテーマを適用します。
-    /// アプリのルートビューに適用することで、全ての子ビューでデザイントークンが利用可能になります。
+    /// アプリのルートビューに適用することで、全ての子 View でデザイントークンが利用可能になる。
     ///
     /// - Parameter provider: ThemeProvider インスタンス
-    /// - Returns: テーマが適用されたView
+    /// - Returns: テーマが適用された View
     ///
     /// ## 使用例
     /// ```swift

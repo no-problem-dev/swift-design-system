@@ -74,9 +74,13 @@ public struct StaggeredConfig {
     public var blurRadius: CGFloat
     public var offset: CGSize
     public var scale: CGFloat
+    /// スケールエフェクトのアンカーポイント。
     public var scaleAnchor: UnitPoint
+    /// 各サブビューに適用するアニメーション。
     public var animation: Animation
+    /// `true` のとき、消える方向を出現と同じ向きにする。`false`（デフォルト）は逆方向。
     public var disappearInSameDirection: Bool
+    /// `true` のとき、消えるトランジションでオフセットアニメーションを省略する。
     public var noOffsetDisappearAnimation: Bool
 
     public init(

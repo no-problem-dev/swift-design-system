@@ -1,19 +1,19 @@
 import SwiftUI
 
-/// A component for displaying statistical values with units
+/// 数値と単位を並べて表示するコンポーネント。
 ///
-/// Displays a formatted value with an optional unit label.
-/// Commonly used for metrics, statistics, and numerical data presentation.
+/// フォーマット済みの数値に任意の単位ラベルを付けて表示する。
+/// メトリクス・統計・数値ダッシュボードなどに適する。
 ///
-/// ## Usage
+/// ## 使用例
 /// ```swift
-/// // Simple value with unit
+/// // 単位付き数値
 /// StatDisplay(value: "42.5", unit: "kg")
 ///
-/// // Large headline style
+/// // 大きい見出しスタイル
 /// StatDisplay(value: "1,234", unit: "steps", size: .large)
 ///
-/// // Custom colors
+/// // カスタムカラー
 /// StatDisplay(
 ///     value: "98%",
 ///     unit: "complete",
@@ -30,14 +30,14 @@ public struct StatDisplay: View {
     private let unitColor: Color?
     private let alignment: HorizontalAlignment
 
-    /// Creates a stat display
+    /// 数値表示を作成する
     /// - Parameters:
-    ///   - value: The formatted value string
-    ///   - unit: Optional unit label
-    ///   - size: Display size (default: .medium)
-    ///   - valueColor: Color for the value (default: onSurface)
-    ///   - unitColor: Color for the unit (default: onSurfaceVariant)
-    ///   - alignment: Horizontal alignment (default: .leading)
+    ///   - value: フォーマット済みの数値文字列
+    ///   - unit: 単位ラベル（省略可）
+    ///   - size: 表示サイズ（デフォルト: `.medium`）
+    ///   - valueColor: 数値の色（デフォルト: onSurface）
+    ///   - unitColor: 単位の色（デフォルト: onSurfaceVariant）
+    ///   - alignment: 水平方向の整列（デフォルト: `.leading`）
     public init(
         value: String,
         unit: String? = nil,
@@ -77,7 +77,7 @@ public struct StatDisplay: View {
     }
 }
 
-/// Size options for StatDisplay
+/// `StatDisplay` のサイズバリアント
 public enum StatDisplaySize {
     case small
     case medium

@@ -1,13 +1,12 @@
 import Foundation
 
-/// アイコンアイテム（SF Symbols専用）
+/// アイコンアイテム（SF Symbols 専用）。
 ///
-/// アイコンピッカーで表示される個々のSF Symbolsアイコンを表します。
-///
-/// `systemName` には SF Symbols の名前を指定します（例: "star.fill", "heart.circle"）。
+/// アイコンピッカーで表示される個々の SF Symbols アイコン。
+/// `systemName` には SF Symbols の名前を指定する（例: "star.fill", "heart.circle"）。
 ///
 /// ## 注意
-/// このピッカーはSF Symbols専用です。絵文字を使用する場合は `EmojiPicker` を使用してください。
+/// このピッカーは SF Symbols 専用。絵文字を使う場合は `EmojiPicker` を使用すること。
 public struct IconItem: Identifiable, Sendable, Hashable {
     public let id: String
     public let systemName: String
@@ -20,9 +19,7 @@ public struct IconItem: Identifiable, Sendable, Hashable {
     }
 }
 
-/// アイコンのカテゴリを表すプロトコル
-///
-/// アイコンをグループ化するためのプロトコルです。
+/// アイコンのカテゴリを表すプロトコル。アイコンをグループ化するために使う。
 public protocol IconCategoryProtocol: Identifiable, Sendable {
     var id: String { get }
     var displayName: String { get }

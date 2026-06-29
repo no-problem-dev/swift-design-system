@@ -1,17 +1,17 @@
-# Token Architecture
+# トークンアーキテクチャ
 
-3層トークンシステムの設計思想と使い分け。
+3 層トークンシステムの設計思想と使い分け。
 
 ## Overview
 
-DesignSystemは **Primitive → Semantic → Component** の3層トークンアーキテクチャを採用しています。
-各層には明確な役割があり、適切な層のトークンを使うことで保守性と一貫性を担保します。
+DesignSystem は **Primitive → Semantic → Component** の 3 層トークンアーキテクチャを採用している。
+各層には明確な役割があり、適切な層のトークンを使うことで保守性と一貫性を担保する。
 
-## Layer 1: Primitive Tokens
+## レイヤー 1: プリミティブトークン
 
-生の値（色のHEXコード、スペーシングのpt値など）を定義します。
+生の値（色の HEX コード、スペーシングの pt 値など）を定義する。
 
-> Warning: Primitive Tokensは内部実装の詳細です。View内で直接使用しないでください。
+> Warning: Primitive Tokens は内部実装の詳細。View 内で直接使用しないこと。
 
 ```swift
 // ❌ 直接使用しない
@@ -20,15 +20,15 @@ PrimitiveSpacing.space16
 PrimitiveRadius.radius8
 ```
 
-## Layer 2: Semantic Tokens
+## レイヤー 2: セマンティックトークン
 
-意味のあるトークンをプロトコルで定義します。
-テーマやモードの切り替えに対応するため、**必ずこの層を使用してください**。
+意味のあるトークンをプロトコルで定義する。
+テーマやモードの切り替えに対応するため、**必ずこの層を使用すること**。
 
-Environmentから取得して使用します:
+Environment から取得して使用する:
 
 ```swift
-// ✅ Semantic Tokensを使用
+// ✅ Semantic Tokens を使用
 @Environment(\.colorPalette) var colors
 @Environment(\.spacingScale) var spacing
 @Environment(\.radiusScale) var radius
@@ -39,22 +39,22 @@ Text("Hello")
     .padding(spacing.lg)                 // 意味: 大きめの余白
 ```
 
-### Available Semantic Tokens
+### 利用可能なセマンティックトークン
 
 | Protocol | Environment Key | Description |
 |----------|----------------|-------------|
-| ``ColorPalette`` | `\.colorPalette` | カラーパレット（primary, surface, error等） |
-| ``SpacingScale`` | `\.spacingScale` | スペーシング（xxs〜xxxl の10段階） |
-| ``RadiusScale`` | `\.radiusScale` | 角丸（xs〜full の8段階） |
+| ``ColorPalette`` | `\.colorPalette` | カラーパレット（primary, surface, error 等） |
+| ``SpacingScale`` | `\.spacingScale` | スペーシング（xxs〜xxxl の 10 段階） |
+| ``RadiusScale`` | `\.radiusScale` | 角丸（xs〜full の 8 段階） |
 | ``Motion`` | `\.motion` | アニメーションタイミング |
 
-## Layer 3: Component Tokens
+## レイヤー 3: コンポーネントトークン
 
-コンポーネント固有のパラメータを定義します。
-各コンポーネントに最適化された値のセットを提供します。
+コンポーネント固有のパラメータを定義する。
+各コンポーネントに最適化された値のセットを提供する。
 
 ```swift
-// ✅ Component Tokensを使用
+// ✅ Component Tokens を使用
 Button("保存") { save() }
     .buttonStyle(.primary)
     .buttonSize(.large)
@@ -63,11 +63,12 @@ Card(elevation: .level2) {
     // ...
 }
 
-Chip("タグ", style: FilledChipStyle())
+Chip("タグ")
+    .chipStyle(.filled)
     .chipSize(.small)
 ```
 
-### Available Component Tokens
+### 利用可能なコンポーネントトークン
 
 | Token | Description |
 |-------|-------------|
@@ -77,7 +78,7 @@ Chip("タグ", style: FilledChipStyle())
 
 ## Topics
 
-### Semantic Token Protocols
+### セマンティックトークンプロトコル
 
 - ``ColorPalette``
 - ``SpacingScale``
@@ -85,7 +86,7 @@ Chip("タグ", style: FilledChipStyle())
 - ``Typography``
 - ``Motion``
 
-### Component Tokens
+### コンポーネントトークン
 
 - ``ButtonSize``
 - ``ChipSize``

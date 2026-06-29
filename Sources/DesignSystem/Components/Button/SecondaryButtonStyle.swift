@@ -3,7 +3,7 @@ import SwiftUI
 /// セカンダリボタンスタイル
 ///
 /// 補助的なアクションに使用するボタンスタイル。
-/// SecondaryContainer色の背景でPrimaryより控えめに強調し、画面内に複数配置できます。
+/// SecondaryContainer 色の背景で Primary より控えめに強調する。画面内に複数配置できる。
 ///
 /// ## 使用例
 /// ```swift

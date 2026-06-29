@@ -136,10 +136,10 @@ private struct MotionKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    /// モーションタイミング設定
+    /// モーションタイミング設定。
     ///
-    /// 一貫したアニメーションタイミングを提供します。
-    /// `.animate()` モディファイアと組み合わせて使用します。
+    /// 一貫したアニメーションタイミングを提供する。
+    /// `.animate()` モディファイアと組み合わせて使う。
     ///
     /// ## 使用例
     /// ```swift

@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// Chipコンポーネントのスタイルプロトコル
+/// Chip コンポーネントのスタイルプロトコル
 ///
-/// ChipStyleプロトコルは、Chipの視覚的なバリエーションを定義します。
-/// SwiftUIのButtonStyleと同様のパターンで、再利用可能なスタイルを作成できます。
+/// Chip の視覚的バリエーションを定義する。
+/// SwiftUI の ButtonStyle と同様のパターンで再利用可能なスタイルを作成できる。
 ///
 /// ## カスタムスタイルの作成
 /// ```swift
@@ -31,16 +31,16 @@ public protocol ChipStyle: Sendable {
     /// スタイルが生成するViewの型
     associatedtype Body: View
 
-    /// Chipの外観を構築します
-    /// - Parameter configuration: Chipの設定情報
-    /// - Returns: スタイル適用後のView
+    /// Chip の外観を構築する
+    /// - Parameter configuration: Chip の設定情報
+    /// - Returns: スタイル適用後の View
     @MainActor
     func makeBody(configuration: ChipStyleConfiguration) -> Body
 }
 
-/// ChipStyleに渡される設定情報
+/// ChipStyle に渡される設定情報。
 ///
-/// Chipのラベル、アイコン、削除ハンドラ、選択状態などの情報を含みます。
+/// Chip のラベル・アイコン・削除ハンドラ・選択状態などの情報を含む。
 public struct ChipStyleConfiguration {
     /// Chipのラベルテキスト
     public let label: AnyView

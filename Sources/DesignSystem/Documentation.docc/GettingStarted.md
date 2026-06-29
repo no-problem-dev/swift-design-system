@@ -1,29 +1,29 @@
-# Getting Started
+# はじめに
 
-DesignSystemのセットアップと基本的な使い方。
+DesignSystem のセットアップと基本的な使い方。
 
 ## Overview
 
-DesignSystemの導入は3ステップで完了します:
-パッケージの追加、テーマのセットアップ、デザイントークンの利用開始です。
+DesignSystem の導入は 3 ステップで完了する:
+パッケージの追加、テーマのセットアップ、デザイントークンの利用開始。
 
-## Installation
+## インストール
 
 ### Swift Package Manager
 
-`Package.swift`に依存を追加します:
+`Package.swift` に依存を追加する:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/no-problem-dev/swift-design-system.git", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://github.com/no-problem-dev/swift-design-system.git", from: "1.7.0")
 ]
 ```
 
-または、Xcode の File > Add Package Dependencies からURLを入力してください。
+または、Xcode の File > Add Package Dependencies から URL を入力する。
 
-## Setup
+## セットアップ
 
-アプリのルートに``ThemeProvider``を設定し、`.theme()`モディファイアで適用します:
+アプリのルートに ``ThemeProvider`` を設定し、`.theme()` モディファイアで適用する:
 
 ```swift
 @main
@@ -39,13 +39,13 @@ struct MyApp: App {
 }
 ```
 
-これにより、全ての子Viewでデザイントークンが利用可能になります。
+これにより、全ての子 View でデザイントークンが利用可能になる。
 
-## Using Design Tokens
+## デザイントークンの利用
 
-### Color Palette
+### カラーパレット
 
-``ColorPalette``はEnvironmentから取得します:
+``ColorPalette`` は Environment から取得する:
 
 ```swift
 struct MyView: View {
@@ -53,15 +53,15 @@ struct MyView: View {
 
     var body: some View {
         Text("Hello")
-            .foregroundColor(colors.primary)
+            .foregroundStyle(colors.primary)
             .background(colors.surface)
     }
 }
 ```
 
-### Spacing
+### スペーシング
 
-``SpacingScale``で一貫したスペーシングを適用します:
+``SpacingScale`` で一貫したスペーシングを適用する:
 
 ```swift
 @Environment(\.spacingScale) var spacing
@@ -73,9 +73,9 @@ VStack(spacing: spacing.lg) {  // 16pt
 .padding(spacing.xl)  // 24pt
 ```
 
-### Typography
+### タイポグラフィ
 
-``Typography``モディファイアでテキストスタイルを適用します:
+``Typography`` モディファイアでテキストスタイルを適用する:
 
 ```swift
 Text("大見出し").typography(.headlineLarge)
@@ -83,9 +83,9 @@ Text("本文").typography(.bodyMedium)
 Text("ラベル").typography(.labelSmall)
 ```
 
-## Using Components
+## コンポーネントの利用
 
-### Buttons
+### ボタン
 
 ```swift
 Button("保存") { save() }
@@ -96,7 +96,7 @@ Button("キャンセル") { cancel() }
     .buttonStyle(.secondary)
 ```
 
-### Cards
+### カード
 
 ```swift
 Card(elevation: .level2) {
@@ -107,7 +107,7 @@ Card(elevation: .level2) {
 }
 ```
 
-### Text Fields
+### テキストフィールド
 
 ```swift
 DSTextField(
@@ -118,9 +118,9 @@ DSTextField(
 )
 ```
 
-## Switching Themes
+## テーマの切り替え
 
-``ThemeProvider``を使ってテーマやモードを動的に切り替えられます:
+``ThemeProvider`` を使ってテーマやモードを動的に切り替えられる:
 
 ```swift
 @Environment(ThemeProvider.self) private var themeProvider
@@ -132,12 +132,12 @@ themeProvider.switchToTheme(id: "ocean")
 themeProvider.toggleMode()
 ```
 
-7種類のビルトインテーマが用意されています:
+7 種類のビルトインテーマが用意されている:
 Default, Ocean, Forest, Sunset, PurpleHaze, Monochrome, HighContrast
 
 ## Topics
 
-### Related
+### 関連
 
 - ``ThemeProvider``
 - ``Theme``

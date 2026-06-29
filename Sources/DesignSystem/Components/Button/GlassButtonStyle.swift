@@ -3,7 +3,7 @@ import SwiftUI
 /// 中立（無着色）の Liquid Glass ボタンスタイル。
 ///
 /// `.primaryGlass` の対になるセカンダリアクション用。背景を透過させつつ、
-/// 同じガラス言語でアクション群を構成したい場合に使用します。
+/// 同じガラス言語でアクション群を構成したい場合に使う。
 /// ガラス面（`surfaceStyle(.glass)`）上のセカンダリボタンの標準形。
 public struct GlassButtonStyle: ButtonStyle {
     @Environment(\.colorPalette) private var colorPalette

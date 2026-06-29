@@ -33,7 +33,7 @@ import SwiftUI
 /// ```
 ///
 /// ## 注意
-/// このピッカーは絵文字専用です。SF Symbolsを使用する場合は `.iconPicker()` を使用してください。
+/// このピッカーは絵文字専用。SF Symbols を使う場合は `.iconPicker()` を使用すること。
 public struct EmojiPickerModifier: ViewModifier {
     let categories: [any EmojiCategoryProtocol]
     @Binding var selectedEmoji: String?
@@ -56,7 +56,7 @@ public struct EmojiPickerModifier: ViewModifier {
 // MARK: - View Extension
 
 public extension View {
-    /// 絵文字ピッカーを表示します
+    /// 絵文字ピッカーを表示する。
     ///
     /// - Parameters:
     ///   - categories: 表示する絵文字カテゴリのリスト

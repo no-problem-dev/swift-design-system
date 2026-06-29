@@ -7,7 +7,7 @@ import SwiftUI
 /// - Regular horizontal size class: 3カラムのNavigationSplitView
 /// - Compact horizontal size class: NavigationStackベースのリスト表示
 ///
-/// これにより、iPad Split ViewやSlide Overでも適切に対応します。
+/// これにより、iPad Split View や Slide Over でも適切に対応する。
 public struct DesignSystemCatalogView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 

@@ -3,7 +3,7 @@ import SwiftUI
 /// Primary色で tint したLiquid Glassボタンスタイル。
 ///
 /// 浮遊アクションや画面下部の固定アクションなど、背景を透過させつつ
-/// Primary色で同じアクション群として見せたい場合に使用します。
+/// Primary 色で同じアクション群として見せたい場合に使う。
 public struct PrimaryGlassButtonStyle: ButtonStyle {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.buttonSize) private var buttonSize

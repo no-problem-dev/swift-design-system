@@ -3,7 +3,7 @@ import SwiftUI
 /// HighContrastテーマ - 高コントラスト・アクセシビリティ重視
 ///
 /// WCAG AAA準拠の高コントラスト配色テーマ。
-/// ロービジョンユーザーやアクセシビリティを重視するアプリに最適です。
+/// ロービジョンユーザーやアクセシビリティを重視するアプリに最適。
 public struct HighContrastTheme: Theme {
     public init() {}
 

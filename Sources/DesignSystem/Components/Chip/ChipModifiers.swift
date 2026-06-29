@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - Chip Style Modifier
 
 public extension View {
-    /// Chipのスタイルを設定します
+    /// Chip のスタイルを設定する
     ///
     /// ## 使用例
     /// ```swift
@@ -27,7 +27,7 @@ public extension View {
 // MARK: - Chip Size Modifier
 
 public extension View {
-    /// Chipのサイズを設定します
+    /// Chip のサイズを設定する
     ///
     /// ## 使用例
     /// ```swift

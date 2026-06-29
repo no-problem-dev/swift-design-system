@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// Liquid Glass Chipスタイル
+/// Liquid Glass Chip スタイル
 ///
-/// Apple WWDC 2024で発表されたLiquid Glass デザイン言語に基づく半透明のChipスタイルです。
-/// iOS 26+の公式`.glassEffect()`APIを使用し、プレミアム感のある表現を提供します。
+/// Liquid Glass デザイン言語に基づく半透明の Chip スタイル。
+/// iOS 26 以降の `.glassEffect()` API を使い、プレミアム感のある表現を提供する。
 ///
 /// ## 使用例
 /// ```swift

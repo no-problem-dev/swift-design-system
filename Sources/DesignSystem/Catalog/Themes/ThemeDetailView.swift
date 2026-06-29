@@ -2,7 +2,7 @@ import SwiftUI
 
 /// テーマ詳細ビュー
 ///
-/// 選択したテーマの詳細情報を表示し、プレビューと適用が可能です。
+/// 選択したテーマの詳細情報を表示し、プレビューと適用が可能。
 public struct ThemeDetailView: View {
     @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colors

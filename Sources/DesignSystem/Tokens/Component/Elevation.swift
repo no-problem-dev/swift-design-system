@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Elevationレベル（高さ/影）
 ///
-/// 一貫した影のスタイリングを提供し、UI要素の階層と重要度を視覚的に表現します。
-/// レベルが高いほど要素が手前に浮き上がって見えます。
+/// 一貫した影のスタイリングを提供し、UI 要素の階層と重要度を視覚的に表現する。
+/// レベルが高いほど要素が手前に浮き上がって見える。
 ///
 /// ## 使用例
 /// ```swift
@@ -83,7 +83,7 @@ public enum Elevation {
     }
 
     /// ダークモード用の不透明度調整
-    /// ダークモードでは黒い影よりもsurfaceの明度差で奥行きを表現するため、影は控えめにします。
+    /// ダークモードでは黒い影よりも surface の明度差で奥行きを表現する。影は控えめ。
     public func opacity(for colorScheme: ColorScheme) -> Double {
         colorScheme == .dark ? opacity * 0.55 : opacity
     }

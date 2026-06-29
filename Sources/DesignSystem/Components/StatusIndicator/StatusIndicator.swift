@@ -3,7 +3,7 @@ import SwiftUI
 /// 非同期の作業状態を表す意味的なステータス。
 ///
 /// エージェント実行、アップロード、同期など「待機 → 実行 → 終端」の
-/// ライフサイクルを持つあらゆる処理の状態表現に使えます。
+/// ライフサイクルを持つあらゆる処理の状態表現に使える。
 public enum StatusKind: Sendable, Equatable, CaseIterable {
     /// 開始待ち
     case pending
@@ -20,7 +20,7 @@ public enum StatusKind: Sendable, Equatable, CaseIterable {
 /// StatusIndicatorコンポーネント
 ///
 /// `StatusKind` をアイコン + セマンティックカラーの 1 グリフで表すインジケーター。
-/// 実行中はシステムの `ProgressView` を表示します。
+/// 実行中はシステムの `ProgressView` を表示する。
 ///
 /// ## 基本的な使用例
 /// ```swift

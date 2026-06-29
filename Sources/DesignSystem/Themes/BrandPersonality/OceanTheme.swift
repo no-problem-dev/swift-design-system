@@ -3,7 +3,7 @@ import SwiftUI
 /// Oceanテーマ - プロフェッショナル・落ち着き
 ///
 /// 深い海の青をベースとした、信頼感と落ち着きを表現するテーマ。
-/// 企業向けアプリや生産性ツールに最適です。
+/// 企業向けアプリや生産性ツールに最適。
 public struct OceanTheme: Theme {
     public init() {}
 

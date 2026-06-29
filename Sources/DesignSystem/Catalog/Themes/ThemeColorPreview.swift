@@ -2,7 +2,7 @@ import SwiftUI
 
 /// テーマカラープレビュー
 ///
-/// テーマの全カラーパレットを視覚的に表示します。
+/// テーマの全カラーパレットを視覚的に表示する。
 struct ThemeColorPreview: View {
     @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colors

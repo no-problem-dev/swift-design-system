@@ -4,9 +4,9 @@
 
 ## Overview
 
-DesignSpec は、`DESIGN.md` 9 セクション（ブランドメタ・ビジュアルテーマ・カラー・タイポグラフィ・スペーシング・角丸・エレベーション・レイアウト・コンポーネント）を Codable モデルに移植したライブラリです。
+DesignSpec は、`DESIGN.md` 9 セクション（ブランドメタ・ビジュアルテーマ・カラー・タイポグラフィ・スペーシング・角丸・エレベーション・レイアウト・コンポーネント）を Codable モデルに移植したライブラリ。
 
-SwiftUI・UIKit・AppKit への依存を持たず、純粋な Foundation + Swift 標準ライブラリのみで動作します。CLI によるデザイン仕様の生成・検証・差分・取り込みが可能です。
+SwiftUI・UIKit・AppKit への依存を持たず、純粋な Foundation + Swift 標準ライブラリのみで動作する。CLI によるデザイン仕様の生成・検証・差分・取り込みが可能。
 
 ```swift
 let spec = DesignSpec(
@@ -17,11 +17,12 @@ let spec = DesignSpec(
     ),
     color: ColorSpec(primitives: [], roles: [], states: []),
     typography: TypographySpec(
-        fontStack: FontStack(primaryFamily: "system", fallback: []),
+        fontStack: FontStack(system: true),
         scaleModel: .modular(base: 16, ratio: 1.25),
-        styles: []
+        ramp: [],
+        leading: []
     ),
-    spacing: SpacingSpec(model: .absolute, steps: []),
+    spacing: SpacingSpec(model: .absolutePt, steps: []),
     radius: RadiusSpec(steps: []),
     elevation: ElevationSpec(layers: []),
     layout: LayoutSpec(),

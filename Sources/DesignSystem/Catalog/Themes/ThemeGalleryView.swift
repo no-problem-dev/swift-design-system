@@ -2,7 +2,7 @@ import SwiftUI
 
 /// テーマギャラリービュー
 ///
-/// 全テーマをカテゴリ別に表示し、テーマの選択と切り替えを可能にします。
+/// 全テーマをカテゴリ別に表示し、テーマの選択と切り替えを可能にする。
 public struct ThemeGalleryView: View {
     @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colors

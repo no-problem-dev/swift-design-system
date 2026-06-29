@@ -1,8 +1,6 @@
 import Foundation
 
-/// 絵文字アイテム
-///
-/// 絵文字ピッカーで表示される個々の絵文字を表します。
+/// 絵文字アイテム。絵文字ピッカーで表示される個々の絵文字。
 public struct EmojiItem: Identifiable, Sendable, Hashable {
     public let id: String
     public let emoji: String
@@ -15,9 +13,7 @@ public struct EmojiItem: Identifiable, Sendable, Hashable {
     }
 }
 
-/// 絵文字のカテゴリを表すプロトコル
-///
-/// 絵文字をグループ化するためのプロトコルです。
+/// 絵文字のカテゴリを表すプロトコル。絵文字をグループ化するために使う。
 public protocol EmojiCategoryProtocol: Identifiable, Sendable {
     var id: String { get }
     var displayName: String { get }

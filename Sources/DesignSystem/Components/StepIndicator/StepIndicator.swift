@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// 一方向に進む N ステップの現在位置をドット列で表すミニインジケーター。
 /// 現在のステップは `primary`、通過したステップは薄い `primary`、
-/// 未来のステップは `outlineVariant` で塗られます。
+/// 未来のステップは `outlineVariant` で塗られる。
 ///
 /// ## 基本的な使用例
 /// ```swift
@@ -15,8 +15,8 @@ import SwiftUI
 /// StepIndicator(stepCount: 3, currentIndex: nil)
 /// ```
 ///
-/// アクセシビリティラベルは「ステップ 2 / 3」の形式で自動生成されます。
-/// ステップに固有の名前がある場合は `accessibilityText` で上書きしてください。
+/// アクセシビリティラベルは「ステップ 2 / 3」の形式で自動生成される。
+/// ステップに固有の名前がある場合は `accessibilityText` で上書きする。
 public struct StepIndicator: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

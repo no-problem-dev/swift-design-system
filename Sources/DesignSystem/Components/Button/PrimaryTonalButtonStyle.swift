@@ -3,7 +3,7 @@ import SwiftUI
 /// Primaryの色相を保った控えめなボタンスタイル。
 ///
 /// 主要導線に関連する補助アクションなど、Primaryと親和性を持たせたいが
-/// 塗りのPrimaryほど強くしたくない操作に使用します。
+/// 塗りの Primary ほど強くしたくない操作に使う。
 public struct PrimaryTonalButtonStyle: ButtonStyle {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.buttonSize) private var buttonSize

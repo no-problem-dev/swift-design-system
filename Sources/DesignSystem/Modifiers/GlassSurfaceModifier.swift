@@ -3,7 +3,7 @@ import SwiftUI
 public extension View {
     /// Liquid Glass のサーフェス背景を敷く。カード・行・コンポーザーなどの面に使う。
     ///
-    /// iOS 26 未満では ultraThinMaterial + アウトラインにフォールバックします。
+    /// iOS 26 未満では ultraThinMaterial + アウトラインにフォールバックする。
     ///
     /// 注意: ScrollView 内で複数並べる用途（カルーセル・チップ行・マーキー等）には
     /// ``frostedSurface(cornerRadius:tint:)`` を使うこと。glassEffect はスクロール領域

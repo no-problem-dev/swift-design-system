@@ -1,8 +1,6 @@
 import SwiftUI
 
-/// カラーアイテム
-///
-/// カラーピッカーで表示される個々の色を表します。
+/// カラーアイテム。カラーピッカーで表示される個々の色。
 public struct ColorItem: Identifiable, Sendable, Hashable {
     public let id: String
     public let hex: String
@@ -15,9 +13,7 @@ public struct ColorItem: Identifiable, Sendable, Hashable {
     }
 }
 
-/// カラープリセット
-///
-/// カラーピッカーで使用するプリセットカラーのコレクションです。
+/// カラープリセット。カラーピッカーで使用するプリセットカラーのコレクション。
 ///
 /// ## 使用例
 /// ```swift
@@ -48,7 +44,7 @@ public struct ColorPreset: Identifiable, Sendable {
 
     /// タグやカテゴリ選択に適した配色セット
     ///
-    /// 視認性が高く、区別しやすい10色のセットです。
+    /// 視認性が高く、区別しやすい 10 色のセット。
     public static var tagFriendly: ColorPreset {
         ColorPreset(id: "tagFriendly", colors: [
             ColorItem(hex: "#EF4444", name: "Red"),
@@ -66,7 +62,7 @@ public struct ColorPreset: Identifiable, Sendable {
 
     /// すべてのプリミティブカラーの500番台
     ///
-    /// より多くの選択肢を提供する場合に使用します。
+    /// より多くの選択肢が必要な場合に使用する。
     public static var allPrimitives: ColorPreset {
         ColorPreset(id: "allPrimitives", colors: [
             ColorItem(hex: "#6B7280", name: "Gray"),

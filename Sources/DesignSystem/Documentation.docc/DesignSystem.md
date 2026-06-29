@@ -1,14 +1,14 @@
 # ``DesignSystem``
 
-SwiftUI向けの型安全で拡張可能なデザインシステム。
+SwiftUI 向けの型安全で拡張可能なデザインシステム。
 
 ## Overview
 
-DesignSystemは、Primitive → Semantic → Component の3層トークンアーキテクチャに基づいた
-SwiftUI用デザインシステムライブラリです。
-プロトコルベース設計により、型安全性と拡張性を両立しています。
+DesignSystem は、Primitive → Semantic → Component の 3 層トークンアーキテクチャに基づいた
+SwiftUI 用デザインシステムライブラリ。
+プロトコルベース設計により、型安全性と拡張性を両立する。
 
-テーマの適用はシンプルです:
+テーマの適用はシンプル:
 
 ```swift
 @main
@@ -24,7 +24,7 @@ struct MyApp: App {
 }
 ```
 
-View内ではEnvironmentからデザイントークンを取得して使用します:
+View 内では Environment からデザイントークンを取得して使用する:
 
 ```swift
 struct MyView: View {
@@ -35,16 +35,16 @@ struct MyView: View {
         VStack(spacing: spacing.lg) {
             Text("見出し")
                 .typography(.headlineLarge)
-                .foregroundColor(colors.primary)
+                .foregroundStyle(colors.primary)
         }
         .padding(spacing.xl)
     }
 }
 ```
 
-### iOS Only Components
+### iOS 専用コンポーネント
 
-以下のコンポーネントはiOS専用です（`#if canImport(UIKit)` で条件コンパイル）:
+以下のコンポーネントは iOS 専用（`#if canImport(UIKit)` で条件コンパイル）:
 
 - `VideoPlayerView` - 動画再生プレーヤー
 - `ImagePickerModifier` - 画像ピッカー（`.imagePicker()`）
@@ -52,7 +52,7 @@ struct MyView: View {
 
 ## Topics
 
-### Essentials
+### エッセンシャル
 
 - <doc:GettingStarted>
 - <doc:TokenArchitecture>
@@ -61,7 +61,7 @@ struct MyView: View {
 - ``Theme``
 - ``ThemeMode``
 
-### Design Tokens
+### デザイントークン
 
 - ``ColorPalette``
 - ``SpacingScale``
@@ -70,7 +70,7 @@ struct MyView: View {
 - ``Motion``
 - ``Elevation``
 
-### Theme System
+### テーマシステム
 
 - ``ThemeCategory``
 - ``ThemeRegistry``
@@ -82,13 +82,13 @@ struct MyView: View {
 - ``MonochromeTheme``
 - ``HighContrastTheme``
 
-### Token Defaults
+### トークンデフォルト
 
 - ``DefaultSpacingScale``
 - ``DefaultRadiusScale``
 - ``DefaultMotion``
 
-### Components - Button
+### コンポーネント - ボタン
 
 - ``PrimaryButtonStyle``
 - ``SecondaryButtonStyle``
@@ -98,7 +98,7 @@ struct MyView: View {
 - ``PrimaryTonalButtonStyle``
 - ``ButtonSize``
 
-### Components - Input
+### コンポーネント - 入力
 
 - ``DSTextField``
 - ``DSTextFieldStyle``
@@ -112,7 +112,7 @@ struct MyView: View {
 - ``OutlinedChipStyle``
 - ``LiquidGlassChipStyle``
 
-### Components - Display
+### コンポーネント - 表示
 
 - ``Card``
 - ``LinkCard``
@@ -133,7 +133,7 @@ struct MyView: View {
 - ``MediaViewerItem``
 - ``TimelineRow``
 
-### Components - Action
+### コンポーネント - アクション
 
 - ``IconButton``
 - ``IconButtonStyle``
@@ -142,12 +142,12 @@ struct MyView: View {
 - ``FABSize``
 - ``FABStyle``
 
-### Segmented Control
+### セグメントコントロール
 
 - ``SegmentedControl``
 - ``GlassSegmentedControl``
 
-### Layout Patterns
+### レイアウトパターン
 
 - ``SectionCard``
 - ``SectionRow``
@@ -158,13 +158,13 @@ struct MyView: View {
 - ``StaggeredConfig``
 - ``LoopingScrollView``
 
-### Pickers
+### ピッカー
 
 - ``EmojiPickerModifier``
 - ``IconPickerModifier``
 - ``ColorPickerModifier``
 
-### Token Protocols
+### トークンプロトコル
 
 - ``TypographyScale``
 - ``BorderScale``
@@ -173,7 +173,7 @@ struct MyView: View {
 - ``StateLayer``
 - ``IconSizeScale``
 
-### Token Defaults
+### トークンデフォルト
 
 - ``DefaultSpacingScale``
 - ``DefaultRadiusScale``
@@ -185,7 +185,7 @@ struct MyView: View {
 - ``DefaultStateLayer``
 - ``DefaultTypographyScale``
 
-### Utilities
+### ユーティリティ
 
 - ``SurfaceStyle``
 - ``ThemeColorScheme``

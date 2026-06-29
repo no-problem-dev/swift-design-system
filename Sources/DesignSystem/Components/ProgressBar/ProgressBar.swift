@@ -1,19 +1,18 @@
 import SwiftUI
 
-/// A customizable progress bar component
+/// カスタマイズ可能な水平プログレスバー。
 ///
-/// Displays progress as a horizontal bar with configurable appearance.
-/// Supports solid colors, gradients, animation, and various size options.
+/// 進捗を横バーで表示する。単色・グラデーション・アニメーション・高さを設定できる。
 ///
-/// ## Usage
+/// ## 使用例
 /// ```swift
-/// // Simple progress
+/// // シンプルな進捗表示
 /// ProgressBar(value: 0.75)
 ///
-/// // With gradient
+/// // グラデーション
 /// ProgressBar(value: 0.5, gradient: .init(colors: [.blue, .purple]))
 ///
-/// // Animated progress
+/// // アニメーション付き
 /// ProgressBar(value: progress, animated: true)
 /// ```
 public struct ProgressBar: View {
@@ -29,15 +28,15 @@ public struct ProgressBar: View {
     private let animated: Bool
     private let animation: Animation
 
-    /// Creates a progress bar with a solid color
+    /// 単色のプログレスバーを作成する
     /// - Parameters:
-    ///   - value: Progress value (0.0 to 1.0)
-    ///   - height: Bar height in points (default: 8)
-    ///   - cornerRadius: Custom corner radius (default: uses height / 2)
-    ///   - foregroundColor: Fill color (default: primary color)
-    ///   - backgroundColor: Track color (default: surfaceVariant)
-    ///   - animated: Whether to animate value changes (default: false)
-    ///   - animation: Animation to use when animated is true (default: .easeInOut(duration: 0.3))
+    ///   - value: 進捗値（0.0〜1.0）
+    ///   - height: バーの高さ（デフォルト: 8pt）
+    ///   - cornerRadius: 角丸半径（デフォルト: height / 2）
+    ///   - foregroundColor: フィル色（デフォルト: primary）
+    ///   - backgroundColor: トラック色（デフォルト: surfaceVariant）
+    ///   - animated: 値変化をアニメーションするか（デフォルト: false）
+    ///   - animation: animated が true の場合のアニメーション（デフォルト: .easeInOut(duration: 0.3)）
     public init(
         value: Double,
         height: CGFloat = 8,
@@ -57,15 +56,15 @@ public struct ProgressBar: View {
         self.animation = animation
     }
 
-    /// Creates a progress bar with a gradient fill
+    /// グラデーション塗りのプログレスバーを作成する
     /// - Parameters:
-    ///   - value: Progress value (0.0 to 1.0)
-    ///   - gradient: Gradient for the fill
-    ///   - height: Bar height in points (default: 8)
-    ///   - cornerRadius: Custom corner radius (default: uses height / 2)
-    ///   - backgroundColor: Track color (default: surfaceVariant)
-    ///   - animated: Whether to animate value changes (default: false)
-    ///   - animation: Animation to use when animated is true (default: .easeInOut(duration: 0.3))
+    ///   - value: 進捗値（0.0〜1.0）
+    ///   - gradient: フィル用のグラデーション
+    ///   - height: バーの高さ（デフォルト: 8pt）
+    ///   - cornerRadius: 角丸半径（デフォルト: height / 2）
+    ///   - backgroundColor: トラック色（デフォルト: surfaceVariant）
+    ///   - animated: 値変化をアニメーションするか（デフォルト: false）
+    ///   - animation: animated が true の場合のアニメーション（デフォルト: .easeInOut(duration: 0.3)）
     public init(
         value: Double,
         gradient: LinearGradient,

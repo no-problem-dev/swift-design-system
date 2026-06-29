@@ -42,7 +42,7 @@ public struct ColorPickerModifier: ViewModifier {
 // MARK: - View Extension
 
 public extension View {
-    /// カラーピッカーを表示します
+    /// カラーピッカーを表示する。
     ///
     /// - Parameters:
     ///   - preset: 表示するカラープリセット（デフォルト: `.tagFriendly`）

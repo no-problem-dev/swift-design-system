@@ -2,8 +2,8 @@ import SwiftUI
 
 /// カラーパレットプロトコル
 ///
-/// テーマごとに異なる色実装を提供し、アプリ全体で一貫した色の使用を保証します。
-/// Light/Darkテーマ、カスタムブランドカラーなど、様々なテーマに対応できます。
+/// テーマごとに異なる色実装を提供し、アプリ全体で一貫した色の使用を保証する。
+/// Light/Dark テーマ、カスタムブランドカラーなど、様々なテーマに対応できる。
 ///
 /// ## 使用例
 /// ```swift
@@ -11,9 +11,9 @@ import SwiftUI
 ///
 /// VStack {
 ///     Text("見出し")
-///         .foregroundColor(colors.primary)
+///         .foregroundStyle(colors.primary)
 ///     Text("本文")
-///         .foregroundColor(colors.onSurface)
+///         .foregroundStyle(colors.onSurface)
 /// }
 /// .background(colors.surface)
 /// ```

@@ -8,13 +8,13 @@ import Photos
 import PhotosUI
 import UniformTypeIdentifiers
 
-/// 動画ピッカーを表示するViewModifier
+/// 動画ピッカーを表示する ViewModifier。
 ///
 /// カメラまたは写真ライブラリから動画を選択できるモディファイア。
-/// 適切な権限管理を行い、権限がない場合はアラートで通知します。
+/// 適切な権限管理を行い、権限がない場合はアラートで通知する。
 ///
-/// - Note: カメラとフォトライブラリの使用許可が必要です。
-///   Info.plistに以下のキーを追加してください：
+/// - Note: カメラとフォトライブラリの使用許可が必要。
+///   Info.plist に以下のキーを追加すること：
 ///   - `NSCameraUsageDescription`: カメラ使用の説明
 ///   - `NSPhotoLibraryUsageDescription`: フォトライブラリアクセスの説明
 ///   - `NSMicrophoneUsageDescription`: マイク使用の説明（動画撮影時に必要）
@@ -370,10 +370,10 @@ struct VideoPickerViewController: UIViewControllerRepresentable {
 // MARK: - Public Extension
 
 public extension View {
-    /// 動画ピッカーモディファイアを適用
+    /// 動画ピッカーモディファイアを適用する。
     ///
     /// カメラまたは写真ライブラリから動画を選択できるモディファイア。
-    /// 選択された動画はDataとして返されます。
+    /// 選択された動画は Data として返される。
     ///
     /// ```swift
     /// struct ContentView: View {
@@ -403,8 +403,8 @@ public extension View {
     /// - Parameters:
     ///   - isPresented: ピッカーの表示状態を制御するバインディング
     ///   - selectedVideoData: 選択された動画のデータを受け取るバインディング
-    ///   - maxSize: 動画の最大サイズ。指定された場合、超過するとエラーが発生します。
-    ///   - maxDuration: 動画の最大長（秒）。カメラ撮影時は録画時間を制限します。
+    ///   - maxSize: 動画の最大サイズ。指定された場合、超過するとエラーが発生する。
+    ///   - maxDuration: 動画の最大長（秒）。カメラ撮影時は録画時間を制限する。
     ///   - onError: エラー発生時に呼ばれるコールバック
     /// - Returns: モディファイアが適用されたビュー
     func videoPicker(

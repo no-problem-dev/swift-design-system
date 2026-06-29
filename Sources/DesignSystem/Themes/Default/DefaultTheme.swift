@@ -2,7 +2,7 @@ import SwiftUI
 
 /// デフォルトテーマ
 ///
-/// システムの基本となる青ベースのテーマです。
+/// システムの基本となる青ベースのテーマ。
 public struct DefaultTheme: Theme {
     public init() {}
 

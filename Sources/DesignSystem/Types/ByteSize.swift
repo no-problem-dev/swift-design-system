@@ -1,9 +1,9 @@
 import Foundation
 
-/// バイトサイズを表す型
+/// バイトサイズを表す型。
 ///
-/// ファイルサイズの指定を直感的に行うための型です。
-/// Int拡張と組み合わせて、自然な記述が可能です。
+/// ファイルサイズを型安全かつ直感的に扱う。
+/// Int 拡張と組み合わせて自然な記述が可能。
 ///
 /// ## 使用例
 /// ```swift
@@ -84,10 +84,7 @@ public struct ByteSize: Sendable, Equatable, Comparable, Hashable {
         bytes / (1_024 * 1_024 * 1_024)
     }
 
-    /// フォーマット済み文字列
-    ///
-    /// 適切な単位で表示します。
-    /// 例: "1.5 MB", "500 KB", "2 GB"
+    /// フォーマット済み文字列。適切な単位で表示する（例: "1.5 MB", "500 KB", "2 GB"）。
     public var formatted: String {
         let formatter = ByteCountFormatter()
         formatter.allowedUnits = [.useBytes, .useKB, .useMB, .useGB]

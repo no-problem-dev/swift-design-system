@@ -3,8 +3,8 @@ import SwiftUI
 /// Liquid Glass の選択インジケーターがスライドするセグメンテッドコントロール。
 ///
 /// `SegmentedControl` のフラットな配色切替に対し、選択中セグメントを 1 枚のガラスカプセルとして
-/// `matchedGeometryEffect` で滑らせます。ドラッグでもインジケーターが指に追従します。
-/// iOS 26 未満では ultraThinMaterial にフォールバックします。
+/// `matchedGeometryEffect` で滑らかに動かす。ドラッグ中もインジケーターが指に追従する。
+/// iOS 26 未満では ultraThinMaterial にフォールバックする。
 public struct GlassSegmentedControl<Selection: Hashable, Content: View>: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.spacingScale) private var spacingScale

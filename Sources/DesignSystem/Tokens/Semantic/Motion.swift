@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// デザインシステム全体で一貫したアニメーションを提供する、事前定義されたタイミング設定。
 /// Material Design 3、IBM Carbon Design System、Apple Human Interface Guidelinesの
-/// 業界標準に基づいた、最適化されたアニメーション値を提供します。
+/// 業界標準に基づいた、最適化されたアニメーション値を提供する。
 ///
 /// ## 使用例
 /// ```swift
@@ -23,7 +23,7 @@ import SwiftUI
 ///
 /// ## アクセシビリティ
 /// `.animate()` モディファイアを使用すると、視差効果を減らす設定が有効な場合に
-/// 自動的にアニメーションが最小化されます（WCAG 2.1準拠）。
+/// 自動的にアニメーションが最小化される（WCAG 2.1準拠）。
 public protocol Motion: Sendable {
     // MARK: - Micro-interactions
 

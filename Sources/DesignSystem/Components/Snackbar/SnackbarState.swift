@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Snackbarの表示状態を管理するObservableオブジェクト
 ///
-/// Snackbarの表示・非表示、自動消滅タイマーなどの状態を一元管理します。
+/// Snackbar の表示・非表示・自動消滅タイマーなどの状態を一元管理する。
 ///
 /// ## 使用例
 /// ```swift

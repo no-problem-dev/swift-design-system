@@ -2,9 +2,9 @@ import SwiftUI
 
 /// 選択済み添付を 1 件だけ表す角丸サムネイル（atom）。
 ///
-/// 画像プレビューと「ファイル（アイコン + 名前）」の両方を表現できます。
-/// 右上の ✕ で削除を要求します。ドメイン型は受けず、内部 state も持ちません。
-/// 削除という副作用は呼び出し側の `onRemove` に委譲します。
+/// 画像プレビューと「ファイル（アイコン + 名前）」の両方を表現できる。
+/// 右上の ✕ で削除を要求する。ドメイン型は受けず、内部 state も持たない。
+/// 削除という副作用は呼び出し側の `onRemove` に委譲する。
 ///
 /// ```swift
 /// AttachmentThumbnail(image: Image("photo")) { remove(id) }
@@ -23,7 +23,7 @@ public struct AttachmentThumbnail: View {
     private let content: Content
     private let onRemove: () -> Void
 
-    /// 画像添付用。プレビュー画像をそのまま塗りつぶし表示します。
+    /// 画像添付用。プレビュー画像をそのまま塗りつぶし表示する。
     /// - Parameters:
     ///   - image: 表示するプレビュー画像。
     ///   - onRemove: ✕ タップ時に呼ばれる削除要求。
@@ -32,7 +32,7 @@ public struct AttachmentThumbnail: View {
         self.onRemove = onRemove
     }
 
-    /// ファイル/ドキュメント添付用。プレビュー画像が無いものをアイコン + 名前で表します。
+    /// ファイル/ドキュメント添付用。プレビュー画像がないものをアイコン + 名前で表す。
     /// - Parameters:
     ///   - systemImage: ファイル種別を表す SF Symbols 名。
     ///   - fileName: ファイル名（1〜2 行で省略表示）。

@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// Filled Chipスタイル
+/// Filled Chip スタイル
 ///
-/// 塗りつぶし背景を持つChipスタイルです。ステータス表示、カテゴリラベル、
-/// 固定的な情報表示に適しています。
+/// 塗りつぶし背景の Chip スタイル。ステータス表示・カテゴリラベル・
+/// 固定的な情報表示に適する。
 ///
 /// ## 使用例
 /// ```swift
@@ -64,7 +64,7 @@ public struct FilledChipStyle: ChipStyle, Sendable {
 }
 
 public extension ChipStyle where Self == FilledChipStyle {
-    /// Filled Chipスタイル
+    /// Filled Chip スタイル
     static var filled: FilledChipStyle {
         FilledChipStyle()
     }

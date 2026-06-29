@@ -1,9 +1,9 @@
 import Foundation
 
-/// Primitive typography tokens
+/// 基本タイポグラフィトークン
 ///
-/// 基本的なフォントサイズと行間の値を定義します。
-/// **直接使用は避け**、`Typography` enumから参照してください。
+/// 基本的なフォントサイズと行間の値を定義する。
+/// **直接使用は避け**、`Typography` enum から参照すること。
 ///
 /// ## 使用方法
 /// ```swift

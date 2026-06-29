@@ -3,7 +3,7 @@ import SwiftUI
 /// Snackbar（一時的な通知UI）
 ///
 /// 画面下部から表示される一時的な通知UI。
-/// ユーザーのアクションに対するフィードバックや、簡単な通知を表示します。
+/// ユーザーアクションへのフィードバックや簡易通知を表示する。
 ///
 /// ## 基本的な使い方
 /// ```swift
@@ -45,10 +45,10 @@ public struct Snackbar: View {
     @Environment(\.spacingScale) private var spacing
     @Environment(\.radiusScale) private var radius
 
-    /// Snackbar を作成します。
+    /// Snackbar を作成する。
     ///
-    /// `SnackbarState` は `@Observable` クラスです。Snackbar ビューは状態への参照を保持し、
-    /// `state.show(message:)` を呼ぶと自動的に表示されます。
+    /// `SnackbarState` は `@Observable` クラス。Snackbar ビューは状態への参照を保持し、
+    /// `state.show(message:)` を呼ぶと自動的に表示される。
     ///
     /// - Parameter state: Snackbar の表示状態を管理する ``SnackbarState`` インスタンス
     public init(state: SnackbarState) {
