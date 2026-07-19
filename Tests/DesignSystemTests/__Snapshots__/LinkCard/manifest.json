@@ -1,0 +1,49 @@
+{
+  "generatedAt" : "2026-07-19T10:13:36Z",
+  "name" : "LinkCard",
+  "states" : {
+    "longTitleTruncates" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "longTitleTruncates.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "longTitleTruncates.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "titleFallsBackToHost" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "titleFallsBackToHost.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "titleFallsBackToHost.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "withTitle" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "withTitle.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "withTitle.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}

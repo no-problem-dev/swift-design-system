@@ -1,7 +1,35 @@
 {
-  "generatedAt" : "2026-07-19T08:56:57Z",
+  "generatedAt" : "2026-07-19T10:13:35Z",
   "name" : "ProgressBar",
   "states" : {
+    "aboveRangeClampsToFull" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "aboveRangeClampsToFull.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "aboveRangeClampsToFull.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "belowRangeClampsToEmpty" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "belowRangeClampsToEmpty.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "belowRangeClampsToEmpty.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
     "eightyPercent" : {
       "disableAnimations" : false,
       "inNavigation" : false,
@@ -12,6 +40,34 @@
         },
         {
           "file" : "eightyPercent.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "empty" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "empty.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "empty.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "full" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "full.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "full.dark.png",
           "theme" : "dark"
         }
       ]

@@ -44,9 +44,30 @@ final class ThemeBundleTests: XCTestCase {
     }
 
     func testExistingThemesKeepDefaultScales() {
-        // 非破壊: 既存テーマは default を返す（視覚不変）
-        XCTAssertTrue(DefaultTheme().spacingScale is DefaultSpacingScale)
-        XCTAssertTrue(DefaultTheme().radiusScale is DefaultRadiusScale)
+        // 非破壊: 既存テーマは 4pt グリッド由来の既定値を運ぶ（視覚不変）
+        let spacing = DefaultTheme().spacingScale
+        XCTAssertEqual(spacing.none, 0)
+        XCTAssertEqual(spacing.xxs, 2)
+        XCTAssertEqual(spacing.xs, 4)
+        XCTAssertEqual(spacing.sm, 8)
+        XCTAssertEqual(spacing.md, 12)
+        XCTAssertEqual(spacing.lg, 16)
+        XCTAssertEqual(spacing.xl, 24)
+        XCTAssertEqual(spacing.xxl, 32)
+        XCTAssertEqual(spacing.xxxl, 48)
+        XCTAssertEqual(spacing.xxxxl, 64)
+
+        let radius = DefaultTheme().radiusScale
+        XCTAssertEqual(radius.none, 0)
+        XCTAssertEqual(radius.xs, 2)
+        XCTAssertEqual(radius.sm, 4)
+        XCTAssertEqual(radius.md, 8)
+        XCTAssertEqual(radius.lg, 12)
+        XCTAssertEqual(radius.xl, 16)
+        XCTAssertEqual(radius.xxl, 20)
+        XCTAssertEqual(radius.card, 24)
+        // full はピル形状用のセンチネル。有限値にすると角丸が効かなくなる
+        XCTAssertEqual(radius.full, .infinity)
     }
 
     func testBrandThemeSuppliesItsOwnScales() {

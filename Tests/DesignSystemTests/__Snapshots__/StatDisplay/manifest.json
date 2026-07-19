@@ -1,0 +1,49 @@
+{
+  "generatedAt" : "2026-07-19T10:13:36Z",
+  "name" : "StatDisplay",
+  "states" : {
+    "allSizes" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "allSizes.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "allSizes.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "centerAligned" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "centerAligned.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "centerAligned.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "withoutUnit" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "withoutUnit.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "withoutUnit.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}

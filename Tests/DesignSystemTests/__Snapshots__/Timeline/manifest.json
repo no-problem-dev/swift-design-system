@@ -1,0 +1,21 @@
+{
+  "generatedAt" : "2026-07-19T10:13:35Z",
+  "name" : "Timeline",
+  "states" : {
+    "firstMiddleLast" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "firstMiddleLast.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "firstMiddleLast.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}

@@ -1,0 +1,35 @@
+{
+  "generatedAt" : "2026-07-19T10:13:35Z",
+  "name" : "ParameterChip",
+  "states" : {
+    "plain" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "plain.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "plain.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "prominent" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "prominent.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "prominent.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}

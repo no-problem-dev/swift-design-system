@@ -1,0 +1,49 @@
+{
+  "generatedAt" : "2026-07-19T10:13:36Z",
+  "name" : "Section",
+  "states" : {
+    "navigationLabel" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "navigationLabel.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "navigationLabel.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "surfaceWithHeaderAndFooter" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "surfaceWithHeaderAndFooter.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "surfaceWithHeaderAndFooter.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "titled" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "titled.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "titled.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}

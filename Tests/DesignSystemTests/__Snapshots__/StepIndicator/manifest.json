@@ -1,0 +1,63 @@
+{
+  "generatedAt" : "2026-07-19T10:13:36Z",
+  "name" : "StepIndicator",
+  "states" : {
+    "firstOfFive" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "firstOfFive.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "firstOfFive.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "lastOfFive" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "lastOfFive.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "lastOfFive.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "middleOfFive" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "middleOfFive.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "middleOfFive.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "noSelection" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "noSelection.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "noSelection.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}

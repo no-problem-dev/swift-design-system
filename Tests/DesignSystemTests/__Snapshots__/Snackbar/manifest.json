@@ -1,7 +1,21 @@
 {
-  "generatedAt" : "2026-07-19T08:56:57Z",
+  "generatedAt" : "2026-07-19T10:13:37Z",
   "name" : "Snackbar",
   "states" : {
+    "hidden" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "hidden.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "hidden.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
     "message" : {
       "disableAnimations" : false,
       "inNavigation" : false,

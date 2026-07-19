@@ -1,0 +1,49 @@
+{
+  "generatedAt" : "2026-07-19T10:13:36Z",
+  "name" : "Attachment",
+  "states" : {
+    "fileWithName" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "fileWithName.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "fileWithName.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "fileWithoutName" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "fileWithoutName.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "fileWithoutName.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "longFileNameTruncates" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "longFileNameTruncates.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "longFileNameTruncates.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}

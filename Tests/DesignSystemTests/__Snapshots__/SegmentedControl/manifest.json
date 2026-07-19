@@ -1,0 +1,35 @@
+{
+  "generatedAt" : "2026-07-19T10:13:36Z",
+  "name" : "SegmentedControl",
+  "states" : {
+    "firstSelected" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "firstSelected.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "firstSelected.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "lastSelected" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "lastSelected.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "lastSelected.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}

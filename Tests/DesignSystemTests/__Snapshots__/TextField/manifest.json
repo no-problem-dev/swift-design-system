@@ -1,0 +1,91 @@
+{
+  "generatedAt" : "2026-07-19T10:13:36Z",
+  "name" : "TextField",
+  "states" : {
+    "disabled" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "disabled.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "disabled.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "emptyWithPlaceholder" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "emptyWithPlaceholder.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "emptyWithPlaceholder.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "filled" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "filled.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "filled.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "filledStyle" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "filledStyle.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "filledStyle.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "withError" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "withError.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "withError.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "withSupportingText" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "withSupportingText.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "withSupportingText.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}

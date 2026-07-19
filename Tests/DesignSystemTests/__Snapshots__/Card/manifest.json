@@ -1,7 +1,21 @@
 {
-  "generatedAt" : "2026-07-19T08:56:57Z",
+  "generatedAt" : "2026-07-19T10:13:36Z",
   "name" : "Card",
   "states" : {
+    "level0" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "level0.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "level0.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
     "level1" : {
       "disableAnimations" : false,
       "inNavigation" : false,
@@ -26,6 +40,20 @@
         },
         {
           "file" : "level3.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "level5" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "level5.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "level5.dark.png",
           "theme" : "dark"
         }
       ]

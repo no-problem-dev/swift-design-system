@@ -1,5 +1,5 @@
 {
-  "generatedAt" : "2026-07-19T08:56:57Z",
+  "generatedAt" : "2026-07-19T10:13:37Z",
   "name" : "EmptyState",
   "states" : {
     "basic" : {
@@ -12,6 +12,20 @@
         },
         {
           "file" : "basic.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "titleOnly" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "titleOnly.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "titleOnly.dark.png",
           "theme" : "dark"
         }
       ]

@@ -1,5 +1,5 @@
 {
-  "generatedAt" : "2026-07-19T08:56:57Z",
+  "generatedAt" : "2026-07-19T10:13:37Z",
   "name" : "Chip",
   "states" : {
     "deletable" : {
@@ -54,6 +54,20 @@
         },
         {
           "file" : "selected.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "unselected" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "unselected.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "unselected.dark.png",
           "theme" : "dark"
         }
       ]

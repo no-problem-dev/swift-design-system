@@ -1,7 +1,21 @@
 {
-  "generatedAt" : "2026-07-19T08:56:57Z",
+  "generatedAt" : "2026-07-19T10:13:36Z",
   "name" : "Button",
   "states" : {
+    "glass" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "glass.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "glass.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
     "primary" : {
       "disableAnimations" : false,
       "inNavigation" : false,
@@ -16,6 +30,62 @@
         }
       ]
     },
+    "primaryDisabled" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "primaryDisabled.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "primaryDisabled.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "primaryGlass" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "primaryGlass.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "primaryGlass.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "primaryLongLabel" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "primaryLongLabel.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "primaryLongLabel.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "primaryTonal" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "primaryTonal.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "primaryTonal.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
     "secondary" : {
       "disableAnimations" : false,
       "inNavigation" : false,
@@ -26,6 +96,20 @@
         },
         {
           "file" : "secondary.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "smallSize" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "smallSize.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "smallSize.dark.png",
           "theme" : "dark"
         }
       ]

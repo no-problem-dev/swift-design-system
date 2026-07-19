@@ -1,0 +1,35 @@
+{
+  "generatedAt" : "2026-07-19T10:13:36Z",
+  "name" : "IconBadge",
+  "states" : {
+    "allSizes" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "allSizes.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "allSizes.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "tinted" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "tinted.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "tinted.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}
