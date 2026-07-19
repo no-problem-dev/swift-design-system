@@ -28,13 +28,23 @@ jobs:
         with:
           xcode-version: 'latest-stable'
 
-      - name: Cache SPM
+      # library は Package.resolved を追跡しない（FAMILY_CHARTER §5）ため、
+      # キャッシュキーは実質 Package.swift だけになる。.build ごとキャッシュすると
+      # そこに含まれる解決結果（workspace-state.json + checkouts）が復元され続け、
+      # 依存の新バージョンが出てもキャッシュが効く限り古い版でテストが通ってしまう。
+      # 実際 agent-runtime は swift-a2a 0.7.0 の破壊的改名に未追随のまま Tests が
+      # green を出し続けていた（キャッシュしない DocC ジョブだけが失敗していた）。
+      # → ビルド成果物はキャッシュしつつ、解決は毎回やり直す。
+      - name: Cache SPM build artifacts
         uses: actions/cache@v4
         with:
           path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('Package.resolved', 'Package.swift') }}
+          key: ${{ runner.os }}-spm-${{ hashFiles('Package.swift') }}
           restore-keys: |
             ${{ runner.os }}-spm-
+
+      - name: Resolve dependencies (fresh)
+        run: swift package update
 
       - name: Build
         run: swift build
