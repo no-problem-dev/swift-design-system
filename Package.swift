@@ -24,7 +24,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.0")
+        .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.0"),
+        .package(url: "https://github.com/no-problem-dev/swift-visual-testing.git", from: "2.0.0"),
     ],
     targets: [
         .target(
@@ -45,7 +46,10 @@ let package = Package(
         ),
         .testTarget(
             name: "DesignSystemTests",
-            dependencies: ["DesignSystem"]
+            dependencies: [
+                "DesignSystem",
+                .product(name: "VisualTesting", package: "swift-visual-testing"),
+            ]
         ),
         .testTarget(
             name: "DesignSpecTests",

@@ -1,0 +1,21 @@
+{
+  "generatedAt" : "2026-07-19T08:56:57Z",
+  "name" : "EmptyState",
+  "states" : {
+    "basic" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "basic.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "basic.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}

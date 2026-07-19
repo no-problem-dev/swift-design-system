@@ -1,0 +1,49 @@
+{
+  "generatedAt" : "2026-07-19T08:56:57Z",
+  "name" : "Button",
+  "states" : {
+    "primary" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "primary.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "primary.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "secondary" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "secondary.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "secondary.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "tertiary" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "tertiary.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "tertiary.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}

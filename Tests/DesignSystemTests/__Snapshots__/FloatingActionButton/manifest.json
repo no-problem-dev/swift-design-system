@@ -1,0 +1,35 @@
+{
+  "generatedAt" : "2026-07-19T08:56:57Z",
+  "name" : "FloatingActionButton",
+  "states" : {
+    "regular" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "regular.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "regular.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "small" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "small.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "small.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}

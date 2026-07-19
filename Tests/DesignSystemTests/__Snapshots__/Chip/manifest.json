@@ -1,0 +1,63 @@
+{
+  "generatedAt" : "2026-07-19T08:56:57Z",
+  "name" : "Chip",
+  "states" : {
+    "deletable" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "deletable.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "deletable.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "filled" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "filled.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "filled.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "outlined" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "outlined.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "outlined.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "selected" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "selected.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "selected.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}
