@@ -15,7 +15,7 @@ struct HighContrastLightPalette: ColorPalette {
     var onSecondaryContainer: Color { Color(hex: "#2D0033") }
 
     // MARK: - Tertiary
-    var tertiary: Color { Color(hex: "#006B56") } // Deep teal for high contrast
+    var tertiary: Color { Color(hex: "#005745") } // Deep teal for high contrast
     var onTertiary: Color { .white }
 
     // MARK: - Background & Surface
@@ -27,8 +27,12 @@ struct HighContrastLightPalette: ColorPalette {
     var onSurfaceVariant: Color { Color(hex: "#212121") }
 
     // MARK: - Semantic State
-    var error: Color { Color(hex: "#B71C1C") } // Deep red for high contrast
-    var warning: Color { Color(hex: "#E65100") } // Deep orange for high contrast
+    // 白背景でも白文字を載せた時でも AAA (7.0) を満たす暗さに揃えてある。
+    // warning だけは既定の on 色が .black で、その組み合わせでは AAA に届かないため
+    // 他のセマンティック色と同じ「暗い塗り + 白文字」へ寄せて onWarning を上書きする。
+    var error: Color { Color(hex: "#991B1B") } // Deep red for high contrast
+    var warning: Color { Color(hex: "#8F2900") } // Deep orange for high contrast
+    var onWarning: Color { .white }
     var success: Color { Color(hex: "#1B5E20") } // Deep green for high contrast
     var info: Color { Color(hex: "#0050B3") } // Matches primary
 

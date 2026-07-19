@@ -27,10 +27,17 @@ struct HighContrastDarkPalette: ColorPalette {
     var onSurfaceVariant: Color { Color(hex: "#E0E0E0") }
 
     // MARK: - Semantic State
-    var error: Color { Color(hex: "#FF5252") } // Bright red for high contrast
+    // 明るい塗りの上に暗い文字を載せる。既定の on 色は .white なので、ここで上書きしないと
+    // 明るい塗りに白文字という読めない組み合わせになる。
+    // error は #FF5252 のままだと相対輝度 0.279 で、前景を純黒にしても上限 6.58 に留まり
+    // AAA (7.0) に到達できないため、塗り自体を明るくしてある。
+    var error: Color { Color(hex: "#FF8A80") } // Bright red for high contrast
+    var onError: Color { Color(hex: "#2D0000") }
     var warning: Color { Color(hex: "#FFD54F") } // Bright yellow for high contrast
     var success: Color { Color(hex: "#69F0AE") } // Bright green for high contrast
+    var onSuccess: Color { Color(hex: "#003828") }
     var info: Color { Color(hex: "#82B1FF") } // Matches primary
+    var onInfo: Color { Color(hex: "#00174A") } // Matches onPrimary since info matches primary
 
     // MARK: - Outline
     var outline: Color { Color(hex: "#E0E0E0") } // High contrast outline for dark mode

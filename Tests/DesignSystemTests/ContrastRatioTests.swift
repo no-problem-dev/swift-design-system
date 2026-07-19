@@ -84,21 +84,24 @@ final class ContrastRatioTests: XCTestCase {
         assertContrastRatio(palette.onInfo, palette.info, min: aaa, "light onInfo/info")
     }
 
-    func testHighContrastLightSemanticPairsFallShortOfAAA() {
+    func testHighContrastLightSemanticPairsMeetAAA() {
         let palette = HighContrastLightPalette()
 
-        // 既知の欠陥: tertiary 6.49 / error 6.57 / warning 5.54。AA は満たすが AAA には届かない。
-        // 前景色ではなく背景トークン側を暗くして解消すべき（onWarning は .black のため前景は変えられない）。
-        XCTExpectFailure("HighContrastLightPalette の tertiary / error / warning が AAA 未達") {
-            assertContrastRatio(palette.onTertiary, palette.tertiary, min: aaa, "light onTertiary/tertiary")
-            assertContrastRatio(palette.onError, palette.error, min: aaa, "light onError/error")
-            assertContrastRatio(palette.onWarning, palette.warning, min: aaa, "light onWarning/warning")
-        }
+        assertContrastRatio(palette.onTertiary, palette.tertiary, min: aaa, "light onTertiary/tertiary")
+        assertContrastRatio(palette.onError, palette.error, min: aaa, "light onError/error")
+        assertContrastRatio(palette.onWarning, palette.warning, min: aaa, "light onWarning/warning")
+    }
 
-        // AA は現状でも満たしている。ここが落ちたら後退
-        assertContrastRatio(palette.onTertiary, palette.tertiary, min: aa, "light onTertiary/tertiary (AA)")
-        assertContrastRatio(palette.onError, palette.error, min: aa, "light onError/error (AA)")
-        assertContrastRatio(palette.onWarning, palette.warning, min: aa, "light onWarning/warning (AA)")
+    /// ライトのセマンティック色は白背景に直接置く使い方もある。塗りとしてだけでなく
+    /// 文字色として使っても AAA を保つことを押さえる
+    func testHighContrastLightSemanticColorsAreReadableOnBackground() {
+        let palette = HighContrastLightPalette()
+
+        assertContrastRatio(palette.error, palette.background, min: aaa, "light error/background")
+        assertContrastRatio(palette.warning, palette.background, min: aaa, "light warning/background")
+        assertContrastRatio(palette.success, palette.background, min: aaa, "light success/background")
+        assertContrastRatio(palette.info, palette.background, min: aaa, "light info/background")
+        assertContrastRatio(palette.tertiary, palette.background, min: aaa, "light tertiary/background")
     }
 
     // MARK: - HighContrast ダークモード
@@ -117,17 +120,39 @@ final class ContrastRatioTests: XCTestCase {
         assertContrastRatio(palette.onWarning, palette.warning, min: aaa, "dark onWarning/warning")
     }
 
-    func testHighContrastDarkSemanticPairsFailEvenAA() {
+    func testHighContrastDarkSemanticPairsMeetAAA() {
         let palette = HighContrastDarkPalette()
 
-        // 既知の欠陥: HighContrastDarkPalette は onError / onSuccess / onInfo を override して
-        // いないため ColorPalette extension の既定 .white が使われる。背景側は明るい
-        // #FF5252 / #69F0AE / #82B1FF なので白文字では読めない（3.19 / 1.43 / 2.17）。
-        // 各 on* を暗色（例: #00174A 系）へ override すれば解消する。
-        XCTExpectFailure("HighContrastDarkPalette の onError / onSuccess / onInfo が既定の白のまま") {
-            assertContrastRatio(palette.onError, palette.error, min: aaa, "dark onError/error")
-            assertContrastRatio(palette.onSuccess, palette.success, min: aaa, "dark onSuccess/success")
-            assertContrastRatio(palette.onInfo, palette.info, min: aaa, "dark onInfo/info")
+        assertContrastRatio(palette.onError, palette.error, min: aaa, "dark onError/error")
+        assertContrastRatio(palette.onSuccess, palette.success, min: aaa, "dark onSuccess/success")
+        assertContrastRatio(palette.onInfo, palette.info, min: aaa, "dark onInfo/info")
+    }
+
+    /// ダークのセマンティック色は暗い背景に直接置く使い方もある
+    func testHighContrastDarkSemanticColorsAreReadableOnSurface() {
+        let palette = HighContrastDarkPalette()
+
+        assertContrastRatio(palette.error, palette.surface, min: aaa, "dark error/surface")
+        assertContrastRatio(palette.warning, palette.surface, min: aaa, "dark warning/surface")
+        assertContrastRatio(palette.success, palette.surface, min: aaa, "dark success/surface")
+        assertContrastRatio(palette.info, palette.surface, min: aaa, "dark info/surface")
+    }
+
+    /// 明るい塗りに白文字という読めない組み合わせに戻る回帰を防ぐ。
+    /// 既定実装の on 色は .white なので、override が消えるとここが落ちる
+    func testHighContrastDarkDoesNotFallBackToWhiteOnBrightFills() {
+        let palette = HighContrastDarkPalette()
+
+        for (name, color) in [
+            ("onError", palette.onError),
+            ("onSuccess", palette.onSuccess),
+            ("onInfo", palette.onInfo),
+            ("onTertiary", palette.onTertiary),
+        ] {
+            XCTAssertLessThan(
+                relativeLuminance(color), 0.1,
+                "\(name) は明るい塗りに載るため暗色でなければならない"
+            )
         }
     }
 
