@@ -27,13 +27,22 @@ jobs:
         with:
           xcode-version: 'latest-stable'
 
-      - name: Cache SPM
+      # .build ごとキャッシュすると、そこに含まれる解決結果
+      # （workspace-state.json + checkouts）が復元され続け、依存の新バージョンが
+      # 出てもキャッシュが効く限り古い版でテストが通ってしまう。library は憲章どおり
+      # Package.resolved を追跡しないので、キーに入れても実質 Package.swift だけになる。
+      # これはリリースを検証するワークフローなので、古い依存での green は
+      # 「出荷物が検証されていない」ことを意味する。tests.yml と同じく解決はやり直す。
+      - name: Cache SPM build artifacts
         uses: actions/cache@v4
         with:
           path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('Package.resolved', 'Package.swift') }}
+          key: ${{ runner.os }}-spm-${{ hashFiles('Package.swift') }}
           restore-keys: |
             ${{ runner.os }}-spm-
+
+      - name: Resolve dependencies (fresh)
+        run: swift package update
 
       - name: Build
         run: swift build
