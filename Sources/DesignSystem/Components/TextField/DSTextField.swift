@@ -65,6 +65,7 @@ public struct DSTextField: View {
     private let error: String?
     private let leadingIcon: String?
     private let trailingIcon: String?
+    private let focus: FocusState<Bool>.Binding?
 
     /// DSTextField を作成
     ///
@@ -78,6 +79,8 @@ public struct DSTextField: View {
     ///   - error: エラーメッセージ
     ///   - leadingIcon: 先頭アイコン（SF Symbols）
     ///   - trailingIcon: 末尾アイコン（SF Symbols）
+    ///   - focus: 呼び出し側の `@FocusState` でフォーカスを制御したいときに渡す
+    ///     （スキャナからの復帰で名前欄へフォーカスを移す等）。省略時は内部管理のみ
     public init(
         _ title: String = "",
         text: Binding<String>,
@@ -87,7 +90,8 @@ public struct DSTextField: View {
         supportingText: String? = nil,
         error: String? = nil,
         leadingIcon: String? = nil,
-        trailingIcon: String? = nil
+        trailingIcon: String? = nil,
+        focus: FocusState<Bool>.Binding? = nil
     ) {
         self.title = title
         self.text = text
@@ -98,6 +102,7 @@ public struct DSTextField: View {
         self.error = error
         self.leadingIcon = leadingIcon
         self.trailingIcon = trailingIcon
+        self.focus = focus
     }
 
     public var body: some View {
@@ -120,7 +125,10 @@ public struct DSTextField: View {
                 TextField(placeholder, text: text, axis: axis)
                     .typography(.bodyLarge)
                     .foregroundStyle(colorPalette.onSurface)
+                    // 内部の isFocused は枠線・ラベル色の描画用。外部 focus と二重に
+                    // バインドしても両方がフォーカス変化を受け取るだけで競合しない
                     .focused($isFocused)
+                    .externalFocus(focus)
 
                 if let trailingIcon {
                     Image(systemName: trailingIcon)
@@ -251,4 +259,17 @@ struct DSTextFieldPreview: View {
 #Preview {
     DSTextFieldPreview()
         .theme(ThemeProvider())
+}
+
+private extension View {
+    /// 呼び出し側の `@FocusState` バインディングが渡されたときだけ `.focused` を重ねる。
+    /// `.focused` は条件分岐で型が変わるため、optional を吸収するここに閉じ込める。
+    @ViewBuilder
+    func externalFocus(_ focus: FocusState<Bool>.Binding?) -> some View {
+        if let focus {
+            focused(focus)
+        } else {
+            self
+        }
+    }
 }
