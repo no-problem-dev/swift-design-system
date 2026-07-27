@@ -9,6 +9,25 @@
 
 なし
 
+## [1.8.0] - 2026-07-27
+
+### 追加
+- `imagePicker` に `resize: ImageResizeRule?`（`.square(N)` = center-crop した正方形 /
+  `.longestEdge(N)` = 長辺を N に収める）を追加。処理順は リサイズ → JPEG 化 →
+  （`maxSize` があれば）品質。表示に使わない画素を運ぶのが一番無駄なので、品質より先に寸法を落とす。
+  既定 nil で従来挙動を維持（非破壊）。
+- `UIImage.resized(by:)` を公開。描き直す前に EXIF の向きを解決するため、戻り値は必ず `.up` /
+  scale 1 になる。縦で撮った写真が横になることがない。どちらの規則も元より大きくはしない。
+
+### 変更
+- **写真ライブラリの選択を `PHPickerViewController` へ置き換え**（`imagePicker` のみ）。
+  選択がアプリの外で完結しライブラリ全体に触れないため、写真の権限が要らなくなった。
+  Info.plist の `NSPhotoLibraryUsageDescription` と、ライブラリ側の権限リクエスト・
+  拒否時アラートを削除。カメラは撮影の許可が正当に要るので `UIImagePickerController` と
+  `NSCameraUsageDescription` のまま。
+  なお `videoPicker` は従来どおり `UIImagePickerController` を使うため、動画を扱うアプリでは
+  引き続き `NSPhotoLibraryUsageDescription` が必要。
+
 ## [1.7.0] - 2026-06-14
 
 ### 追加

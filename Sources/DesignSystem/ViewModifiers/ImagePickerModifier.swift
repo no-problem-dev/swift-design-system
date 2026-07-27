@@ -3,18 +3,17 @@ import SwiftUI
 #if canImport(UIKit)
 import UIKit
 import AVFoundation
-import Photos
 import PhotosUI
 
 /// 画像ピッカーを表示する ViewModifier。
 ///
 /// カメラまたは写真ライブラリから画像を選択できるモディファイア。
-/// 適切な権限管理を行い、権限がない場合はアラートで通知する。
+/// カメラは撮影の許可が要るため、権限を取ってから提示し、拒否されていればアラートで設定へ誘導する。
+/// 写真ライブラリは `PHPickerViewController` を使うので権限を必要としない。
 ///
-/// - Note: カメラとフォトライブラリの使用許可が必要。
-///   Info.plist に以下のキーを追加すること：
-///   - `NSCameraUsageDescription`: カメラ使用の説明
-///   - `NSPhotoLibraryUsageDescription`: フォトライブラリアクセスの説明
+/// - Note: カメラの使用許可だけが必要。Info.plist に `NSCameraUsageDescription`（カメラ使用の説明）を
+///   追加すること。写真ライブラリ側は選択がアプリの外で完結し、アプリがライブラリへ触れないため、
+///   `NSPhotoLibraryUsageDescription` は要らない。使っていない権限を宣言すると審査で理由を問われる。
 public struct ImagePickerModifier: ViewModifier {
     @Environment(\.colorPalette) private var colorPalette
 
@@ -26,6 +25,7 @@ public struct ImagePickerModifier: ViewModifier {
     @State private var permissionAlertConfig: PermissionAlertConfig?
 
     let source: ImagePickerSource
+    let resize: ImageResizeRule?
     let maxSize: ByteSize?
     let onCompressionError: ((Error) -> Void)?
 
@@ -33,12 +33,14 @@ public struct ImagePickerModifier: ViewModifier {
         isPresented: Binding<Bool>,
         selectedImageData: Binding<Data?>,
         source: ImagePickerSource = .automatic,
+        resize: ImageResizeRule? = nil,
         maxSize: ByteSize? = nil,
         onCompressionError: ((Error) -> Void)? = nil
     ) {
         self._isPresented = isPresented
         self._selectedImageData = selectedImageData
         self.source = source
+        self.resize = resize
         self.maxSize = maxSize
         self.onCompressionError = onCompressionError
     }
@@ -46,14 +48,8 @@ public struct ImagePickerModifier: ViewModifier {
     public func body(content: Content) -> some View {
         presentation(content)
             .sheet(item: $sourceType) { source in
-                ImagePickerViewController(
-                    sourceType: source.uiImagePickerSourceType,
-                    selectedImageData: $selectedImageData,
-                    isPresented: $sourceType,
-                    maxSize: maxSize,
-                    onCompressionError: onCompressionError
-                )
-                .ignoresSafeArea()
+                picker(for: source)
+                    .ignoresSafeArea()
             }
             .alert(
                 permissionAlertConfig?.title ?? "",
@@ -74,6 +70,28 @@ public struct ImagePickerModifier: ViewModifier {
     }
 
     @ViewBuilder
+    private func picker(for source: MediaSourceType) -> some View {
+        switch source {
+        case .camera:
+            CameraImagePicker(
+                selectedImageData: $selectedImageData,
+                isPresented: $sourceType,
+                resize: resize,
+                maxSize: maxSize,
+                onCompressionError: onCompressionError
+            )
+        case .photoLibrary:
+            PhotoLibraryImagePicker(
+                selectedImageData: $selectedImageData,
+                isPresented: $sourceType,
+                resize: resize,
+                maxSize: maxSize,
+                onCompressionError: onCompressionError
+            )
+        }
+    }
+
+    @ViewBuilder
     private func presentation(_ content: Content) -> some View {
         switch source {
         case .automatic:
@@ -85,13 +103,13 @@ public struct ImagePickerModifier: ViewModifier {
                 // カメラが利用可能な場合のみ表示
                 if UIImagePickerController.isSourceTypeAvailable(.camera) {
                     Button("カメラで撮影") {
-                        requestPermissionAndShowPicker(for: .camera)
+                        showCamera()
                     }
                     .tint(Color(colorPalette.primary))
                 }
 
                 Button("写真ライブラリから選択") {
-                    requestPermissionAndShowPicker(for: .photoLibrary)
+                    sourceType = .photoLibrary
                 }
                 .tint(Color(colorPalette.primary))
 
@@ -103,47 +121,35 @@ public struct ImagePickerModifier: ViewModifier {
             content.onChange(of: isPresented) { _, newValue in
                 guard newValue else { return }
                 isPresented = false
-                requestPermissionAndShowPicker(for: .camera)
+                showCamera()
             }
         case .photoLibrary:
             content.onChange(of: isPresented) { _, newValue in
                 guard newValue else { return }
                 isPresented = false
-                requestPermissionAndShowPicker(for: .photoLibrary)
+                // PHPickerViewController は権限を必要としないので、そのまま提示する
+                sourceType = .photoLibrary
             }
         }
     }
 
-    /// 権限をリクエストしてピッカーを表示
-    private func requestPermissionAndShowPicker(for source: MediaSourceType) {
+    /// カメラの権限を取ってから提示する。撮影は `AVCaptureDevice` の許可が要るため。
+    private func showCamera() {
         Task { @MainActor in
-            let hasPermission = await checkPermission(for: source)
-
-            if hasPermission {
-                sourceType = source
+            if await requestCameraPermission() {
+                sourceType = .camera
             } else {
-                // 権限がない場合はアラートを表示
                 permissionAlertConfig = PermissionAlertConfig(
-                    sourceType: source,
-                    status: await getPermissionStatus(for: source)
+                    sourceType: .camera,
+                    status: cameraPermissionStatus()
                 )
                 showPermissionAlert = true
             }
         }
     }
 
-    /// 権限状態を確認してリクエスト
-    private func checkPermission(for source: MediaSourceType) async -> Bool {
-        switch source {
-        case .camera:
-            return await checkCameraPermission()
-        case .photoLibrary:
-            return await checkPhotoLibraryPermission()
-        }
-    }
-
     /// カメラ権限の確認とリクエスト
-    private func checkCameraPermission() async -> Bool {
+    private func requestCameraPermission() async -> Bool {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
 
         switch status {
@@ -160,48 +166,15 @@ public struct ImagePickerModifier: ViewModifier {
         }
     }
 
-    /// フォトライブラリ権限の確認とリクエスト
-    private func checkPhotoLibraryPermission() async -> Bool {
-        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-
-        switch status {
-        case .authorized, .limited:
-            return true
-        case .notDetermined:
-            let newStatus = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
-            return newStatus == .authorized || newStatus == .limited
+    /// カメラ権限の状態を取得
+    private func cameraPermissionStatus() -> PermissionStatus {
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .denied:
-            return false
+            return .denied
         case .restricted:
-            return false
-        @unknown default:
-            return false
-        }
-    }
-
-    /// 権限状態を取得
-    private func getPermissionStatus(for source: MediaSourceType) async -> PermissionStatus {
-        switch source {
-        case .camera:
-            let status = AVCaptureDevice.authorizationStatus(for: .video)
-            switch status {
-            case .denied:
-                return .denied
-            case .restricted:
-                return .restricted
-            default:
-                return .notDetermined
-            }
-        case .photoLibrary:
-            let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-            switch status {
-            case .denied:
-                return .denied
-            case .restricted:
-                return .restricted
-            default:
-                return .notDetermined
-            }
+            return .restricted
+        default:
+            return .notDetermined
         }
     }
 
@@ -293,17 +266,33 @@ struct PermissionAlertConfig {
     }
 }
 
-/// UIImagePickerControllerのSwiftUIラッパー
-struct ImagePickerViewController: UIViewControllerRepresentable {
-    let sourceType: UIImagePickerController.SourceType
+/// 変換に失敗したときのエラー。
+///
+/// - Note: `onCompressionError` に渡る値。既存の呼び出し側が domain / code を見ている可能性があるため、
+///   従来と同じ `NSError` のまま保つ。
+private func imageConversionError() -> NSError {
+    NSError(
+        domain: "ImagePickerError",
+        code: -1,
+        userInfo: [NSLocalizedDescriptionKey: "画像の変換に失敗しました"]
+    )
+}
+
+// MARK: - Camera
+
+/// カメラ撮影の SwiftUI ラッパー。
+///
+/// 撮影は `UIImagePickerController` でしか行えないため、ライブラリ側と違ってここは置き換えない。
+struct CameraImagePicker: UIViewControllerRepresentable {
     @Binding var selectedImageData: Data?
     @Binding var isPresented: MediaSourceType?
+    let resize: ImageResizeRule?
     let maxSize: ByteSize?
     let onCompressionError: ((Error) -> Void)?
 
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
-        picker.sourceType = sourceType
+        picker.sourceType = .camera
         picker.delegate = context.coordinator
         return picker
     }
@@ -317,9 +306,9 @@ struct ImagePickerViewController: UIViewControllerRepresentable {
     }
 
     class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        let parent: ImagePickerViewController
+        let parent: CameraImagePicker
 
-        init(_ parent: ImagePickerViewController) {
+        init(_ parent: CameraImagePicker) {
             self.parent = parent
         }
 
@@ -328,23 +317,11 @@ struct ImagePickerViewController: UIViewControllerRepresentable {
             didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
         ) {
             if let image = info[.originalImage] as? UIImage {
-                // 画像をJPEGデータに変換
-                if let maxSize = parent.maxSize {
-                    // サイズ制限がある場合は再帰的に圧縮
-                    parent.selectedImageData = compressImageData(image, maxSize: maxSize)
-                } else {
-                    // サイズ制限がない場合はデフォルト品質で変換
-                    parent.selectedImageData = image.jpegData(compressionQuality: 0.8)
-                }
+                let data = image.jpegData(resize: parent.resize, maxSize: parent.maxSize)
+                parent.selectedImageData = data
 
-                // エラーチェック
-                if parent.selectedImageData == nil {
-                    let error = NSError(
-                        domain: "ImagePickerError",
-                        code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "画像の変換に失敗しました"]
-                    )
-                    parent.onCompressionError?(error)
+                if data == nil {
+                    parent.onCompressionError?(imageConversionError())
                 }
             }
             parent.isPresented = nil
@@ -353,34 +330,98 @@ struct ImagePickerViewController: UIViewControllerRepresentable {
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
             parent.isPresented = nil
         }
+    }
+}
 
-        /// 画像を指定されたサイズ以下に再帰的に圧縮
-        /// - Parameters:
-        ///   - image: 圧縮する画像
-        ///   - maxSize: 最大サイズ
-        ///   - currentQuality: 現在の圧縮品質（0.0〜1.0）
-        /// - Returns: 圧縮された画像データ、または変換に失敗した場合はnil
-        private func compressImageData(
-            _ image: UIImage,
-            maxSize: ByteSize,
-            currentQuality: CGFloat = 0.8
-        ) -> Data? {
-            guard let data = image.jpegData(compressionQuality: currentQuality) else {
-                return nil
+// MARK: - Photo Library
+
+/// 写真ライブラリ選択の SwiftUI ラッパー。
+///
+/// `PHPickerViewController` を使うのは、選択がアプリの外（別プロセス）で完結し、アプリが
+/// ライブラリ全体に触れないため、写真の権限を要求せずに済むから。`PHPickerConfiguration` を
+/// `photoLibrary:` なしで作ることがその条件——ライブラリを渡すと権限が必要な構成になる。
+struct PhotoLibraryImagePicker: UIViewControllerRepresentable {
+    @Binding var selectedImageData: Data?
+    @Binding var isPresented: MediaSourceType?
+    let resize: ImageResizeRule?
+    let maxSize: ByteSize?
+    let onCompressionError: ((Error) -> Void)?
+
+    func makeUIViewController(context: Context) -> PHPickerViewController {
+        var configuration = PHPickerConfiguration()
+        configuration.filter = .images
+        configuration.selectionLimit = 1
+
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {
+        // 更新不要
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, PHPickerViewControllerDelegate {
+        let parent: PhotoLibraryImagePicker
+
+        init(_ parent: PhotoLibraryImagePicker) {
+            self.parent = parent
+        }
+
+        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+            guard let provider = results.first?.itemProvider,
+                  provider.canLoadObject(ofClass: UIImage.self) else {
+                // 選択せずに閉じた場合もここに来る
+                parent.isPresented = nil
+                return
             }
 
-            // 既に上限以下なら何もしない
-            if data.count <= maxSize.bytes {
-                return data
-            }
+            let resize = parent.resize
+            let maxSize = parent.maxSize
 
-            // 品質が下限に達したら現在のデータを返す
-            if currentQuality <= 0.1 {
-                return data
+            Task { @MainActor in
+                do {
+                    parent.selectedImageData = try await Self.imageData(
+                        from: provider,
+                        resize: resize,
+                        maxSize: maxSize
+                    )
+                } catch {
+                    parent.onCompressionError?(error)
+                }
+                parent.isPresented = nil
             }
+        }
 
-            // 品質を10%下げて再帰的に圧縮
-            return compressImageData(image, maxSize: maxSize, currentQuality: currentQuality - 0.1)
+        /// 読み込みと変換を行う。`loadObject` の完了は main の外で呼ばれるので、12MP の描き直しも
+        /// 画面の応答には載らない。
+        ///
+        /// この関数自体を MainActor に置いているのは、`NSItemProvider` が Sendable ではなく、
+        /// 隔離をまたいで渡せないから。完了クロージャが外へ持ち出すのは `Data` だけにしてある。
+        @MainActor
+        private static func imageData(
+            from provider: NSItemProvider,
+            resize: ImageResizeRule?,
+            maxSize: ByteSize?
+        ) async throws -> Data {
+            try await withCheckedThrowingContinuation { continuation in
+                provider.loadObject(ofClass: UIImage.self) { object, error in
+                    if let error {
+                        continuation.resume(throwing: error)
+                        return
+                    }
+                    guard let image = object as? UIImage,
+                          let data = image.jpegData(resize: resize, maxSize: maxSize) else {
+                        continuation.resume(throwing: imageConversionError())
+                        return
+                    }
+                    continuation.resume(returning: data)
+                }
+            }
         }
     }
 }
@@ -414,7 +455,8 @@ public extension View {
     ///         .imagePicker(
     ///             isPresented: $showPicker,
     ///             selectedImageData: $imageData,
-    ///             maxSize: 1.mb  // 1MB
+    ///             resize: .square(720),  // アバター用に center-crop
+    ///             maxSize: 1.mb          // 1MB
     ///         )
     ///     }
     /// }
@@ -424,13 +466,15 @@ public extension View {
     ///   - isPresented: ピッカーの表示状態を制御するバインディング
     ///   - selectedImageData: 選択された画像のデータを受け取るバインディング
     ///   - source: 提示ソース。`.camera` / `.photoLibrary` を指定すると選択ダイアログを出さず直接提示する。
-    ///   - maxSize: 画像の最大サイズ。指定された場合、自動的に圧縮される。
+    ///   - resize: 保存前に寸法を落とす規則。指定すると向きも `.up` へ正規化される。
+    ///   - maxSize: 画像の最大サイズ。指定された場合、`resize` の後に品質を下げて収める。
     ///   - onCompressionError: 画像の圧縮または変換に失敗した場合に呼ばれるコールバック
     /// - Returns: モディファイアが適用されたビュー
     func imagePicker(
         isPresented: Binding<Bool>,
         selectedImageData: Binding<Data?>,
         source: ImagePickerSource = .automatic,
+        resize: ImageResizeRule? = nil,
         maxSize: ByteSize? = nil,
         onCompressionError: ((Error) -> Void)? = nil
     ) -> some View {
@@ -438,6 +482,7 @@ public extension View {
             isPresented: isPresented,
             selectedImageData: selectedImageData,
             source: source,
+            resize: resize,
             maxSize: maxSize,
             onCompressionError: onCompressionError
         ))
