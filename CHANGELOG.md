@@ -9,7 +9,7 @@
 
 なし
 
-## [1.8.0] - 2026-07-27
+## [2.2.0] - 2026-07-27
 
 ### 追加
 - `imagePicker` に `resize: ImageResizeRule?`（`.square(N)` = center-crop した正方形 /
