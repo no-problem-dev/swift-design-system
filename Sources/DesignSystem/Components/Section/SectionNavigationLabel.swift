@@ -20,25 +20,22 @@ public struct SectionNavigationLabel: View {
 
     private let title: String
     private let systemImage: String?
+    private let subtitle: String?
 
     /// chevron 付きナビゲーションラベルを生成する
     /// - Parameters:
     ///   - title: ラベル文字列
     ///   - systemImage: 左側に表示する SF Symbols 名（省略可）
-    public init(_ title: String, systemImage: String? = nil) {
+    ///   - subtitle: タイトルの下に置く補足（省略可）
+    public init(_ title: String, systemImage: String? = nil, subtitle: String? = nil) {
         self.title = title
         self.systemImage = systemImage
+        self.subtitle = subtitle
     }
 
     public var body: some View {
         SectionRow {
-            if let systemImage {
-                Label(title, systemImage: systemImage)
-                    .foregroundStyle(colors.onSurface)
-            } else {
-                Text(title)
-                    .foregroundStyle(colors.onSurface)
-            }
+            SectionRowLabel(title, systemImage: systemImage, subtitle: subtitle)
             Spacer(minLength: 0)
             Image(systemName: "chevron.right")
                 .typography(.labelSmall)

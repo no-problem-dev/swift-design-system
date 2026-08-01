@@ -1,0 +1,77 @@
+{
+  "generatedAt" : "2026-08-01T09:14:44Z",
+  "name" : "SectionRow",
+  "states" : {
+    "accessibilitySize" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "accessibilitySize.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "accessibilitySize.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "labelWithSubtitle" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "labelWithSubtitle.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "labelWithSubtitle.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "labelsAlignAcrossRows" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "labelsAlignAcrossRows.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "labelsAlignAcrossRows.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "plainLabelsGetTheIconColumn" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "plainLabelsGetTheIconColumn.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "plainLabelsGetTheIconColumn.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "smallContentKeepsTouchTarget" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "smallContentKeepsTouchTarget.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "smallContentKeepsTouchTarget.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}

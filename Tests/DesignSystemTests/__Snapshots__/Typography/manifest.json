@@ -1,45 +1,45 @@
 {
-  "generatedAt" : "2026-08-01T09:14:44Z",
-  "name" : "Section",
+  "generatedAt" : "2026-08-01T09:14:47Z",
+  "name" : "Typography",
   "states" : {
-    "navigationLabel" : {
+    "accessibilitySize" : {
       "disableAnimations" : false,
       "inNavigation" : false,
       "snapshots" : [
         {
-          "file" : "navigationLabel.light.png",
+          "file" : "accessibilitySize.light.png",
           "theme" : "light"
         },
         {
-          "file" : "navigationLabel.dark.png",
+          "file" : "accessibilitySize.dark.png",
           "theme" : "dark"
         }
       ]
     },
-    "surfaceWithHeaderAndFooter" : {
+    "defaultSize" : {
       "disableAnimations" : false,
       "inNavigation" : false,
       "snapshots" : [
         {
-          "file" : "surfaceWithHeaderAndFooter.light.png",
+          "file" : "defaultSize.light.png",
           "theme" : "light"
         },
         {
-          "file" : "surfaceWithHeaderAndFooter.dark.png",
+          "file" : "defaultSize.dark.png",
           "theme" : "dark"
         }
       ]
     },
-    "titled" : {
+    "smallestSize" : {
       "disableAnimations" : false,
       "inNavigation" : false,
       "snapshots" : [
         {
-          "file" : "titled.light.png",
+          "file" : "smallestSize.light.png",
           "theme" : "light"
         },
         {
-          "file" : "titled.dark.png",
+          "file" : "smallestSize.dark.png",
           "theme" : "dark"
         }
       ]
