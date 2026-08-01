@@ -1,0 +1,35 @@
+{
+  "generatedAt" : "2026-08-01T09:14:46Z",
+  "name" : "ReadableWidth",
+  "states" : {
+    "cappedWhenSpacious" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "cappedWhenSpacious.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "cappedWhenSpacious.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "untouchedWhenCompact" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "untouchedWhenCompact.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "untouchedWhenCompact.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}
