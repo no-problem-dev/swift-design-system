@@ -17,11 +17,17 @@ public struct LightColorPalette: ColorPalette {
     public var onTertiary: Color { .white }
 
     // MARK: - Background & Surface
-    public var background: Color { .white }
+
+    // 面の段差は色で作る。影は光の当たり方の表現なので、暗い場所・スクリーンショット・
+    // コントラストを上げた設定のどれでも消え、そこに頼るとカードの輪郭がなくなる。
+    //
+    // 地を沈めて面を白へ置く。逆（地が白・カードが灰）にすると、手前にあるものほど
+    // 暗いという上下関係の逆転が起きる。Apple のグループ化リストも地が灰で面が白。
+    public var background: Color { PrimitiveColors.gray100 }
     public var onBackground: Color { PrimitiveColors.gray900 }
-    public var surface: Color { PrimitiveColors.gray50 }
+    public var surface: Color { .white }
     public var onSurface: Color { PrimitiveColors.gray900 }
-    public var surfaceVariant: Color { PrimitiveColors.gray100 }
+    public var surfaceVariant: Color { PrimitiveColors.gray200 }
     public var onSurfaceVariant: Color { PrimitiveColors.gray700 }
 
     // MARK: - Semantic State

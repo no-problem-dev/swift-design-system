@@ -13,6 +13,7 @@ import SwiftUI
 /// | Apple iOS ライト（白カード / systemGroupedBackground） | 1.116 |
 /// | Apple iOS ダーク | 1.234 |
 /// | ``DarkColorPalette``（本パッケージ） | 1.209 |
+/// | ``LightColorPalette``（本パッケージ） | 1.101 |
 ///
 /// 既知で見えているものの下限が 1.116 なので、余裕を少しだけ見て 1.10 を床にする。
 ///
@@ -64,27 +65,30 @@ final class SurfaceStepContrastTests: XCTestCase {
         assertStep(palette.surfaceVariant, palette.surface, "dark surfaceVariant/surface")
     }
 
-    // MARK: - ライト（満たしていない側）
+    // MARK: - ライト
 
-    /// ライトの地とカード面はほぼ同じ明度で、カードの輪郭が実質シャドウだけになっている。
-    /// 閾値は緩めず、既知の欠陥として可視化する。
-    ///
-    /// 直すときは「カードを白へ寄せる」ではなく「地を沈める」。Apple のグループ化リストも
-    /// 地を灰にして面を白にしており、地を白のままカードを灰にすると上下関係が逆さになる。
     func testLightPaletteSeparatesItsSurfaces() {
-        XCTExpectFailure("既知の欠陥: ライトの面の段差が 1.045 / 1.053 しかない") {
-            let palette = LightColorPalette()
-            assertStep(palette.surface, palette.background, "light surface/background")
-            assertStep(palette.surfaceVariant, palette.surface, "light surfaceVariant/surface")
-        }
+        let palette = LightColorPalette()
+        assertStep(palette.surface, palette.background, "light surface/background")
+        assertStep(palette.surfaceVariant, palette.surface, "light surfaceVariant/surface")
     }
 
-    /// 欠陥の現在値を数値で固定する。直したときにこのテストが落ちて、
-    /// 上の `XCTExpectFailure` を外す必要があることが分かる。
-    func testLightPaletteStepsAreRecordedAtTheirCurrentValues() {
+    /// 実値を固定する。地とカード面は Apple のグループ化リスト（1.116）とほぼ同じところに置いた。
+    /// 下限 1.10 に対する余裕が 0.001 しかないので、地か面を少しでも動かすとここが落ちる。
+    func testLightPaletteStepsAreRecordedAtTheirValues() {
         let palette = LightColorPalette()
-        XCTAssertEqual(contrastRatio(palette.surface, palette.background), 1.045, accuracy: 0.005)
-        XCTAssertEqual(contrastRatio(palette.surfaceVariant, palette.surface), 1.053, accuracy: 0.005)
+        XCTAssertEqual(contrastRatio(palette.surface, palette.background), 1.101, accuracy: 0.005)
+        XCTAssertEqual(contrastRatio(palette.surfaceVariant, palette.surface), 1.238, accuracy: 0.005)
+    }
+
+    /// 面の上下関係。手前にあるものほど明るい側に置く。
+    /// 逆にすると（地が白・カードが灰）、奥にあるはずの地が一番手前に見える。
+    func testLightSurfacesGetLighterTowardTheViewer() {
+        let palette = LightColorPalette()
+        XCTAssertGreaterThan(
+            relativeLuminance(palette.surface), relativeLuminance(palette.background),
+            "カード面が地より暗い。地を沈めて面を白へ置く"
+        )
     }
 
     // MARK: - Snackbar が重なる先
@@ -92,13 +96,12 @@ final class SurfaceStepContrastTests: XCTestCase {
     /// Snackbar は `surfaceVariant` の板で、カードの上にも地の上にも出る。
     /// どちらに重なっても板として読めないと、「取り消す」が押せるものだと分からない。
     func testSnackbarSurfaceSeparatesFromBothLayers() {
-        let dark = DarkColorPalette()
-        assertStep(dark.surfaceVariant, dark.surface, "dark snackbar/card")
-        assertStep(dark.surfaceVariant, dark.background, "dark snackbar/page")
-
-        XCTExpectFailure("既知の欠陥: ライトでは Snackbar の板がカードの上でほぼ消える") {
-            let light = LightColorPalette()
-            assertStep(light.surfaceVariant, light.surface, "light snackbar/card")
+        for (name, palette) in [
+            ("light", LightColorPalette() as any ColorPalette),
+            ("dark", DarkColorPalette() as any ColorPalette),
+        ] {
+            assertStep(palette.surfaceVariant, palette.surface, "\(name) snackbar/card")
+            assertStep(palette.surfaceVariant, palette.background, "\(name) snackbar/page")
         }
     }
 }
