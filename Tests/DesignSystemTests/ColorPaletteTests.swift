@@ -91,11 +91,12 @@ final class ColorPaletteTests: XCTestCase {
         assertColor(palette.secondary, "secondary", red: 0xA8, green: 0x55, blue: 0xF7) // purple500
         assertColor(palette.tertiary, "tertiary", red: 0x06, green: 0xB6, blue: 0xD4) // cyan500
 
-        assertColor(palette.background, "background", red: 255, green: 255, blue: 255)
+        // 面の段差は色で作る。地を沈めて面を白へ置く（``SurfaceStepContrastTests`` が比を見る）
+        assertColor(palette.background, "background", red: 0xF3, green: 0xF4, blue: 0xF6) // gray100
         assertColor(palette.onBackground, "onBackground", red: 0x11, green: 0x18, blue: 0x27) // gray900
-        assertColor(palette.surface, "surface", red: 0xF9, green: 0xFA, blue: 0xFB) // gray50
+        assertColor(palette.surface, "surface", red: 255, green: 255, blue: 255)
         assertColor(palette.onSurface, "onSurface", red: 0x11, green: 0x18, blue: 0x27) // gray900
-        assertColor(palette.surfaceVariant, "surfaceVariant", red: 0xF3, green: 0xF4, blue: 0xF6) // gray100
+        assertColor(palette.surfaceVariant, "surfaceVariant", red: 0xE5, green: 0xE7, blue: 0xEB) // gray200
         assertColor(palette.onSurfaceVariant, "onSurfaceVariant", red: 0x37, green: 0x41, blue: 0x51) // gray700
 
         assertColor(palette.error, "error", red: 0xEF, green: 0x44, blue: 0x44) // red500
@@ -140,8 +141,13 @@ final class ColorPaletteTests: XCTestCase {
         // background / onBackground は反転する
         assertColorsDiffer(light.background, dark.background, "background")
         assertColorsDiffer(light.onBackground, dark.onBackground, "onBackground")
-        assertSameColor(light.background, dark.onBackground, "light.background ↔ dark.onBackground")
         assertSameColor(light.onBackground, dark.background, "light.onBackground ↔ dark.background")
+
+        // 逆向き（light.background ↔ dark.onBackground）は成り立たない。
+        // ライトの地は面を白へ置くために沈めてあり、純白ではないため。
+        // Apple のグループ化リストも地は #F2F2F7 で、ダークの文字色（白）とは一致しない。
+        assertColorsDiffer(light.background, dark.onBackground, "light.background ↔ dark.onBackground")
+        assertSameColor(light.surface, dark.onBackground, "light.surface ↔ dark.onBackground")
 
         assertColorsDiffer(light.onPrimary, dark.onPrimary, "onPrimary")
         assertColorsDiffer(light.surface, dark.surface, "surface")
