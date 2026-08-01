@@ -602,6 +602,179 @@ struct SectionSnapshots {
     }
 }
 
+// MARK: - SectionRow
+
+/// 行の骨格（最小高・先頭アイコン列）が効いていることを絵で押さえる。
+/// 数値で確かめられるのは導出だけなので、「並べたときに揃うか」はここで見る。
+@SnapshotSuite("SectionRow")
+@MainActor
+struct SectionRowSnapshots {
+    init() { setupVisualTesting() }
+
+    /// 字幅の違う記号を並べても、アイコンの無い行を挟んでも、ラベルの左端が縦に揃う
+    @ComponentSnapshot(width: 360, height: 280)
+    func labelsAlignAcrossRows() -> some View {
+        SectionCard("アカウント") {
+            SectionRow { SectionRowLabel("パスワード", systemImage: "lock") }
+            SectionRowDivider()
+            SectionRow { SectionRowLabel("連携サービス", systemImage: "rectangle.3.group") }
+            SectionRowDivider()
+            SectionRow { SectionRowLabel("通知", systemImage: "bell.badge.waveform.fill") }
+            SectionRowDivider()
+            SectionRow { SectionRowLabel("メールアドレス") }
+        }
+        .padding()
+    }
+
+    /// 副題付きの行。LinkCard と同じ「アイコン → タイトル + 副題」の構造になる
+    @ComponentSnapshot(width: 360, height: 220)
+    func labelWithSubtitle() -> some View {
+        SectionCard {
+            SectionRow { SectionRowLabel("メール", systemImage: "envelope", subtitle: "user@example.com") }
+            SectionRowDivider()
+            SectionRow { SectionRowLabel("プラン", subtitle: "無料") }
+        }
+        .padding()
+    }
+
+    /// 行の中身が小さくても最小タップ領域を割らない。
+    /// 上の行（11pt ラベルだけ）と下の行（通常の本文）の高さが同じになるのが正しい
+    @ComponentSnapshot(width: 360, height: 200)
+    func smallContentKeepsTouchTarget() -> some View {
+        SectionCard {
+            SectionRow { Text("小さいラベルだけの行").typography(.labelSmall) }
+            SectionRowDivider()
+            SectionRow { Text("通常の本文の行").typography(.bodyLarge) }
+        }
+        .padding()
+    }
+
+    /// `Label` を直接置いた既存の書き方でも先頭アイコン列は固定される
+    @ComponentSnapshot(width: 360, height: 260)
+    func plainLabelsGetTheIconColumn() -> some View {
+        SectionCard("従来の書き方") {
+            SectionRow {
+                Label("パスワード", systemImage: "lock")
+                Spacer(minLength: 0)
+            }
+            SectionRowDivider()
+            SectionRow {
+                Label("連携サービス", systemImage: "rectangle.3.group")
+                Spacer(minLength: 0)
+            }
+        }
+        .padding()
+    }
+
+    /// アクセシビリティサイズで文字・アイコン列・行高が揃って伸び、崩れないこと
+    @ComponentSnapshot(width: 360, height: 460)
+    func accessibilitySize() -> some View {
+        SectionCard("アカウント") {
+            SectionRow { SectionRowLabel("パスワード", systemImage: "lock") }
+            SectionRowDivider()
+            SectionRow { SectionRowLabel("メールアドレス") }
+            SectionRowDivider()
+            SectionNavigationLabel("プライバシー", systemImage: "hand.raised")
+        }
+        .padding()
+        .dynamicTypeSize(.accessibility3)
+    }
+
+    @Test func snapshots() {
+        for snapshotCase in Self.__snapshotCases { snapshotCase.run() }
+    }
+}
+
+// MARK: - Typography
+
+/// `.typography(_:)` が Dynamic Type に追随することを絵で押さえる。
+/// 既定サイズと同じ絵になってしまう実装では `accessibility3` の 1 枚が成立しない。
+@SnapshotSuite("Typography")
+@MainActor
+struct TypographySnapshots {
+    init() { setupVisualTesting() }
+
+    private static let roles: [(Typography, String)] = [
+        (.displaySmall, "Display Small"),
+        (.headlineSmall, "Headline Small"),
+        (.titleMedium, "Title Medium"),
+        (.bodyLarge, "本文 Body Large"),
+        (.bodySmall, "補足 Body Small"),
+        (.labelSmall, "Label Small"),
+    ]
+
+    private static var ramp: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(Array(roles.enumerated()), id: \.offset) { _, row in
+                Text(row.1).typography(row.0)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+    }
+
+    @ComponentSnapshot(width: 360, height: 300)
+    func defaultSize() -> some View {
+        Self.ramp
+    }
+
+    /// 大きい役割ほど拡大率が小さいスタイルに相対させているため、
+    /// display だけが画面を埋めることなく全役割が読める大きさに伸びる
+    @ComponentSnapshot(width: 360, height: 620)
+    func accessibilitySize() -> some View {
+        Self.ramp.dynamicTypeSize(.accessibility3)
+    }
+
+    /// 文字を最小まで下げても役割の大小関係が保たれる
+    @ComponentSnapshot(width: 360, height: 300)
+    func smallestSize() -> some View {
+        Self.ramp.dynamicTypeSize(.xSmall)
+    }
+
+    @Test func snapshots() {
+        for snapshotCase in Self.__snapshotCases { snapshotCase.run() }
+    }
+}
+
+// MARK: - ReadableWidth
+
+@SnapshotSuite("ReadableWidth")
+@MainActor
+struct ReadableWidthSnapshots {
+    init() { setupVisualTesting() }
+
+    private static var body: some View {
+        Card(elevation: .level1) {
+            Text("本文がここに入ります。1 行が長くなりすぎると視線が行頭に戻れなくなるため、読みやすい幅で頭打ちにする。")
+                .typography(.bodyLarge)
+        }
+        .padding()
+    }
+
+    /// 横も縦も regular（iPad 全画面）では幅が頭打ちになり中央に寄る
+    @ComponentSnapshot(width: 900, height: 200)
+    func cappedWhenSpacious() -> some View {
+        Self.body
+            .readableWidth()
+            .environment(\.horizontalSizeClass, .regular)
+            .environment(\.verticalSizeClass, .regular)
+    }
+
+    /// 横が compact（iPhone 縦・細い分割）では画面幅のまま。
+    /// ここで頭打ちにすると余白が増えるだけになる
+    @ComponentSnapshot(width: 900, height: 200)
+    func untouchedWhenCompact() -> some View {
+        Self.body
+            .readableWidth()
+            .environment(\.horizontalSizeClass, .compact)
+            .environment(\.verticalSizeClass, .regular)
+    }
+
+    @Test func snapshots() {
+        for snapshotCase in Self.__snapshotCases { snapshotCase.run() }
+    }
+}
+
 // MARK: - LinkCard
 
 @SnapshotSuite("LinkCard")

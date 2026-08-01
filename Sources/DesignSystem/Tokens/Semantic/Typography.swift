@@ -164,6 +164,27 @@ public enum Typography: CaseIterable, Sendable {
         .system(size: size, weight: weight, design: design)
     }
 
+    /// Dynamic Type で追随する先のテキストスタイル。
+    ///
+    /// 役割の意味から選ぶ。iOS のテキストスタイルは大きいものほど拡大率が小さい
+    /// （アクセシビリティ最大で body が約 3.1 倍、largeTitle は約 1.9 倍）ため、
+    /// 大きい役割を大きいテキストスタイルに相対させると、文字を最大まで上げても
+    /// 見出しと本文の差が保たれ、見出しだけが画面を埋め尽くすことがない。
+    public var relativeTextStyle: Font.TextStyle {
+        switch self {
+        case .displayLarge, .displayMedium, .displaySmall: return .largeTitle
+        case .headlineLarge, .headlineMedium: return .title
+        case .headlineSmall: return .title2
+        case .titleLarge: return .title3
+        case .titleMedium, .titleSmall: return .headline
+        case .bodyLarge, .bodyMedium: return .body
+        case .bodySmall: return .footnote
+        case .labelLarge: return .subheadline
+        case .labelMedium: return .footnote
+        case .labelSmall: return .caption
+        }
+    }
+
     /// 行の高さ（Line Height）
     /// Material Design 3仕様に基づく
     public var lineHeight: CGFloat {

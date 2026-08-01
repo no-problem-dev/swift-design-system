@@ -1,0 +1,49 @@
+{
+  "generatedAt" : "2026-08-01T09:14:47Z",
+  "name" : "Typography",
+  "states" : {
+    "accessibilitySize" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "accessibilitySize.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "accessibilitySize.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "defaultSize" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "defaultSize.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "defaultSize.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "smallestSize" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "smallestSize.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "smallestSize.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    }
+  },
+  "type" : "component"
+}
