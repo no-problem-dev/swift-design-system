@@ -2,7 +2,7 @@ import XCTest
 @testable import DesignSystem
 
 /// `MediaViewerItem` が型として提供するもの——
-/// 3 ケースからの URL 取り出し、`id` の URL への委譲、種別を含む同一性——を検証する。
+/// 各ケースからの URL 取り出し、`id` の決まり方、種別を含む同一性——を検証する。
 final class MediaViewerItemTests: XCTestCase {
 
     private let url = URL(string: "https://example.com/media")!
@@ -29,9 +29,9 @@ final class MediaViewerItemTests: XCTestCase {
     // MARK: - Identifiable
 
     func testIdDelegatesToURLForEveryCase() {
-        XCTAssertEqual(MediaViewerItem.image(url).id, MediaViewerItem.image(url).url)
-        XCTAssertEqual(MediaViewerItem.video(url).id, MediaViewerItem.video(url).url)
-        XCTAssertEqual(MediaViewerItem.audio(url).id, MediaViewerItem.audio(url).url)
+        XCTAssertEqual(MediaViewerItem.image(url).id, url.absoluteString)
+        XCTAssertEqual(MediaViewerItem.video(url).id, url.absoluteString)
+        XCTAssertEqual(MediaViewerItem.audio(url).id, url.absoluteString)
     }
 
     func testIdIsSharedAcrossCasesWithTheSameURL() {
@@ -48,6 +48,37 @@ final class MediaViewerItemTests: XCTestCase {
         XCTAssertNotEqual(MediaViewerItem.image(url), MediaViewerItem.video(url))
         XCTAssertNotEqual(MediaViewerItem.video(url), MediaViewerItem.audio(url))
         XCTAssertNotEqual(MediaViewerItem.image(url), MediaViewerItem.image(other))
+    }
+
+    // MARK: - 手元のバイト列
+
+    /// **取得の手段を持たないケース。** URL は無く、同一性は渡された id が決める。
+    func testImageDataHasNoURLAndUsesGivenID() {
+        let item = MediaViewerItem.imageData(Data([0x01, 0x02]), id: "image-42")
+
+        XCTAssertNil(item.url)
+        XCTAssertEqual(item.id, "image-42")
+    }
+
+    /// **バイト列では比べない。** 同じ id なら中身が違っても同じ 1 件として扱う——
+    /// ページの選択で毎回数 MB を突き合わせないための約束。
+    func testImageDataComparesByIDNotBytes() {
+        let a = MediaViewerItem.imageData(Data([0x01]), id: "same")
+        let b = MediaViewerItem.imageData(Data(repeating: 0xFF, count: 4096), id: "same")
+        let c = MediaViewerItem.imageData(Data([0x01]), id: "other")
+
+        XCTAssertEqual(a, b)
+        XCTAssertNotEqual(a, c)
+        XCTAssertEqual(Set([a, b, c]).count, 2)
+    }
+
+    /// 種別が違えば別物、は URL のケースと同じ約束。
+    func testImageDataIsDistinctFromURLImageWithSameID() {
+        let urlItem = MediaViewerItem.image(url)
+        let dataItem = MediaViewerItem.imageData(Data([0x01]), id: url.absoluteString)
+
+        XCTAssertEqual(urlItem.id, dataItem.id)
+        XCTAssertNotEqual(urlItem, dataItem)
     }
 
     func testHashingKeepsDifferentCasesAsSeparateSetMembers() {

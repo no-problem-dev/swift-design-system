@@ -177,6 +177,19 @@ fileprivate struct MediaViewerPage: View {
                     }
                 }
                 .pinchZoom()
+        case .imageData(let data, _):
+            /// すでに手元にあるので待ちが無い。**プレースホルダを挟まない** ——
+            /// 挟むと、開いた瞬間に一度灰色になってから絵が出る（取りに行っていないのに待つ絵になる）。
+            Rectangle()
+                .foregroundStyle(.clear)
+                .overlay {
+                    if let image = UIImage(data: data) {
+                        Image(uiImage: image)
+                            .resizable()
+                            .aspectRatio(contentMode: isExpanded ? .fit : .fill)
+                    }
+                }
+                .pinchZoom()
         case .video(let url), .audio(let url):
             MediaViewerPlayerPage(url: url)
         }
