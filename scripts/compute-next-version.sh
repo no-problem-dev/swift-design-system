@@ -147,7 +147,7 @@ while read -r repo_name base_major; do
   [ "$base_major" = "$head_major" ] && continue
   key=$(printf '%s' "$repo_name" | sed 's/^swift-//; s/-//g' | tr 'A-Z' 'a-z')
   if grep -qixF "$key" "$WORK/leaked.lc"; then
-    PUBLIC_DEP_BREAK="$PUBLIC_DEP_BREAK $repo_name($base_major→$head_major)"
+    PUBLIC_DEP_BREAK="$PUBLIC_DEP_BREAK $repo_name($base_major->$head_major)"
   fi
 done < "$WORK/dep.base"
 
