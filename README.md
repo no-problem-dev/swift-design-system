@@ -21,7 +21,7 @@ Type-safe and extensible design system for SwiftUI
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/no-problem-dev/swift-design-system.git", from: "1.7.0")
+    .package(url: "https://github.com/no-problem-dev/swift-design-system.git", from: "3.0.0")
 ]
 ```
 

@@ -21,7 +21,7 @@ SwiftUI 向けの型安全で拡張可能なデザインシステム
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/no-problem-dev/swift-design-system.git", from: "1.7.0")
+    .package(url: "https://github.com/no-problem-dev/swift-design-system.git", from: "3.0.0")
 ]
 ```
 
