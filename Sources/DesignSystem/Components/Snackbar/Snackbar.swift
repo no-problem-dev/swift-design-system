@@ -1,11 +1,10 @@
 import SwiftUI
 
-/// Snackbar（一時的な通知UI）
+/// A transient notice that rises from the bottom of the screen.
 ///
-/// 画面下部から表示される一時的な通知UI。
-/// ユーザーアクションへのフィードバックや簡易通知を表示する。
+/// Shows feedback for a user action or a short message.
 ///
-/// ## 基本的な使い方
+/// ## Basic usage
 /// ```swift
 /// @State private var snackbarState = SnackbarState()
 ///
@@ -16,41 +15,41 @@ import SwiftUI
 ///         Snackbar(state: snackbarState)
 ///     }
 ///     .onAppear {
-///         snackbarState.show(message: "保存しました")
+///         snackbarState.show(message: "Saved")
 ///     }
 /// }
 /// ```
 ///
-/// ## アクション付きSnackbar
+/// ## Snackbar with actions
 /// ```swift
 /// snackbarState.show(
-///     message: "削除しました",
-///     primaryAction: SnackbarAction(title: "元に戻す") {
-///         // 元に戻す処理
+///     message: "Deleted",
+///     primaryAction: SnackbarAction(title: "Undo") {
+///         // Undo the deletion
 ///     },
-///     secondaryAction: SnackbarAction(title: "閉じる") {
+///     secondaryAction: SnackbarAction(title: "Dismiss") {
 ///         snackbarState.dismiss()
 ///     }
 /// )
 /// ```
 ///
-/// ## デザインガイドライン
-/// - メッセージは簡潔に（1-2行）
-/// - アクションは最大2つまで
-/// - 自動消滅時間は3-7秒が推奨
-/// - 重要な操作には十分な時間を確保
+/// ## Design guidelines
+/// - Keep the message short, one or two lines
+/// - Use at most two actions
+/// - Three to seven seconds works well for the auto dismiss duration
+/// - Leave enough time for anything the user needs to act on
 public struct Snackbar: View {
     @Bindable public var state: SnackbarState
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
     @Environment(\.radiusScale) private var radius
 
-    /// Snackbar を作成する。
+    /// Creates a snackbar driven by the given state.
     ///
-    /// `SnackbarState` は `@Observable` クラス。Snackbar ビューは状態への参照を保持し、
-    /// `state.show(message:)` を呼ぶと自動的に表示される。
+    /// `SnackbarState` is an `@Observable` class. The snackbar view holds a reference to it, and
+    /// calling `state.show(message:)` brings the snackbar on screen.
     ///
-    /// - Parameter state: Snackbar の表示状態を管理する ``SnackbarState`` インスタンス
+    /// - Parameter state: The ``SnackbarState`` instance that holds the presentation state.
     public init(state: SnackbarState) {
         self._state = Bindable(state)
     }
@@ -61,7 +60,7 @@ public struct Snackbar: View {
 
             if state.isVisible {
                 HStack(spacing: spacing.md) {
-                    // メッセージ
+                    // Message
                     Text(state.message)
                         .typography(.bodyLarge)
                         .foregroundStyle(colors.onSurface)
@@ -70,7 +69,7 @@ public struct Snackbar: View {
 
                     Spacer(minLength: spacing.sm)
 
-                    // アクションボタン
+                    // Action buttons
                     HStack(spacing: spacing.sm) {
                         if let primary = state.primaryAction {
                             Button {

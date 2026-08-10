@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// レベルに解決された影スタイル。
+/// A shadow style resolved from an elevation level.
 public struct ElevationStyle: Sendable, Equatable {
     public var radius: CGFloat
     public var offset: CGSize
@@ -12,19 +12,27 @@ public struct ElevationStyle: Sendable, Equatable {
         self.opacity = opacity
     }
 
-    /// ダークモードでは影を控えめに（surface 明度差で奥行きを出すため）。
+    /// The opacity adjusted for the given color scheme.
+    ///
+    /// Dark mode holds the shadow back, because depth there comes from the difference in
+    /// surface brightness.
     public func opacity(for colorScheme: ColorScheme) -> Double {
         colorScheme == .dark ? opacity * 0.55 : opacity
     }
 }
 
-/// Elevation レベル → 影スタイルの写像。テーマが override すると影の重さを差し替えられる
-/// （フラット ⇔ 重厚 をブランドが選べる。既存 ``Elevation`` enum は固定だった）。
+/// The shadow style a theme supplies for each elevation level.
+///
+/// A theme that implements this chooses how heavy its shadows are, anywhere from flat to
+/// pronounced, rather than being held to the fixed values on ``Elevation``.
 public protocol ElevationScale: Sendable {
     func style(for level: Elevation) -> ElevationStyle
 }
 
-/// 既定の影ランプ。**既存 ``Elevation`` enum の値から導出**するため視覚回帰ゼロ。
+/// The shadow ramp used when a theme does not supply its own.
+///
+/// The values are derived from ``Elevation``, so shadows look the same whether or not a
+/// theme is applied.
 public struct DefaultElevationScale: ElevationScale {
     public init() {}
     public func style(for level: Elevation) -> ElevationStyle {

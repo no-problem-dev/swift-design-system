@@ -2,13 +2,15 @@ import SwiftUI
 import DesignSystem
 import DesignSpec
 
-/// 示唆注釈。コンポーネント/トークン決定の「なぜ」を保持し、横断比較の燃料になる。
+/// The reasoning behind a component or token decision.
+///
+/// Keeping the "why" next to the component is what makes comparing brands side by side worth doing.
 public struct DesignAnnotation: Sendable, Equatable {
-    /// 何を解くか
+    /// What the design solves.
     public var purpose: String
-    /// なぜ効くか（CV・継続・アクセシビリティ等）
+    /// Why it works, in terms of conversion, retention, or accessibility.
     public var whyItWorks: String
-    /// 一次情報の URL
+    /// The URL of the primary source.
     public var sourceURL: String?
 
     public init(purpose: String, whyItWorks: String, sourceURL: String? = nil) {
@@ -17,7 +19,9 @@ public struct DesignAnnotation: Sendable, Equatable {
         self.sourceURL = sourceURL
     }
 
-    /// `DesignSpec` の `ComponentSpec` から注釈を起こす（spec を source of truth にする）。
+    /// Creates an annotation from a component in a design spec.
+    ///
+    /// Use it when the spec is the source of truth, so the catalog does not restate the reasoning.
     public init(from component: ComponentSpec) {
         self.purpose = component.name
         self.whyItWorks = component.annotation
@@ -25,26 +29,25 @@ public struct DesignAnnotation: Sendable, Equatable {
     }
 }
 
-/// カタログに登録される 1 ショーケース。ブランドの象徴コンポーネントを、その**ブランド自身の
-/// テーマ下で**描画し、archetype（比較軸）と示唆注釈を添える。
+/// A single showcase in the catalog.
 ///
-/// `archetype` が同じエントリ同士を並べるのが compare-mode の核心
-/// （SmartHR の FormControl と他社の FormControl を横並びで比較する）。
+/// An entry draws a brand's signature component under that brand's own theme, and carries both the
+/// archetype it is compared on and the reasoning behind its design.
+/// Putting entries that share an archetype next to each other is the point of compare mode:
+/// SmartHR's form control sits beside another brand's form control.
 public struct CatalogEntry: Identifiable {
     public let id: String
-    /// ブランド識別子（例: "smarthr"）
+    /// The brand identifier, such as "smarthr".
     public let brandId: String
-    /// ブランドの表示名（例: "SmartHR"）
     public let brandName: String
-    /// 横断比較の軸（例: "FormControl", "FocusIndicator", "ProductCard"）
+    /// The axis entries are compared on, such as "FormControl", "FocusIndicator", or "ProductCard".
     public let archetype: String
-    /// このエントリのタイトル（ギャラリーカードのヘッドライン）
+    /// The headline shown on the entry's gallery card.
     public let title: String
-    /// 設計の「なぜ」を保持する示唆注釈。横断比較の燃料になる
     public let annotation: DesignAnnotation
-    /// このエントリを描画するブランドテーマ
+    /// The brand theme this entry is drawn under.
     public let theme: any Theme
-    /// 生のコンポーネント（型消去）
+    /// The view that draws the component, type erased.
     public let content: AnyView
 
     @MainActor
@@ -70,14 +73,14 @@ public struct CatalogEntry: Identifiable {
 }
 
 public extension Array where Element == CatalogEntry {
-    /// archetype ごとにグルーピング（compare-mode 用）。archetype 名でソート。
+    /// Groups the entries by archetype, sorted by archetype name, for use in compare mode.
     func groupedByArchetype() -> [(archetype: String, entries: [CatalogEntry])] {
         Dictionary(grouping: self, by: \.archetype)
             .sorted { $0.key < $1.key }
             .map { (archetype: $0.key, entries: $0.value) }
     }
 
-    /// 指定 archetype のエントリのみ。
+    /// Returns only the entries with the given archetype.
     func entries(ofArchetype archetype: String) -> [CatalogEntry] {
         filter { $0.archetype == archetype }
     }

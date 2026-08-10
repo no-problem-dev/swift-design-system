@@ -1,80 +1,79 @@
 import Foundation
 
-/// グリッドレイアウトの間隔（gutter）を定義するトークン
+/// The gutter between the items of a grid layout.
 ///
-/// グリッドアイテム間の間隔を統一的に管理する。
-/// Material Design 3 や Fluent 2 のガイドラインに基づき、
-/// 異なる画面サイズやコンテキストに適した間隔を提供する。
+/// Keeps the spacing between grid items consistent across the app. The steps follow the
+/// Material Design 3 and Fluent 2 guidelines, so each one suits a different screen size
+/// or context.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// AspectGrid(
 ///     minItemWidth: 160,
 ///     maxItemWidth: 200,
 ///     itemAspectRatio: 2/3,
-///     spacing: .md  // デフォルトの間隔
+///     spacing: .md  // The default gutter
 /// ) {
-///     // コンテンツ
+///     // Content
 /// }
 /// ```
 ///
-/// ## デザインガイドライン
+/// ## Design guidelines
 /// - Material Design 3: 16-24dp gutters
 /// - Fluent 2: 8-16px gutters
 /// - Apple HIG: 8-20pt spacing
-/// - 8pt grid systemに準拠
+/// - Follows an 8pt grid system
 public enum GridSpacing: CGFloat, Sendable {
-    /// 最小間隔（8pt）
+    /// The smallest gutter (8pt).
     ///
-    /// 密集したレイアウトや小さなアイテムに適する。
+    /// Suits a dense layout or small items.
     ///
-    /// ## 使用例
-    /// - アイコングリッド
-    /// - タグ一覧
-    /// - コンパクトなサムネイル
+    /// ## Example
+    /// - Icon grids
+    /// - Tag lists
+    /// - Compact thumbnails
     case xs = 8
 
-    /// 小さい間隔（12pt）
+    /// A small gutter (12pt).
     ///
-    /// コンパクトなレイアウトに適する。
+    /// Suits a compact layout.
     ///
-    /// ## 使用例
-    /// - カードグリッド（compact）
-    /// - サムネイル一覧
-    /// - 密度の高いギャラリー
+    /// ## Example
+    /// - Compact card grids
+    /// - Thumbnail lists
+    /// - Dense galleries
     case sm = 12
 
-    /// 標準間隔（16pt）
+    /// The standard gutter (16pt).
     ///
-    /// デフォルトの間隔。ほとんどのグリッドレイアウトに適する。
+    /// The default, and the right choice for most grid layouts.
     ///
-    /// ## 使用例
-    /// - 書籍カバー
-    /// - 商品一覧
-    /// - 写真グリッド
+    /// ## Example
+    /// - Book covers
+    /// - Product lists
+    /// - Photo grids
     case md = 16
 
-    /// 大きい間隔（20pt）
+    /// A large gutter (20pt).
     ///
-    /// ゆとりのあるレイアウトに適する。
+    /// Suits a roomier layout.
     ///
-    /// ## 使用例
-    /// - カードグリッド（regular）
-    /// - メディアギャラリー
-    /// - フィーチャーコンテンツ
+    /// ## Example
+    /// - Regular card grids
+    /// - Media galleries
+    /// - Featured content
     case lg = 20
 
-    /// 最大間隔（24pt）
+    /// The largest gutter (24pt).
     ///
-    /// 非常にゆとりのあるレイアウトや大きなアイテムに適する。
+    /// Suits a very roomy layout or large items.
     ///
-    /// ## 使用例
-    /// - ヒーローカード
-    /// - フィーチャーグリッド
-    /// - プレミアムコンテンツ
+    /// ## Example
+    /// - Hero cards
+    /// - Feature grids
+    /// - Premium content
     case xl = 24
 
-    /// CGFloat値を取得
     public var value: CGFloat {
         self.rawValue
     }

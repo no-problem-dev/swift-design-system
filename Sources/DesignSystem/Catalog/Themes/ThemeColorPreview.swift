@@ -1,8 +1,6 @@
 import SwiftUI
 
-/// テーマカラープレビュー
-///
-/// テーマの全カラーパレットを視覚的に表示する。
+/// Shows every color in a theme's palette.
 struct ThemeColorPreview: View {
     @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colors
@@ -110,7 +108,7 @@ private struct ColorRow: View {
 
     var body: some View {
         HStack(spacing: spacing.md) {
-            // カラースウォッチ
+            // Color swatch
             RoundedRectangle(cornerRadius: radius.sm)
                 .fill(color)
                 .frame(width: 40, height: 40)
@@ -119,14 +117,14 @@ private struct ColorRow: View {
                         .strokeBorder(colors.outline, lineWidth: 1)
                 )
 
-            // カラー名
+            // Color name
             Text(name)
                 .typography(.bodyMedium)
                 .foregroundStyle(colors.onSurface)
 
             Spacer()
 
-            // HEX値
+            // Hex value
             if let hex = color.hexString {
                 Text(hex)
                     .typography(.bodySmall)

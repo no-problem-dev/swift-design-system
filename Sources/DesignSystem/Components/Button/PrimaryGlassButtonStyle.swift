@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// Primary色で tint したLiquid Glassボタンスタイル。
+/// A Liquid Glass button style tinted with the Primary color.
 ///
-/// 浮遊アクションや画面下部の固定アクションなど、背景を透過させつつ
-/// Primary 色で同じアクション群として見せたい場合に使う。
+/// Use it for floating actions and for actions pinned to the bottom of a screen, where the
+/// background should show through but the actions still need to read as one Primary-colored group.
 public struct PrimaryGlassButtonStyle: ButtonStyle {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.buttonSize) private var buttonSize
@@ -18,7 +18,7 @@ public struct PrimaryGlassButtonStyle: ButtonStyle {
             .foregroundStyle(colorPalette.primary)
             .padding(.horizontal, buttonSize.horizontalPadding)
             .frame(height: buttonSize.height)
-            // macOS は内容幅（HIG: フルワイド塗りは watchOS のイディオム。macOS は幅を内容に合わせる）。
+            // macOS sizes to the content (in the HIG a full-width fill is a watchOS idiom; macOS fits the width to the content).
             #if os(iOS)
             .frame(maxWidth: .infinity)
             #endif
@@ -46,7 +46,7 @@ public struct PrimaryGlassButtonStyle: ButtonStyle {
 }
 
 public extension ButtonStyle where Self == PrimaryGlassButtonStyle {
-    /// Primary色で tint したLiquid Glassボタンスタイル。
+    /// A Liquid Glass button style tinted with the Primary color.
     static var primaryGlass: PrimaryGlassButtonStyle {
         PrimaryGlassButtonStyle()
     }

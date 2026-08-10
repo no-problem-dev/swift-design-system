@@ -3,9 +3,9 @@ import SwiftUI
 // MARK: - Chip Style Modifier
 
 public extension View {
-    /// Chip のスタイルを設定する
+    /// Sets the style for every chip in this view.
     ///
-    /// ## 使用例
+    /// ## Example
     /// ```swift
     /// Chip("Label")
     ///     .chipStyle(.filled)
@@ -17,8 +17,7 @@ public extension View {
     ///     .chipStyle(.liquidGlass)
     /// ```
     ///
-    /// - Parameter style: 適用するChipStyle
-    /// - Returns: スタイルが適用されたView
+    /// - Parameter style: The style to apply.
     func chipStyle<S: ChipStyle>(_ style: S) -> some View {
         environment(\.chipStyle, AnyChipStyle(style))
     }
@@ -27,9 +26,9 @@ public extension View {
 // MARK: - Chip Size Modifier
 
 public extension View {
-    /// Chip のサイズを設定する
+    /// Sets the size for every chip in this view.
     ///
-    /// ## 使用例
+    /// ## Example
     /// ```swift
     /// Chip("Small Chip")
     ///     .chipSize(.small)
@@ -38,8 +37,7 @@ public extension View {
     ///     .chipSize(.medium)
     /// ```
     ///
-    /// - Parameter size: 適用するChipSize
-    /// - Returns: サイズが適用されたView
+    /// - Parameter size: The size to apply.
     func chipSize(_ size: ChipSize) -> some View {
         environment(\.chipSize, size)
     }

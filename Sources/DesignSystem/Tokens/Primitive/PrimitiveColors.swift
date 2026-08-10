@@ -1,22 +1,23 @@
 import SwiftUI
 
-/// 基本カラートークン
+/// The base color values the design system is built from.
 ///
-/// 定義済みの色の値を提供する。**直接使用は避け**、Semantic tokens（`ColorPalette`）を介して参照すること。
+/// **Avoid using these directly.** Refer to them through a semantic token (`ColorPalette`)
+/// so that a theme can substitute its own colors.
 ///
-/// ## ⚠️ 重要な使用方法
+/// ## ⚠️ How to use it
 /// ```swift
-/// // ❌ 避けるべき使い方
+/// // ❌ Avoid
 /// Text("Bad")
 ///     .foregroundColor(PrimitiveColors.blue500)
 ///
-/// // ✅ 推奨される使い方
+/// // ✅ Preferred
 /// @Environment(\.colorPalette) var colors
 /// Text("Good")
 ///     .foregroundColor(colors.primary)
 /// ```
 ///
-/// ## カスタムテーマでの参照
+/// ## Referring to them from a custom theme
 /// ```swift
 /// struct MyBrandPalette: ColorPalette {
 ///     var primary: Color { PrimitiveColors.blue600 }
@@ -25,11 +26,11 @@ import SwiftUI
 /// }
 /// ```
 ///
-/// ## 色スケール
-/// 各色は50（最も薄い）から950（最も濃い）までの11段階で定義されている。
-/// - 50-200: 背景色、極めて薄い強調
-/// - 300-500: アクセントカラー、標準的な強調
-/// - 600-950: 濃い強調、テキスト色
+/// ## Color scales
+/// Each hue is defined in 11 steps, from 50 (lightest) to 950 (darkest).
+/// - 50-200: backgrounds and very light emphasis
+/// - 300-500: accent colors and ordinary emphasis
+/// - 600-950: strong emphasis and text colors
 public enum PrimitiveColors {
     // MARK: - Blue Scale
     public static let blue50 = Color(hex: "#EFF6FF")

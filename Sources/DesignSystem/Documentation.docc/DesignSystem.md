@@ -1,14 +1,15 @@
 # ``DesignSystem``
 
-SwiftUI 向けの型安全で拡張可能なデザインシステム。
+A type-safe, extensible design system for SwiftUI.
 
 ## Overview
 
-DesignSystem は、Primitive → Semantic → Component の 3 層トークンアーキテクチャに基づいた
-SwiftUI 用デザインシステムライブラリ。
-プロトコルベース設計により、型安全性と拡張性を両立する。
+DesignSystem is built on a three-layer token architecture — Primitive, Semantic, and
+Component. Every token layer is expressed as a protocol, so a theme supplies values by
+conforming rather than by editing the library, and the compiler catches a token that a
+theme forgot to define.
 
-テーマの適用はシンプル:
+Install a theme once at the root of the app:
 
 ```swift
 @main
@@ -24,35 +25,45 @@ struct MyApp: App {
 }
 ```
 
-View 内では Environment からデザイントークンを取得して使用する:
+Every view below that point reads tokens out of the environment. Reading them this way,
+rather than hard-coding values, is what makes a theme switch take effect everywhere at once:
 
 ```swift
-struct MyView: View {
+struct ProfileHeader: View {
     @Environment(\.colorPalette) var colors
     @Environment(\.spacingScale) var spacing
 
     var body: some View {
-        VStack(spacing: spacing.lg) {
-            Text("見出し")
+        VStack(alignment: .leading, spacing: spacing.sm) {
+            Text("Ada Lovelace")
                 .typography(.headlineLarge)
-                .foregroundStyle(colors.primary)
+                .foregroundStyle(colors.onSurface)
+            Text("Mathematician")
+                .typography(.bodyMedium)
+                .foregroundStyle(colors.onSurfaceVariant)
         }
         .padding(spacing.xl)
+        .background(colors.surface)
     }
 }
 ```
 
-### iOS 専用コンポーネント
+Seven themes ship with the package — Default, Ocean, Forest, Sunset, PurpleHaze,
+Monochrome, and HighContrast — and each resolves a separate palette for light and dark.
 
-以下のコンポーネントは iOS 専用（`#if canImport(UIKit)` で条件コンパイル）:
+### Platform availability
 
-- `VideoPlayerView` - 動画再生プレーヤー
-- `ImagePickerModifier` - 画像ピッカー（`.imagePicker()`）
-- `VideoPickerModifier` - 動画ピッカー（`.videoPicker()`）
+Most of the package builds for both iOS and macOS. The media pieces wrap UIKit and are
+therefore iOS-only, compiled behind `#if canImport(UIKit)`: `VideoPlayerView`,
+`ImagePickerModifier` (the `.imagePicker()` modifier), and `VideoPickerModifier`
+(the `.videoPicker()` modifier).
+
+This documentation is generated on macOS, so those three do not appear in the symbol
+reference below. Build the docs for an iOS destination to see them.
 
 ## Topics
 
-### エッセンシャル
+### Essentials
 
 - <doc:GettingStarted>
 - <doc:TokenArchitecture>
@@ -61,16 +72,27 @@ struct MyView: View {
 - ``Theme``
 - ``ThemeMode``
 
-### デザイントークン
+### Semantic tokens
 
 - ``ColorPalette``
 - ``SpacingScale``
 - ``RadiusScale``
 - ``Typography``
+- ``TypographyScale``
 - ``Motion``
-- ``Elevation``
+- ``BorderScale``
+- ``GradientTokens``
+- ``StateLayer``
+- ``IconSizeScale``
+- ``IconSizeToken``
 
-### テーマシステム
+### Component tokens
+
+- ``Elevation``
+- ``ElevationScale``
+- ``GridSpacing``
+
+### Themes
 
 - ``ThemeCategory``
 - ``ThemeRegistry``
@@ -82,13 +104,19 @@ struct MyView: View {
 - ``MonochromeTheme``
 - ``HighContrastTheme``
 
-### トークンデフォルト
+### Default token implementations
 
 - ``DefaultSpacingScale``
 - ``DefaultRadiusScale``
 - ``DefaultMotion``
+- ``DefaultIconSizeScale``
+- ``DefaultBorderScale``
+- ``DefaultElevationScale``
+- ``DefaultGradientTokens``
+- ``DefaultStateLayer``
+- ``DefaultTypographyScale``
 
-### コンポーネント - ボタン
+### Buttons
 
 - ``PrimaryButtonStyle``
 - ``SecondaryButtonStyle``
@@ -97,8 +125,14 @@ struct MyView: View {
 - ``PrimaryGlassButtonStyle``
 - ``PrimaryTonalButtonStyle``
 - ``ButtonSize``
+- ``IconButton``
+- ``IconButtonStyle``
+- ``IconButtonSize``
+- ``FloatingActionButton``
+- ``FABSize``
+- ``FABStyle``
 
-### コンポーネント - 入力
+### Input
 
 - ``DSTextField``
 - ``DSTextFieldStyle``
@@ -111,8 +145,10 @@ struct MyView: View {
 - ``FilledChipStyle``
 - ``OutlinedChipStyle``
 - ``LiquidGlassChipStyle``
+- ``SegmentedControl``
+- ``GlassSegmentedControl``
 
-### コンポーネント - 表示
+### Display
 
 - ``Card``
 - ``LinkCard``
@@ -125,6 +161,7 @@ struct MyView: View {
 - ``StatusIndicator``
 - ``StatusKind``
 - ``StepIndicator``
+- ``EmptyState``
 - ``Snackbar``
 - ``SnackbarState``
 - ``SnackbarAction``
@@ -132,25 +169,13 @@ struct MyView: View {
 - ``AttachmentThumbnail``
 - ``MediaViewerItem``
 - ``TimelineRow``
+- ``TitleTextRenderer``
 
-### コンポーネント - アクション
-
-- ``IconButton``
-- ``IconButtonStyle``
-- ``IconButtonSize``
-- ``FloatingActionButton``
-- ``FABSize``
-- ``FABStyle``
-
-### セグメントコントロール
-
-- ``SegmentedControl``
-- ``GlassSegmentedControl``
-
-### レイアウトパターン
+### Layout patterns
 
 - ``SectionCard``
 - ``SectionRow``
+- ``SectionRowLabel``
 - ``SectionRowDivider``
 - ``SectionNavigationLabel``
 - ``AspectGrid``
@@ -158,37 +183,23 @@ struct MyView: View {
 - ``StaggeredConfig``
 - ``LoopingScrollView``
 
-### ピッカー
+### Pickers
 
 - ``EmojiPickerModifier``
 - ``IconPickerModifier``
 - ``ColorPickerModifier``
+- ``ColorPreset``
 
-### トークンプロトコル
+### Browsing the system at runtime
 
-- ``TypographyScale``
-- ``BorderScale``
-- ``ElevationScale``
-- ``GradientTokens``
-- ``StateLayer``
-- ``IconSizeScale``
+- ``DesignSystemCatalogView``
+- ``DesignSystemCatalogSplitView``
+- ``ThemeGalleryView``
+- ``ThemeDetailView``
 
-### トークンデフォルト
-
-- ``DefaultSpacingScale``
-- ``DefaultRadiusScale``
-- ``DefaultMotion``
-- ``DefaultIconSizeScale``
-- ``DefaultBorderScale``
-- ``DefaultElevationScale``
-- ``DefaultGradientTokens``
-- ``DefaultStateLayer``
-- ``DefaultTypographyScale``
-
-### ユーティリティ
+### Utilities
 
 - ``SurfaceStyle``
 - ``ThemeColorScheme``
-- ``IconSizeToken``
 - ``ByteSize``
-- ``TitleTextRenderer``
+- ``ImageResizeRule``

@@ -1,29 +1,28 @@
 import SwiftUI
 
-/// ターシャリボタンスタイル
+/// The quietest button style, with no background and only a text color.
 ///
-/// 最も控えめなボタンスタイル。背景なし、テキスト色のみ。
-/// リンクのような軽いアクションや、過度に強調したくない操作に使う。
+/// Use it for light, link-like actions and for anything that should not be emphasized.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// Button("詳細を見る") {
+/// Button("See details") {
 ///     showDetail()
 /// }
 /// .buttonStyle(.tertiary)
 ///
-/// Button("スキップ") {
+/// Button("Skip") {
 ///     skip()
 /// }
 /// .buttonStyle(.tertiary)
 /// .buttonSize(.small)
 /// ```
 ///
-/// ## 使用シーン
-/// - 詳細リンク
-/// - スキップボタン
-/// - オプショナルなアクション
-/// - インライン操作
+/// ## When to use it
+/// - A link to more detail
+/// - A skip button
+/// - An optional action
+/// - An inline control
 public struct TertiaryButtonStyle: ButtonStyle {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.buttonSize) private var buttonSize
@@ -50,7 +49,6 @@ public struct TertiaryButtonStyle: ButtonStyle {
 }
 
 public extension ButtonStyle where Self == TertiaryButtonStyle {
-    /// ターシャリボタンスタイル
     static var tertiary: TertiaryButtonStyle {
         TertiaryButtonStyle()
     }

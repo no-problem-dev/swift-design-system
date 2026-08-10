@@ -1,8 +1,6 @@
 import SwiftUI
 
-/// デフォルトテーマ
-///
-/// システムの基本となる青ベースのテーマ。
+/// The theme an app starts with, built on blue.
 public struct DefaultTheme: Theme {
     public init() {}
 

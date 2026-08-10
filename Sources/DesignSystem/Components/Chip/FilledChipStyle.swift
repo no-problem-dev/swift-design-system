@@ -1,11 +1,10 @@
 import SwiftUI
 
-/// Filled Chip スタイル
+/// A chip style with a filled background.
 ///
-/// 塗りつぶし背景の Chip スタイル。ステータス表示・カテゴリラベル・
-/// 固定的な情報表示に適する。
+/// It suits status indicators, category labels, and other fixed information.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// Chip("Active", systemImage: "circle.fill")
 ///     .chipStyle(.filled)
@@ -16,11 +15,11 @@ import SwiftUI
 ///     .foregroundColor(.orange)
 /// ```
 ///
-/// ## 視覚的特徴
-/// - 背景: セマンティックカラーの10%不透明度
-/// - テキスト: セマンティックカラー（フル不透明度）
-/// - 角丸: デザインシステムのradiusScale.xs
-/// - 選択時: 背景不透明度が20%に増加
+/// ## Appearance
+/// - Background: the primary color at 10% opacity
+/// - Label: the inherited foreground color at full opacity
+/// - Shape: a capsule
+/// - When selected: the background opacity rises to 20%
 public struct FilledChipStyle: ChipStyle, Sendable {
     public init() {}
 
@@ -64,7 +63,6 @@ public struct FilledChipStyle: ChipStyle, Sendable {
 }
 
 public extension ChipStyle where Self == FilledChipStyle {
-    /// Filled Chip スタイル
     static var filled: FilledChipStyle {
         FilledChipStyle()
     }

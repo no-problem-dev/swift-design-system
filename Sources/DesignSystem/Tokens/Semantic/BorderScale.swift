@@ -1,19 +1,20 @@
 import SwiftUI
 
-/// 線幅スケール。境界線・区切り線・フォーカスリング外周などの stroke 幅を token 化する。
+/// The stroke widths used for borders, dividers, and focus rings.
 ///
-/// 既存はコンポーネント内に `lineWidth: 1` 等が散在していた。ブランドにより線の重さは
-/// 大きく異なる（SmartHR は 1px 主体、フォーカスは 2px+2px の二重リング）ため抽象化する。
+/// Line weight differs a lot between brands: some draw nearly everything at 1px and render
+/// focus as a 2px + 2px double ring. Reaching for this scale instead of writing
+/// `lineWidth: 1` inside a component lets a theme change the weight of every line at once.
 public protocol BorderScale: Sendable {
     /// 0
     var none: CGFloat { get }
-    /// ヘアライン（0.5）
+    /// A hairline (0.5).
     var thin: CGFloat { get }
-    /// 標準（1）
+    /// The standard width (1).
     var regular: CGFloat { get }
-    /// 強調（2）
+    /// A heavier width for emphasis (2).
     var thick: CGFloat { get }
-    /// フォーカスリング等（4）
+    /// A heavy width for focus rings and the like (4).
     var heavy: CGFloat { get }
 }
 

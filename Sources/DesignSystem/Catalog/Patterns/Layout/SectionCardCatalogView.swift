@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// SectionCardパターンのカタログビュー
 struct SectionCardCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

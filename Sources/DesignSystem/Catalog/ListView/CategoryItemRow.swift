@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// カテゴリアイテムの行ビュー
 struct CategoryItemRow: View {
     let category: CatalogCategory
 

@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// 選択済み添付を横スクロール表示する純レイアウトコンテナ（molecule）。
+/// A layout container that shows the selected attachments in a horizontal scroll view (molecule).
 ///
-/// 中身（サムネイル列）は呼び出し側が ViewBuilder で渡す。
-/// `ForEach` も items も削除ロジックも持たない完全な logic-less レイアウト。
+/// The caller passes the row of thumbnails in through a ViewBuilder. The container holds no
+/// `ForEach`, no items, and no removal logic, so it stays a layout and nothing more.
 ///
 /// ```swift
 /// AttachmentStrip {

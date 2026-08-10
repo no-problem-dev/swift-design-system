@@ -1,16 +1,15 @@
 import SwiftUI
 
-/// EmptyStateコンポーネント
+/// An explicit state for when a list, a grid, or a set of search results is empty.
 ///
-/// リスト・グリッド・検索結果などが空のときの明示ステート。
-/// アイコン + 見出し + 任意の説明文を中央寄せで表示する。
+/// Shows an icon, a heading, and an optional description, centered.
 ///
-/// ## 基本的な使用例
+/// ## Example
 /// ```swift
 /// EmptyState(
 ///     systemImage: "link",
-///     title: "出典はありません",
-///     description: "Web 調査を行ったセッションでは、参照した URL がここに並びます。"
+///     title: "No sources",
+///     description: "Sessions that ran a web search list the URLs they referenced here."
 /// )
 /// ```
 public struct EmptyState: View {
@@ -21,11 +20,11 @@ public struct EmptyState: View {
     private let title: String
     private let description: String?
 
-    /// 空ステートを作成
+    /// Creates an empty state.
     /// - Parameters:
-    ///   - systemImage: SF Symbols のアイコン名
-    ///   - title: 見出し（何が無いのか）
-    ///   - description: 補足説明（どうすれば現れるのか）
+    ///   - systemImage: The SF Symbols icon name.
+    ///   - title: The heading, saying what is missing.
+    ///   - description: Supporting text, saying how the missing content would appear.
     public init(systemImage: String, title: String, description: String? = nil) {
         self.systemImage = systemImage
         self.title = title

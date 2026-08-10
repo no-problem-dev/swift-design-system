@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// カタログのメインカテゴリ
 enum CatalogCategory: String, CaseIterable, Identifiable {
     case themes = "テーマ"
     case foundations = "デザイントークン"

@@ -1,32 +1,32 @@
 import SwiftUI
 
-/// TimelineRowコンポーネント
+/// One row of a chronological feed such as an activity log, a set of steps, or a change history.
 ///
-/// 時系列フィード（アクティビティログ、進行ステップ、変更履歴など）の 1 行。
-/// 左にマーカー（ステータスや任意のアイコン）と縦のコネクタ線、右に任意のコンテンツを置く。
-/// 行を `VStack(spacing: 0)` に並べるとコネクタ線が連続したタイムラインになる。
+/// A marker (a status or any icon) and a vertical connector line sit on the left, and any
+/// content sits on the right. Stacking rows in a `VStack(spacing: 0)` joins the connector
+/// lines into a continuous timeline.
 ///
-/// ## 基本的な使用例
+/// ## Basic example
 /// ```swift
 /// VStack(spacing: 0) {
 ///     TimelineRow(status: .success, isFirst: true) {
-///         Text("Web を検索").typography(.bodyMedium)
+///         Text("Search the web").typography(.bodyMedium)
 ///     }
 ///     TimelineRow(status: .running) {
-///         Text("ページを取得中…").typography(.bodyMedium)
+///         Text("Fetching pages…").typography(.bodyMedium)
 ///     }
 ///     TimelineRow(status: .pending, isLast: true) {
-///         Text("要約").typography(.bodyMedium)
+///         Text("Summarize").typography(.bodyMedium)
 ///     }
 /// }
 /// ```
 ///
-/// マーカーを任意のビューに差し替えることもできる:
+/// The marker can be any view:
 /// ```swift
 /// TimelineRow(isFirst: true) {
 ///     IconBadge(systemName: "magnifyingglass", size: .small)
 /// } content: {
-///     Text("調査エージェントが検索しました")
+///     Text("The research agent ran a search")
 /// }
 /// ```
 public struct TimelineRow<Marker: View, Content: View>: View {
@@ -39,13 +39,14 @@ public struct TimelineRow<Marker: View, Content: View>: View {
     private let marker: Marker
     private let content: Content
 
-    /// 任意マーカーのタイムライン行を作成
+    /// Creates a timeline row with a marker of your own.
     /// - Parameters:
-    ///   - isFirst: 先頭行（上のコネクタ線を描かない）
-    ///   - isLast: 末尾行（下のコネクタ線を描かない）
-    ///   - markerColumnWidth: マーカー列の幅（デフォルト 32pt）。連続する行で揃えること
-    ///   - marker: 左列に置くマーカービュー
-    ///   - content: 行の本文
+    ///   - isFirst: Whether this is the first row, which omits the connector line above it.
+    ///   - isLast: Whether this is the last row, which omits the connector line below it.
+    ///   - markerColumnWidth: The width of the marker column. Keep it the same across rows of
+    ///     one timeline so that the connector lines stay aligned.
+    ///   - marker: The marker view placed in the left column.
+    ///   - content: The body of the row.
     public init(
         isFirst: Bool = false,
         isLast: Bool = false,
@@ -67,7 +68,8 @@ public struct TimelineRow<Marker: View, Content: View>: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, isLast ? 0 : spacing.md)
         }
-        // コネクタ線（maxHeight: .infinity）が行の自然な高さを超えて伸びないようにする
+        // Keeps the connector line (maxHeight: .infinity) from stretching the row beyond its
+        // natural height
         .fixedSize(horizontal: false, vertical: true)
     }
 
@@ -94,13 +96,13 @@ public struct TimelineRow<Marker: View, Content: View>: View {
 }
 
 public extension TimelineRow where Marker == StatusIndicator {
-    /// ステータスをマーカーにしたタイムライン行を作成
+    /// Creates a timeline row whose marker is a status.
     /// - Parameters:
-    ///   - status: 行の作業状態（マーカーとして `StatusIndicator` を表示）
-    ///   - isFirst: 先頭行（上のコネクタ線を描かない）
-    ///   - isLast: 末尾行（下のコネクタ線を描かない）
-    ///   - markerColumnWidth: マーカー列の幅（デフォルト 32pt）
-    ///   - content: 行の本文
+    ///   - status: The state of the work this row stands for, drawn as a `StatusIndicator`.
+    ///   - isFirst: Whether this is the first row, which omits the connector line above it.
+    ///   - isLast: Whether this is the last row, which omits the connector line below it.
+    ///   - markerColumnWidth: The width of the marker column.
+    ///   - content: The body of the row.
     init(
         status: StatusKind,
         isFirst: Bool = false,

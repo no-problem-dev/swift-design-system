@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// IconPicker（SF Symbols）のカタログビュー
 struct IconPickerCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

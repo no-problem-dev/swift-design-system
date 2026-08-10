@@ -5,15 +5,16 @@ import UIKit
 import AVFoundation
 import PhotosUI
 
-/// 画像ピッカーを表示する ViewModifier。
+/// Presents an image picker backed by the camera or the photo library.
 ///
-/// カメラまたは写真ライブラリから画像を選択できるモディファイア。
-/// カメラは撮影の許可が要るため、権限を取ってから提示し、拒否されていればアラートで設定へ誘導する。
-/// 写真ライブラリは `PHPickerViewController` を使うので権限を必要としない。
+/// The camera needs permission to capture, so the permission is resolved before the picker is
+/// presented; when it has been denied, an alert points the user to Settings.
+/// The photo library needs no permission because it uses `PHPickerViewController`.
 ///
-/// - Note: カメラの使用許可だけが必要。Info.plist に `NSCameraUsageDescription`（カメラ使用の説明）を
-///   追加すること。写真ライブラリ側は選択がアプリの外で完結し、アプリがライブラリへ触れないため、
-///   `NSPhotoLibraryUsageDescription` は要らない。使っていない権限を宣言すると審査で理由を問われる。
+/// - Note: Only camera access is required. Add `NSCameraUsageDescription` (the reason for using
+///   the camera) to Info.plist. `NSPhotoLibraryUsageDescription` is not needed, because the
+///   selection is completed outside the app and the app never touches the library. Declaring a
+///   permission the app does not use invites questions during review.
 public struct ImagePickerModifier: ViewModifier {
     @Environment(\.colorPalette) private var colorPalette
 
@@ -100,7 +101,7 @@ public struct ImagePickerModifier: ViewModifier {
                 isPresented: $isPresented,
                 titleVisibility: .visible
             ) {
-                // カメラが利用可能な場合のみ表示
+                // Shown only when a camera is available
                 if UIImagePickerController.isSourceTypeAvailable(.camera) {
                     Button("カメラで撮影") {
                         showCamera()
@@ -127,13 +128,15 @@ public struct ImagePickerModifier: ViewModifier {
             content.onChange(of: isPresented) { _, newValue in
                 guard newValue else { return }
                 isPresented = false
-                // PHPickerViewController は権限を必要としないので、そのまま提示する
+                // PHPickerViewController needs no permission, so present it directly
                 sourceType = .photoLibrary
             }
         }
     }
 
-    /// カメラの権限を取ってから提示する。撮影は `AVCaptureDevice` の許可が要るため。
+    /// Presents the camera once capture is authorized, and shows the permission alert otherwise.
+    ///
+    /// Capture requires authorization from `AVCaptureDevice`, so it is resolved first.
     private func showCamera() {
         Task { @MainActor in
             if await requestCameraPermission() {
@@ -148,7 +151,7 @@ public struct ImagePickerModifier: ViewModifier {
         }
     }
 
-    /// カメラ権限の確認とリクエスト
+    /// Returns whether camera capture is authorized, asking the user when the status is undetermined.
     private func requestCameraPermission() async -> Bool {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
 
@@ -166,7 +169,6 @@ public struct ImagePickerModifier: ViewModifier {
         }
     }
 
-    /// カメラ権限の状態を取得
     private func cameraPermissionStatus() -> PermissionStatus {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .denied:
@@ -178,7 +180,6 @@ public struct ImagePickerModifier: ViewModifier {
         }
     }
 
-    /// 設定画面を開く
     private func openSettings() {
         if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(settingsURL)
@@ -188,11 +189,12 @@ public struct ImagePickerModifier: ViewModifier {
 
 // MARK: - Public Types
 
-/// 画像ピッカーの提示ソース
+/// Which source the picker is presented from.
 ///
-/// - `automatic`: カメラ利用可なら「カメラ / 写真ライブラリ」の選択ダイアログを出し、不可ならライブラリへ直行する。
-/// - `camera`: 選択ダイアログを出さずカメラを直接提示する。
-/// - `photoLibrary`: 選択ダイアログを出さず写真ライブラリを直接提示する。
+/// - `automatic`: shows a dialog to choose between the camera and the photo library when a camera
+///   is available, and goes straight to the library when it is not.
+/// - `camera`: presents the camera directly, without the choice dialog.
+/// - `photoLibrary`: presents the photo library directly, without the choice dialog.
 public enum ImagePickerSource: Sendable {
     case automatic
     case camera
@@ -201,7 +203,6 @@ public enum ImagePickerSource: Sendable {
 
 // MARK: - Shared Types
 
-/// メディアソースの種類
 enum MediaSourceType: Identifiable {
     case camera
     case photoLibrary
@@ -221,14 +222,13 @@ enum MediaSourceType: Identifiable {
     }
 }
 
-/// 権限の状態
 enum PermissionStatus {
     case notDetermined
     case denied
     case restricted
 }
 
-/// 権限アラートの設定
+/// The wording of the permission alert, derived from the source and its authorization status.
 struct PermissionAlertConfig {
     let title: String
     let message: String
@@ -266,10 +266,10 @@ struct PermissionAlertConfig {
     }
 }
 
-/// 変換に失敗したときのエラー。
+/// The error reported when converting a picked image fails.
 ///
-/// - Note: `onCompressionError` に渡る値。既存の呼び出し側が domain / code を見ている可能性があるため、
-///   従来と同じ `NSError` のまま保つ。
+/// - Note: This is the value handed to `onCompressionError`. It stays an `NSError` with the same
+///   domain and code, because call sites may be inspecting them.
 private func imageConversionError() -> NSError {
     NSError(
         domain: "ImagePickerError",
@@ -280,9 +280,10 @@ private func imageConversionError() -> NSError {
 
 // MARK: - Camera
 
-/// カメラ撮影の SwiftUI ラッパー。
+/// A SwiftUI wrapper around taking a photo with the camera.
 ///
-/// 撮影は `UIImagePickerController` でしか行えないため、ライブラリ側と違ってここは置き換えない。
+/// Capture is only possible through `UIImagePickerController`, so unlike the library side this
+/// one is not replaced.
 struct CameraImagePicker: UIViewControllerRepresentable {
     @Binding var selectedImageData: Data?
     @Binding var isPresented: MediaSourceType?
@@ -298,7 +299,7 @@ struct CameraImagePicker: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
-        // 更新不要
+        // Nothing to update
     }
 
     func makeCoordinator() -> Coordinator {
@@ -335,11 +336,12 @@ struct CameraImagePicker: UIViewControllerRepresentable {
 
 // MARK: - Photo Library
 
-/// 写真ライブラリ選択の SwiftUI ラッパー。
+/// A SwiftUI wrapper around picking an image from the photo library.
 ///
-/// `PHPickerViewController` を使うのは、選択がアプリの外（別プロセス）で完結し、アプリが
-/// ライブラリ全体に触れないため、写真の権限を要求せずに済むから。`PHPickerConfiguration` を
-/// `photoLibrary:` なしで作ることがその条件——ライブラリを渡すと権限が必要な構成になる。
+/// It uses `PHPickerViewController` because the selection is completed outside the app, in a
+/// separate process, so the app never touches the whole library and no photo permission has to be
+/// requested. That holds only while `PHPickerConfiguration` is created without `photoLibrary:`;
+/// passing a library in turns it into a configuration that does require permission.
 struct PhotoLibraryImagePicker: UIViewControllerRepresentable {
     @Binding var selectedImageData: Data?
     @Binding var isPresented: MediaSourceType?
@@ -358,7 +360,7 @@ struct PhotoLibraryImagePicker: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {
-        // 更新不要
+        // Nothing to update
     }
 
     func makeCoordinator() -> Coordinator {
@@ -375,7 +377,7 @@ struct PhotoLibraryImagePicker: UIViewControllerRepresentable {
         func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
             guard let provider = results.first?.itemProvider,
                   provider.canLoadObject(ofClass: UIImage.self) else {
-                // 選択せずに閉じた場合もここに来る
+                // Also reached when the picker is closed without a selection
                 parent.isPresented = nil
                 return
             }
@@ -397,11 +399,14 @@ struct PhotoLibraryImagePicker: UIViewControllerRepresentable {
             }
         }
 
-        /// 読み込みと変換を行う。`loadObject` の完了は main の外で呼ばれるので、12MP の描き直しも
-        /// 画面の応答には載らない。
+        /// Loads the picked image and converts it to data.
         ///
-        /// この関数自体を MainActor に置いているのは、`NSItemProvider` が Sendable ではなく、
-        /// 隔離をまたいで渡せないから。完了クロージャが外へ持ち出すのは `Data` だけにしてある。
+        /// The completion of `loadObject` is called off the main thread, so even redrawing a 12MP
+        /// image does not land on the responsiveness of the interface.
+        ///
+        /// The function itself sits on the main actor because `NSItemProvider` is not `Sendable`
+        /// and cannot be passed across isolation. The only thing the completion closure carries
+        /// back out is `Data`.
         @MainActor
         private static func imageData(
             from provider: NSItemProvider,
@@ -429,10 +434,9 @@ struct PhotoLibraryImagePicker: UIViewControllerRepresentable {
 // MARK: - Public Extension
 
 public extension View {
-    /// 画像ピッカーモディファイアを適用する。
+    /// Presents an image picker backed by the camera or the photo library.
     ///
-    /// カメラまたは写真ライブラリから画像を選択できるモディファイア。
-    /// 選択された画像は JPEG 形式の Data として返される。
+    /// The picked image is returned as JPEG data.
     ///
     /// ```swift
     /// struct ContentView: View {
@@ -448,14 +452,14 @@ public extension View {
     ///                     .frame(height: 200)
     ///             }
     ///
-    ///             Button("画像を選択") {
+    ///             Button("Select Image") {
     ///                 showPicker = true
     ///             }
     ///         }
     ///         .imagePicker(
     ///             isPresented: $showPicker,
     ///             selectedImageData: $imageData,
-    ///             resize: .square(720),  // アバター用に center-crop
+    ///             resize: .square(720),  // center-crop for an avatar
     ///             maxSize: 1.mb          // 1MB
     ///         )
     ///     }
@@ -463,13 +467,15 @@ public extension View {
     /// ```
     ///
     /// - Parameters:
-    ///   - isPresented: ピッカーの表示状態を制御するバインディング
-    ///   - selectedImageData: 選択された画像のデータを受け取るバインディング
-    ///   - source: 提示ソース。`.camera` / `.photoLibrary` を指定すると選択ダイアログを出さず直接提示する。
-    ///   - resize: 保存前に寸法を落とす規則。指定すると向きも `.up` へ正規化される。
-    ///   - maxSize: 画像の最大サイズ。指定された場合、`resize` の後に品質を下げて収める。
-    ///   - onCompressionError: 画像の圧縮または変換に失敗した場合に呼ばれるコールバック
-    /// - Returns: モディファイアが適用されたビュー
+    ///   - isPresented: A binding that controls whether the picker is shown.
+    ///   - selectedImageData: A binding that receives the data of the picked image.
+    ///   - source: The source to present from. Passing `.camera` or `.photoLibrary` presents it
+    ///     directly, without the choice dialog.
+    ///   - resize: A rule for reducing the dimensions before storing. Passing one also normalizes
+    ///     the orientation to `.up`.
+    ///   - maxSize: The largest allowed size of the image. When given, quality is lowered after
+    ///     `resize` until the data fits.
+    ///   - onCompressionError: A callback invoked when compressing or converting the image fails.
     func imagePicker(
         isPresented: Binding<Bool>,
         selectedImageData: Binding<Data?>,

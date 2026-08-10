@@ -1,14 +1,12 @@
 import SwiftUI
 
-/// デザインシステムカタログのスプリットビュー
-/// iPadに最適化された3カラムレイアウトで、デザインシステムの全要素を階層的に表示
+/// A three column layout, tuned for iPad, that presents every part of the design system hierarchically.
 public struct DesignSystemCatalogSplitView: View {
     @Environment(ThemeProvider.self) private var themeProvider
 
-    // カラム可視性
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
 
-    // 選択状態
+    // Selection state
     @State private var selectedCategory: CatalogCategory? = .themes
     @State private var selectedFoundationItem: FoundationItem?
     @State private var selectedComponentItem: ComponentType?
@@ -18,10 +16,10 @@ public struct DesignSystemCatalogSplitView: View {
 
     public var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
-            // Sidebar: カテゴリ一覧
+            // Sidebar: the list of categories
             CatalogSidebarView(selectedCategory: $selectedCategory)
         } content: {
-            // Content: 選択されたカテゴリのアイテムリスト
+            // Content: the items in the selected category
             CatalogContentView(
                 category: selectedCategory,
                 selectedFoundationItem: $selectedFoundationItem,
@@ -29,7 +27,7 @@ public struct DesignSystemCatalogSplitView: View {
                 selectedPatternItem: $selectedPatternItem
             )
         } detail: {
-            // Detail: 選択されたアイテムの詳細
+            // Detail: the selected item
             CatalogDetailView(
                 category: selectedCategory,
                 foundationItem: selectedFoundationItem,
@@ -39,7 +37,7 @@ public struct DesignSystemCatalogSplitView: View {
         }
         .navigationSplitViewStyle(.balanced)
         .onChange(of: selectedCategory) { _, newCategory in
-            // カテゴリが変わったら選択をリセット
+            // Reset the item selection when the category changes
             selectedFoundationItem = nil
             selectedComponentItem = nil
             selectedPatternItem = nil

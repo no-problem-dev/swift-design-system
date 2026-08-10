@@ -1,17 +1,17 @@
 import SwiftUI
 
-/// 末尾に chevron を持つナビゲーション行のラベル。
+/// The label of a navigation row, with a chevron at the trailing edge.
 ///
-/// `NavigationLink { ... } label: { SectionNavigationLabel("title") }` の形で使う。
-/// 内部で `SectionRow` を生成するため、`SectionCard` 内で直接配置できる。
+/// Use it as `NavigationLink { ... } label: { SectionNavigationLabel("title") }`.
+/// It builds a `SectionRow` internally, so it can be placed directly inside a `SectionCard`.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// SectionCard("設定") {
+/// SectionCard("Settings") {
 ///     NavigationLink {
 ///         NotificationSettingsView()
 ///     } label: {
-///         SectionNavigationLabel("通知の詳細設定", systemImage: "bell.badge")
+///         SectionNavigationLabel("Notification settings", systemImage: "bell.badge")
 ///     }
 /// }
 /// ```
@@ -22,11 +22,12 @@ public struct SectionNavigationLabel: View {
     private let systemImage: String?
     private let subtitle: String?
 
-    /// chevron 付きナビゲーションラベルを生成する
+    /// Creates a navigation label with a trailing chevron.
+    ///
     /// - Parameters:
-    ///   - title: ラベル文字列
-    ///   - systemImage: 左側に表示する SF Symbols 名（省略可）
-    ///   - subtitle: タイトルの下に置く補足（省略可）
+    ///   - title: The label text.
+    ///   - systemImage: The name of an SF Symbol shown at the leading edge.
+    ///   - subtitle: Supplementary text placed below the title.
     public init(_ title: String, systemImage: String? = nil, subtitle: String? = nil) {
         self.title = title
         self.systemImage = systemImage

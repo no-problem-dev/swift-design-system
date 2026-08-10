@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Monochromeテーマ - ダークモードパレット
 struct MonochromeDarkPalette: ColorPalette {
     // MARK: - Primary
     var primary: Color { Color(hex: "#CBD5E0") } // Light gray for dark mode

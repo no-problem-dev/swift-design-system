@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// コンポーネントカタログのエントリポイント
+/// Lists every component in the catalog and links to each component's page.
 struct ComponentsCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
@@ -8,7 +8,7 @@ struct ComponentsCatalogView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: spacing.xl) {
-                // ヘッダー
+                // Header
                 VStack(spacing: spacing.sm) {
                     Image(systemName: "square.stack.3d.up.fill")
                         .font(.system(size: 48))
@@ -25,7 +25,7 @@ struct ComponentsCatalogView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.top, spacing.xl)
 
-                // コンポーネントリスト
+                // Component list
                 VStack(alignment: .leading, spacing: spacing.md) {
                     Text("コンポーネント")
                         .typography(.titleMedium)

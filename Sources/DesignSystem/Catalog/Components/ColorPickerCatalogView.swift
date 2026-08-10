@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// ColorPickerのカタログビュー
 struct ColorPickerCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

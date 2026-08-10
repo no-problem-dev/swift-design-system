@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// Primaryの色相を保った控えめなボタンスタイル。
+/// A quieter button style that keeps the hue of Primary.
 ///
-/// 主要導線に関連する補助アクションなど、Primaryと親和性を持たせたいが
-/// 塗りの Primary ほど強くしたくない操作に使う。
+/// Use it for supporting actions that belong to the main flow: actions that should feel
+/// related to Primary, but should not carry as much weight as the filled Primary button.
 public struct PrimaryTonalButtonStyle: ButtonStyle {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.buttonSize) private var buttonSize
@@ -36,7 +36,7 @@ public struct PrimaryTonalButtonStyle: ButtonStyle {
 }
 
 public extension ButtonStyle where Self == PrimaryTonalButtonStyle {
-    /// Primaryの色相を保った控えめなボタンスタイル。
+    /// A quieter button style that keeps the hue of Primary.
     static var primaryTonal: PrimaryTonalButtonStyle {
         PrimaryTonalButtonStyle()
     }

@@ -1,14 +1,16 @@
 import Foundation
 
-/// コントロール寸法・状態のトークン
+/// Control dimensions and state values that do not vary by theme.
 ///
-/// テーマに依存しない普遍値（HIG 由来など）を語彙として固定する。
-/// テーマで変えたくなった時点で Semantic スケールへ昇格する。
+/// These come from fixed sources such as the Human Interface Guidelines. A value that a
+/// theme needs to change belongs in a semantic scale instead.
 public enum ControlTokens {
-    /// タッチターゲットの最小辺（HIG: 44pt）。
-    /// 円形ボタン・入力バーの高さなど、操作可能要素はこれを下回らない。
+    /// The shortest edge a touch target may have (44pt, per the Human Interface Guidelines).
+    ///
+    /// No interactive element goes below this, including the diameter of a circular button
+    /// and the height of an input bar.
     public static let minTouchTarget: CGFloat = 44
 
-    /// 無効状態の不透明度。disabled なコントロールの統一値。
+    /// The opacity of a disabled control.
     public static let disabledOpacity: Double = 0.5
 }

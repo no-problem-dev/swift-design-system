@@ -1,20 +1,24 @@
 import Foundation
 import DesignSystem
 
-/// 2 テーマのトークン差分。それ自体が示唆計器（「なぜこの企業はこう違うのか」を数値で見る）。
-/// UI 非依存の純ロジックなので単体テスト可能。
+/// Compares the tokens of two themes.
+///
+/// The diff is an instrument in its own right: it puts numbers on why two brands feel different.
+/// The logic depends on no UI, so it can be unit tested.
 public enum TokenDiff {
 
-    /// 1 トークンの差分行。`a` と `b` の値を比較し、乖離の有無を `differs` で示す。
+    /// One row of a diff, holding a single token's value in each of the two themes.
     public struct Row: Sendable, Equatable, Identifiable {
         public var id: String { label }
-        /// トークンのロール名（例: "bodyMedium", "lg", "card"）
+        /// The name of the token, such as "bodyMedium", "lg", or "card".
         public var label: String
-        /// 比較元テーマのトークン値（文字列表現）
+        /// The token's value in the first theme, formatted for display.
         public var a: String
-        /// 比較先テーマのトークン値（文字列表現）
+        /// The token's value in the second theme, formatted for display.
         public var b: String
-        /// `a != b` のとき `true`。差分のある行を絞り込む ``differing(_:)`` と組み合わせて使う
+        /// Whether the two themes give this token different values.
+        ///
+        /// Combine it with ``differing(_:)`` to keep only the rows that differ.
         public var differs: Bool
 
         public init(label: String, a: String, b: String) {
@@ -25,7 +29,7 @@ public enum TokenDiff {
         }
     }
 
-    /// タイポグラフィ差分（全ロールの size × leading）。
+    /// The typography differences: the size and leading of every role.
     public static func typography(_ a: any TypographyScale, _ b: any TypographyScale) -> [Row] {
         Typography.allCases.map { role in
             let sa = a.style(for: role)
@@ -38,7 +42,7 @@ public enum TokenDiff {
         }
     }
 
-    /// 余白差分。
+    /// The spacing differences, across every step of the scale.
     public static func spacing(_ a: any SpacingScale, _ b: any SpacingScale) -> [Row] {
         let items: [(String, CGFloat, CGFloat)] = [
             ("none", a.none, b.none), ("xxs", a.xxs, b.xxs), ("xs", a.xs, b.xs),
@@ -49,7 +53,7 @@ public enum TokenDiff {
         return items.map { Row(label: $0.0, a: num($0.1), b: num($0.2)) }
     }
 
-    /// 角丸差分。
+    /// The corner radius differences, across every step of the scale.
     public static func radius(_ a: any RadiusScale, _ b: any RadiusScale) -> [Row] {
         let items: [(String, CGFloat, CGFloat)] = [
             ("none", a.none, b.none), ("xs", a.xs, b.xs), ("sm", a.sm, b.sm),
@@ -59,7 +63,7 @@ public enum TokenDiff {
         return items.map { Row(label: $0.0, a: num($0.1), b: num($0.2)) }
     }
 
-    /// 差分のあった行だけ抽出（示唆のサマリ）。
+    /// Returns only the rows whose values differ, which is the short form of a diff.
     public static func differing(_ rows: [Row]) -> [Row] { rows.filter(\.differs) }
 
     private static func fmt(_ size: CGFloat, _ leading: CGFloat) -> String {
@@ -68,7 +72,8 @@ public enum TokenDiff {
     private static func num(_ v: CGFloat) -> String {
         guard v.isFinite else { return "∞" }
         if v != v.rounded() { return String(format: "%.1f", v) }
-        // full 等の巨大値（.infinity 由来の丸めや桁あふれ）で Int() が trap するのを防ぐ
+        // Keeps Int() from trapping on the huge values used by steps such as full, which come from
+        // rounding or overflowing .infinity
         if abs(v) > 1e9 { return String(format: "%.0f", v) }
         return String(Int(v))
     }

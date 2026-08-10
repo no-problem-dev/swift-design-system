@@ -1,19 +1,28 @@
 # ``DesignSpec``
 
-ブランドデザイン仕様を機械可読なモデルとして表現する、SwiftUI 非依存の純データライブラリ。
+A brand's design specification as pure, machine-readable data.
 
 ## Overview
 
-DesignSpec は、`DESIGN.md` 9 セクション（ブランドメタ・ビジュアルテーマ・カラー・タイポグラフィ・スペーシング・角丸・エレベーション・レイアウト・コンポーネント）を Codable モデルに移植したライブラリ。
+DesignSpec models the nine sections of a `DESIGN.md` document — brand metadata, visual
+theme, color, typography, spacing, radius, elevation, layout, and components — as `Codable`
+Swift types.
 
-SwiftUI・UIKit・AppKit への依存を持たず、純粋な Foundation + Swift 標準ライブラリのみで動作する。CLI によるデザイン仕様の生成・検証・差分・取り込みが可能。
+It deliberately imports nothing but Foundation. No SwiftUI, no UIKit, no AppKit. That is
+what lets a command line tool generate, validate, diff, and ingest a spec without a UI
+process, and what lets the same spec be consumed on a platform this package was never built
+for.
+
+The model is designed to keep what makes a brand *different* rather than flattening every
+brand into the same shape. Whether it can express char-relative spacing, a harmonic type
+ramp, and a double focus ring is the test of whether it is adequate.
 
 ```swift
 let spec = DesignSpec(
     meta: BrandMeta(id: "my-brand", name: "My Brand"),
     theme: VisualTheme(
         atmosphere: ["modern", "trustworthy"],
-        summary: "クリーンでアクセシブルなデザイン"
+        summary: "Clean and accessible"
     ),
     color: ColorSpec(primitives: [], roles: [], states: []),
     typography: TypographySpec(
@@ -30,21 +39,22 @@ let spec = DesignSpec(
     guidance: Guidance(dos: [], donts: [])
 )
 
-// JSON へのエンコード
 let encoder = JSONEncoder()
 encoder.outputFormatting = .prettyPrinted
 let data = try encoder.encode(spec)
 ```
 
+Turning a spec into runnable tokens is a separate concern and lives in the layer above.
+
 ## Topics
 
-### ルートモデル
+### Root model
 
 - ``DesignSpec``
 - ``BrandMeta``
 - ``VisualTheme``
 
-### カラー
+### Color
 
 - ``ColorSpec``
 - ``ColorToken``
@@ -52,7 +62,7 @@ let data = try encoder.encode(spec)
 - ``ColorState``
 - ``ColorTransform``
 
-### タイポグラフィ
+### Typography
 
 - ``TypographySpec``
 - ``FontStack``
@@ -61,7 +71,7 @@ let data = try encoder.encode(spec)
 - ``FontWeightToken``
 - ``LeadingToken``
 
-### スペーシング・角丸
+### Spacing and radius
 
 - ``SpacingSpec``
 - ``SpacingModel``
@@ -69,7 +79,7 @@ let data = try encoder.encode(spec)
 - ``RadiusSpec``
 - ``RadiusStep``
 
-### エレベーション・レイアウト
+### Elevation and layout
 
 - ``ElevationSpec``
 - ``ElevationLayer``
@@ -77,7 +87,7 @@ let data = try encoder.encode(spec)
 - ``LayoutSpec``
 - ``Breakpoint``
 
-### コンポーネント・ガイダンス
+### Components and guidance
 
 - ``ComponentSpec``
 - ``Guidance``

@@ -1,61 +1,78 @@
-# トークンアーキテクチャ
+# Token architecture
 
-3 層トークンシステムの設計思想と使い分け。
+Three layers, and the rule for which one a view is allowed to touch.
 
 ## Overview
 
-DesignSystem は **Primitive → Semantic → Component** の 3 層トークンアーキテクチャを採用している。
-各層には明確な役割があり、適切な層のトークンを使うことで保守性と一貫性を担保する。
+Design values in this package live in three layers: **Primitive**, **Semantic**, and
+**Component**. The split exists so that a value can be changed in one place and take effect
+everywhere, and so that switching theme or color scheme does not require touching a single
+view.
 
-## レイヤー 1: プリミティブトークン
+The one rule that makes it work: **views read from the Semantic layer, never from the
+Primitive layer.** A view that reaches for a primitive has opted itself out of theming, and
+will stay the wrong color forever after a theme switch.
 
-生の値（色の HEX コード、スペーシングの pt 値など）を定義する。
+## Layer 1: primitives
 
-> Warning: Primitive Tokens は内部実装の詳細。View 内で直接使用しないこと。
+Primitives are the raw values — hex codes, point sizes, radii. They exist so that semantic
+tokens have something to be defined in terms of.
+
+> Warning: Primitives are an implementation detail. Do not use them directly in a view.
 
 ```swift
-// ❌ 直接使用しない
+// Do not do this in a view.
 PrimitiveColors.blue500
 PrimitiveSpacing.space16
 PrimitiveRadius.radius8
 ```
 
-## レイヤー 2: セマンティックトークン
+They are public because a custom theme needs them: a palette that wants the same blue the
+default theme uses should refer to `PrimitiveColors.blue500` rather than retyping the hex.
 
-意味のあるトークンをプロトコルで定義する。
-テーマやモードの切り替えに対応するため、**必ずこの層を使用すること**。
+## Layer 2: semantic tokens
 
-Environment から取得して使用する:
+Semantic tokens name a value by the job it does, not by what it looks like — `primary`, not
+`blue500`; `lg`, not `16`. Each is a protocol, so a theme supplies the values by conforming,
+and a theme that forgets one fails to compile.
+
+Views reach them through the environment:
 
 ```swift
-// ✅ Semantic Tokens を使用
 @Environment(\.colorPalette) var colors
 @Environment(\.spacingScale) var spacing
 @Environment(\.radiusScale) var radius
 @Environment(\.motion) var motion
 
 Text("Hello")
-    .foregroundColor(colors.primary)     // 意味: プライマリカラー
-    .padding(spacing.lg)                 // 意味: 大きめの余白
+    .foregroundStyle(colors.primary)
+    .padding(spacing.lg)
 ```
 
-### 利用可能なセマンティックトークン
+| Protocol | Environment key | What it covers |
+|---|---|---|
+| ``ColorPalette`` | `\.colorPalette` | Roles such as `primary`, `surface`, and `error`, each paired with an `on-` role for content drawn on top |
+| ``SpacingScale`` | `\.spacingScale` | Ten steps, `none` through `xxxxl` |
+| ``RadiusScale`` | `\.radiusScale` | Nine steps, `none` through `full` |
+| ``TypographyScale`` | `\.typographyScale` | Text roles that scale with Dynamic Type |
+| ``Motion`` | `\.motion` | Animation durations and curves |
+| ``IconSizeScale`` | `\.iconSizeScale` | Icon dimensions matched to the type scale |
+| ``BorderScale`` | `\.borderScale` | Stroke widths |
+| ``ElevationScale`` | `\.elevationScale` | Shadow parameters per elevation level |
+| ``StateLayer`` | `\.stateLayer` | Overlay opacities for hover, press, and focus |
 
-| Protocol | Environment Key | Description |
-|----------|----------------|-------------|
-| ``ColorPalette`` | `\.colorPalette` | カラーパレット（primary, surface, error 等） |
-| ``SpacingScale`` | `\.spacingScale` | スペーシング（xxs〜xxxl の 10 段階） |
-| ``RadiusScale`` | `\.radiusScale` | 角丸（xs〜full の 8 段階） |
-| ``Motion`` | `\.motion` | アニメーションタイミング |
+The `on-` pairing in ``ColorPalette`` is the part most easily lost: picking a text color by
+eye works in the mode you happened to be looking at and breaks in the other one. Pairing
+`success` with `onSuccess` keeps contrast correct in both.
 
-## レイヤー 3: コンポーネントトークン
+## Layer 3: component tokens
 
-コンポーネント固有のパラメータを定義する。
-各コンポーネントに最適化された値のセットを提供する。
+Component tokens are the fixed set of variants a component accepts. They are enumerations
+rather than free numbers, which is what stops a codebase from accumulating eleven slightly
+different button heights.
 
 ```swift
-// ✅ Component Tokens を使用
-Button("保存") { save() }
+Button("Save") { save() }
     .buttonStyle(.primary)
     .buttonSize(.large)
 
@@ -63,31 +80,41 @@ Card(elevation: .level2) {
     // ...
 }
 
-Chip("タグ")
+Chip("Tag")
     .chipStyle(.filled)
     .chipSize(.small)
 ```
 
-### 利用可能なコンポーネントトークン
+| Token | Values |
+|---|---|
+| ``ButtonSize`` | `small`, `medium`, `large` |
+| ``ChipSize`` | `small`, `medium` |
+| ``Elevation`` | `level0` through `level5` |
 
-| Token | Description |
-|-------|-------------|
-| ``ButtonSize`` | ボタンサイズ（small / medium / large） |
-| ``ChipSize`` | チップサイズ（small / medium / large） |
-| ``Elevation`` | 影のレベル（level0〜level5） |
+``Elevation`` is worth a note: under a glass ``SurfaceStyle`` it no longer maps to shadow
+depth. The same level is reinterpreted as border luminance and tint strength, because a
+shadow under a translucent surface reads as dirt rather than as height.
 
 ## Topics
 
-### セマンティックトークンプロトコル
+### Semantic token protocols
 
 - ``ColorPalette``
 - ``SpacingScale``
 - ``RadiusScale``
 - ``Typography``
+- ``TypographyScale``
 - ``Motion``
 
-### コンポーネントトークン
+### Component tokens
 
 - ``ButtonSize``
 - ``ChipSize``
 - ``Elevation``
+
+### Primitives
+
+- ``PrimitiveColors``
+- ``PrimitiveSpacing``
+- ``PrimitiveRadius``
+- ``PrimitiveTypography``

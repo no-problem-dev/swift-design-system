@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// パターンのアイテム
 enum PatternItem: String, CaseIterable, Identifiable {
     case aspectGrid = "AspectGrid"
     case sectionCard = "SectionCard"

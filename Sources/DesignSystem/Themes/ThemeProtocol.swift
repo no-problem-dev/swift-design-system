@@ -1,16 +1,17 @@
 import SwiftUI
 
-/// デザインシステムのテーマを定義するプロトコル
+/// A named set of design tokens that an app can switch between at runtime.
 ///
-/// テーマは名前、説明、カテゴリなどのメタデータと、
-/// ライト/ダークモードそれぞれのカラーパレットを提供する。
+/// A conforming type supplies identifying metadata and a color palette for each mode.
+/// Every other token group has a default implementation, so a theme overrides only the
+/// groups it wants to change.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// struct CustomTheme: Theme {
 ///     var id: String { "custom" }
-///     var name: String { "カスタム" }
-///     var description: String { "独自のカラーテーマ" }
+///     var name: String { "Custom" }
+///     var description: String { "A color theme of your own" }
 ///     var category: ThemeCategory { .brandPersonality }
 ///     var previewColors: [Color] { [.blue, .cyan, .teal] }
 ///
@@ -25,71 +26,88 @@ import SwiftUI
 /// }
 /// ```
 public protocol Theme: Sendable, Identifiable, Equatable {
-    /// テーマの一意な識別子
+    /// An identifier that is unique among the themes an app makes available.
+    ///
+    /// Themes are compared and looked up by this value, and a theme whose identifier
+    /// already exists is dropped when it is registered, so keep it stable across releases.
     var id: String { get }
 
-    /// テーマの表示名
+    /// The name shown to people when they pick a theme.
     var name: String { get }
 
-    /// テーマの説明
+    /// A short sentence describing the theme, shown next to its name.
     var description: String { get }
 
-    /// テーマのカテゴリ
+    /// The group the theme is listed under.
     var category: ThemeCategory { get }
 
-    /// プレビュー用の代表色（3-5色）
+    /// Three to five representative colors, for previewing the theme before it is applied.
     var previewColors: [Color] { get }
 
-    /// 指定されたモードに対応するカラーパレットを返す
-    /// - Parameter mode: ライトモードまたはダークモード
-    /// - Returns: 対応するカラーパレット
+    /// Returns the color palette to use for the given mode.
+    ///
+    /// Handle all three modes. The system mode is resolved to light or dark before a view asks
+    /// for its palette, but it arrives here unresolved when the palette is read straight from
+    /// the theme provider, so map it to the light palette unless there is a reason not to.
+    /// - Parameter mode: The mode the palette is asked for.
     func colorPalette(for mode: ThemeMode) -> any ColorPalette
 
-    /// テーマのアイコンサイズスケール
+    /// The icon sizes the theme uses.
     ///
-    /// `Image(systemName:).iconSize(.sm/.md/...)` などで参照される token。
-    /// デフォルト実装は ``DefaultIconSizeScale`` を返すため、特別なカスタマイズ
-    /// が不要なテーマは override する必要はない。
+    /// These are the tokens behind call sites such as `Image(systemName:).iconSize(.sm)`.
+    /// The default implementation returns ``DefaultIconSizeScale``, so a theme that does not
+    /// change icon sizes has nothing to override here.
     var iconSizeScale: any IconSizeScale { get }
 
-    /// テーマのモーションタイミング
+    /// The animation timings the theme uses.
     ///
-    /// `.animate(motion.tap, value:)` などで参照される token。
-    /// デフォルト実装は ``DefaultMotion`` を返すため、特別なカスタマイズ
-    /// が不要なテーマは override する必要はない。
+    /// These are the tokens behind call sites such as `.animate(motion.tap, value:)`.
+    /// The default implementation returns ``DefaultMotion``, so a theme that does not change
+    /// timings has nothing to override here.
     var motion: any Motion { get }
 
-    /// テーマの型ランプ（タイポグラフィスケール）。
+    /// The type ramp the theme uses.
     ///
-    /// `.typography(.bodyMedium)` などで参照される token を供給する。
-    /// デフォルト実装は ``DefaultTypographyScale``（既存値由来）を返すため、型を
-    /// カスタマイズしないテーマは override 不要で見た目も変わらない。ブランドテーマは
-    /// ここを override して固有の型（サイズ・行間・書体）を差し込む。
+    /// These are the tokens behind call sites such as `.typography(.bodyMedium)`.
+    /// The default implementation returns ``DefaultTypographyScale``, so a theme that does not
+    /// change type has nothing to override and looks the same as before. Override this to give
+    /// a brand its own sizes, line heights, and typefaces.
     var typographyScale: any TypographyScale { get }
 
-    /// テーマの余白スケール。
+    /// The spacing steps the theme uses.
     ///
-    /// `@Environment(\.spacingScale)` 経由でコンポーネントが参照する token。
-    /// デフォルト実装は ``DefaultSpacingScale`` を返すため override 不要で見た目も不変。
-    /// ブランドテーマはここを override して固有の余白（例: SmartHR の char-relative）を差し込む。
+    /// Components read these tokens through `@Environment(\.spacingScale)`.
+    /// The default implementation returns ``DefaultSpacingScale``, so a theme that does not
+    /// change spacing has nothing to override and looks the same as before. Override this to
+    /// give a brand its own spacing, such as a scale derived from character width.
     var spacingScale: any SpacingScale { get }
 
-    /// テーマの角丸スケール。
+    /// The corner radii the theme uses.
     ///
-    /// `@Environment(\.radiusScale)` 経由でコンポーネントが参照する token。
-    /// デフォルト実装は ``DefaultRadiusScale`` を返すため override 不要で見た目も不変。
+    /// Components read these tokens through `@Environment(\.radiusScale)`.
+    /// The default implementation returns ``DefaultRadiusScale``, so a theme that does not
+    /// change corner radii has nothing to override and looks the same as before.
     var radiusScale: any RadiusScale { get }
 
-    /// 線幅スケール。デフォルトは ``DefaultBorderScale``。
+    /// The border widths the theme uses.
+    ///
+    /// The default implementation returns ``DefaultBorderScale``.
     var borderScale: any BorderScale { get }
 
-    /// 状態レイヤー不透明度。デフォルトは ``DefaultStateLayer``。
+    /// The overlay opacities the theme uses for interaction states.
+    ///
+    /// The default implementation returns ``DefaultStateLayer``.
     var stateLayer: any StateLayer { get }
 
-    /// 意味的グラデーション。デフォルトは ``DefaultGradientTokens``。ブランドが固有を差し込む。
+    /// The gradients the theme uses for semantic roles.
+    ///
+    /// The default implementation returns ``DefaultGradientTokens``. Override this to give a
+    /// brand its own gradients.
     var gradients: any GradientTokens { get }
 
-    /// 影ランプ。デフォルトは ``DefaultElevationScale``（既存 enum 由来）。
+    /// The shadow ramp the theme uses.
+    ///
+    /// The default implementation returns ``DefaultElevationScale``.
     var elevationScale: any ElevationScale { get }
 }
 

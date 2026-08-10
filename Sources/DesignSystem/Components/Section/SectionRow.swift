@@ -1,25 +1,26 @@
 import SwiftUI
 
-/// `SectionCard` 内の 1 行。
+/// A single row inside a `SectionCard`.
 ///
-/// 統一された horizontal / vertical padding と、行の骨格（最小高・先頭アイコン列の幅）を
-/// 提供する HStack。Button / NavigationLink のラベルとして使うことで、カード型 List 行の
-/// 一貫した見た目を保つ。`contentShape(Rectangle())` が適用されているため、
-/// 余白部分のタップも反応する。
+/// An HStack that supplies uniform horizontal and vertical padding together with the skeleton of
+/// the row: its minimum height and the width of the leading icon column. Use it as the label of a
+/// Button or NavigationLink to keep card style list rows looking alike. `contentShape(Rectangle())`
+/// is applied, so taps on the padding register too.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// SectionRow {
-///     SectionRowLabel("通知", systemImage: "bell")
+///     SectionRowLabel("Notifications", systemImage: "bell")
 ///     Spacer(minLength: 0)
 ///     Toggle("", isOn: $isOn).labelsHidden()
 /// }
 /// ```
 ///
-/// ## 行をまたいで揃える
-/// 先頭に ``SectionRowLabel`` を置くと、アイコンの有無にかかわらずラベルの左端が縦に揃う。
-/// `Label` を直接置いた場合もアイコン列の幅は固定されるが、アイコンの無い行は
-/// 列を空けないため左端が揃わない。揃えたい行は ``SectionRowLabel`` にする。
+/// ## Aligning across rows
+/// Putting a ``SectionRowLabel`` first keeps the leading edge of every label on the same vertical
+/// line whether or not the row has an icon. Placing a `Label` directly still fixes the width of the
+/// icon column, but rows without an icon leave the column out, so their leading edges do not line
+/// up. Use ``SectionRowLabel`` for rows that need to align.
 public struct SectionRow<Content: View>: View {
     @Environment(\.iconSizeScale) private var iconSize
     @Environment(\.spacingScale) private var spacing
@@ -27,8 +28,10 @@ public struct SectionRow<Content: View>: View {
 
     private let content: () -> Content
 
-    /// セクション内の 1 行を生成する
-    /// - Parameter content: 行の中身。HStack のように左から並ぶ
+    /// Creates a single row inside a section.
+    ///
+    /// - Parameter content: The contents of the row. They are laid out from the leading edge like
+    ///   an HStack.
     public init(@ViewBuilder content: @escaping () -> Content) {
         self.content = content
     }
@@ -42,7 +45,7 @@ public struct SectionRow<Content: View>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, spacing.lg)
         .padding(.vertical, spacing.md)
-        // 最小高は padding の外に掛ける。内側だと padding のぶんだけ行が余分に伸びる
+        // Apply the minimum height outside the padding. Inside, the row grows by the padding on top
         .frame(minHeight: metrics.minHeight)
         .contentShape(Rectangle())
     }

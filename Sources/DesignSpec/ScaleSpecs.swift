@@ -1,9 +1,10 @@
 import Foundation
 
-/// 余白スケール。絶対 pt と char-relative（em ベース）の両モデルを表せる。
+/// A spacing scale, expressed either in absolute points or relative to the character size.
 ///
-/// SmartHR は char-relative（base 8px、charSize=16px、step = multiplier×16px）。
-/// 既存の絶対 pt `SpacingScale` とは思想が異なるため、ここで両方を保持できることが妥当性条件。
+/// SmartHR uses the char-relative model, with a base of 8px, a character size of 16px, and each
+/// step computed as multiplier × 16px. That differs in spirit from the absolute-point
+/// `SpacingScale` used by the token layer, so holding both models is what makes this type adequate.
 public struct SpacingSpec: Codable, Sendable, Equatable {
     public var model: SpacingModel
     public var steps: [SpacingStep]
@@ -15,17 +16,18 @@ public struct SpacingSpec: Codable, Sendable, Equatable {
 }
 
 public enum SpacingModel: Codable, Sendable, Equatable {
-    /// 値をそのまま pt として扱う
+    /// Treats each step's value as points.
     case absolutePt
-    /// base(px) を基準に multiplier で算出（pt 化は導出層が行う）
+    /// Computes each step from the base pixel size and a multiplier. Converting to points is left
+    /// to the layer that derives the theme.
     case charRelative(basePx: Double)
 }
 
 public struct SpacingStep: Codable, Sendable, Equatable {
     public var name: String
-    /// 解決済み pt 値（absolute）または multiplier 解決後の px 値
+    /// The resolved value: points for the absolute model, or pixels once the multiplier is applied.
     public var value: Double
-    /// char-relative の元倍率（記録用・nil 可）
+    /// The original multiplier of the char-relative model, kept for the record and allowed to be nil.
     public var multiplier: Double?
 
     public init(name: String, value: Double, multiplier: Double? = nil) {
@@ -35,7 +37,6 @@ public struct SpacingStep: Codable, Sendable, Equatable {
     }
 }
 
-/// 角丸スケール。
 public struct RadiusSpec: Codable, Sendable, Equatable {
     public var steps: [RadiusStep]
 
@@ -46,7 +47,7 @@ public struct RadiusSpec: Codable, Sendable, Equatable {
 
 public struct RadiusStep: Codable, Sendable, Equatable {
     public var name: String
-    /// pt（full は巨大値）
+    /// The radius in points. A step named full carries a very large value to produce a capsule.
     public var value: Double
 
     public init(name: String, value: Double) {

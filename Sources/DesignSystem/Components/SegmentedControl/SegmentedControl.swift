@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// デザインシステム準拠のセグメンテッドコントロール。
+/// A segmented control that follows the design system.
 ///
-/// `Picker` の `.segmented` はシステム tint に寄るため、テーマの semantic color を反映したい画面で使う。
+/// `Picker` with `.segmented` takes the system tint, so use this on screens that need the semantic
+/// colors of the theme to show through.
 public struct SegmentedControl<Selection: Hashable, Content: View>: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.radiusScale) private var radiusScale

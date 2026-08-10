@@ -1,41 +1,44 @@
 import Foundation
 
-/// フルスクリーンメディアビューアで表示するメディア 1 件
+/// A single piece of media shown in the full screen media viewer.
 ///
-/// `mediaViewable(_:enabled:)` モディファイアに渡して、
-/// タップでフルスクリーン表示するメディアを指定する。
+/// Pass it to the `mediaViewable(_:enabled:)` modifier to declare which media a tap opens
+/// full screen.
 ///
-/// ## 取得はここの仕事ではない
+/// ## Loading is not this type's job
 ///
-/// このビューアの仕事は**見せ方**で、取り方ではない。URL しか受けられなかった頃は
-/// 「まだ手元に無い」ことが前提に焼き付いていて、**すでにバイト列を持っているアプリが使えなかった**
-/// —— 認証付きの API から取ってキャッシュに載せる層（`swift-cached-remote-image`）を持つアプリでは、
-/// 画像は URL ではなく解決済みのバイト列としてビューに届く。
+/// The viewer is responsible for **presentation**, not for loading. Back when it accepted
+/// only a URL, the assumption that the bytes were not yet available was baked in, so
+/// **an app that already held the bytes could not use it**. In an app with a layer that
+/// fetches from an authenticated API and puts the result in a cache
+/// (`swift-cached-remote-image`), an image reaches the view as resolved bytes rather than
+/// as a URL.
 ///
-/// `imageData` はその口。取得とキャッシュは呼ぶ側の層に置いたまま、見せ方だけをここに借りられる。
+/// `imageData` is the way in for that case. Loading and caching stay in the calling layer,
+/// and only the presentation is borrowed from here.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// // まだ取っていない画像（このビューアが AsyncImage で取る）
+/// // An image that has not been loaded yet (the viewer loads it with AsyncImage)
 /// AsyncImage(url: imageURL) { $0.resizable().scaledToFit() } placeholder: { ProgressView() }
 ///     .mediaViewable(.image(imageURL))
 ///
-/// // すでに手元にあるバイト列（取得は呼ぶ側が済ませている）
+/// // Bytes that are already available (the caller has done the loading)
 /// Image(uiImage: uiImage)
 ///     .mediaViewable(.imageData(bytes, id: imageID))
 /// ```
 public enum MediaViewerItem: Hashable, Identifiable, Sendable {
-    /// 画像（リモート http/https または file URL。AsyncImage で解決）
+    /// An image at a remote http or https URL, or at a file URL, resolved with `AsyncImage`.
     case image(URL)
-    /// すでに手元にある画像のバイト列。
+    /// The bytes of an image that is already available.
     ///
-    /// - Parameter id: このメディアの同一性。**バイト列そのものでは比べない** ——
-    ///   ページの選択（`TabView` のタグ）で毎回数 MB を突き合わせることになる。
-    ///   呼ぶ側は画像 ID のような安定した文字列を渡す。
+    /// - Parameter id: The identity of this media. **The bytes themselves are never
+    ///   compared**, because selecting a page (the `TabView` tag) would then diff several
+    ///   megabytes every time. Pass a stable string such as an image ID.
     case imageData(Data, id: String)
-    /// 動画（AVPlayer で再生）
+    /// A video played with `AVPlayer`.
     case video(URL)
-    /// オーディオ（AVPlayer で再生）
+    /// Audio played with `AVPlayer`.
     case audio(URL)
 
     public var id: String {
@@ -47,7 +50,7 @@ public enum MediaViewerItem: Hashable, Identifiable, Sendable {
         }
     }
 
-    /// メディアの URL。**手元のバイト列には無い**ので nil。
+    /// The URL of the media, or `nil` for media that is **already held as bytes**.
     public var url: URL? {
         switch self {
         case .image(let url), .video(let url), .audio(let url):
@@ -57,11 +60,13 @@ public enum MediaViewerItem: Hashable, Identifiable, Sendable {
         }
     }
 
-    /// 同一性の材料。**種別と `id` の組**で、バイト列そのものは使わない。
+    /// What equality is built from: **the pair of kind and `id`**, never the bytes themselves.
     ///
-    /// 種別を落とせない: 同じ URL の `.image` と `.video` は別物として扱う約束になっている
-    /// （`id` は URL 由来なので衝突する。そちらは `Identifiable` の都合で、同一性とは別の話）。
-    /// バイト列を入れられない: ページの選択で毎回数 MB を突き合わせることになる。
+    /// The kind cannot be dropped. `.image` and `.video` at the same URL are meant to be
+    /// different things, and their `id` collides because it is derived from the URL (`id`
+    /// exists for `Identifiable`, which is a separate concern from equality).
+    /// The bytes cannot be included: selecting a page would then diff several megabytes
+    /// every time.
     private var identity: (kind: String, id: String) {
         switch self {
         case .image: return ("image", id)

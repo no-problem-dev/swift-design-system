@@ -1,44 +1,47 @@
 import CoreGraphics
 
-/// 保存する前に寸法を落とす規則。品質を下げる前に寸法を落とすのは、
-/// 表示に使わない画素を運ぶのが一番無駄だから。
+/// How far to cut an image's dimensions down before saving it.
 ///
-/// ## 使用例
+/// Dimensions come down before quality does, because carrying pixels that are never displayed is
+/// the most wasteful thing in the pipeline.
+///
+/// ## Example
 /// ```swift
-/// // アバター。240pt の円に出すなら 3x でも 720 あれば足りる
+/// // An avatar. A 240pt circle needs only 720 pixels, even at 3x
 /// .imagePicker(isPresented: $show, selectedImageData: $data, resize: .square(720))
 ///
-/// // 本文に載せる写真。長辺だけ抑えて縦横比は保つ
+/// // A photo in the body of a document. Cap the long edge and keep the proportions
 /// .imagePicker(isPresented: $show, selectedImageData: $data, resize: .longestEdge(2048))
 /// ```
 public enum ImageResizeRule: Sendable, Equatable {
-    /// center-crop して 1 辺 N の正方形にする（アバター・アイコン）
+    /// Center-crops to a square of the given side, for avatars and icons.
     case square(CGFloat)
-    /// 長辺を N に収める（アスペクト比は保つ）
+    /// Fits the longest edge within the given length, keeping the aspect ratio.
     case longestEdge(CGFloat)
 }
 
-/// 規則を元の寸法にあてはめた結果。
+/// The result of applying a rule to a particular source size.
 ///
-/// 切り取りを「出力より大きく描いて、はみ出した分を捨てる」で表す。こうすると
-/// 切り取りと縮小が 1 回の描画で済み、中間画像を作らずにいられる。
+/// Cropping is expressed as drawing larger than the output and letting the overflow fall away.
+/// That way the crop and the downscale happen in a single draw, with no intermediate image.
 struct ImageResizePlan: Equatable {
-    /// 出力のピクセル寸法
+    /// The pixel dimensions of the output.
     let outputSize: CGSize
-    /// 出力座標系のどこに元画像全体を描くか。origin が負なら、その分がはみ出して捨てられる
+    /// Where the whole source image goes in the output's coordinate space. A negative origin is the
+    /// part that hangs outside the output and gets discarded.
     let drawRect: CGRect
 }
 
 extension ImageResizeRule {
-    /// 元のピクセル寸法から出力の計画を立てる。寸法が 0 以下なら計画を立てられないので nil。
+    /// Works out the output plan for a source of the given pixel size, or nil if that size is empty.
     ///
-    /// どちらの規則でも元より大きくはしない。引き伸ばしても情報は増えず、バイト数だけ増えるため。
+    /// Neither rule ever enlarges. Stretching adds no information, only bytes.
     func plan(for source: CGSize) -> ImageResizePlan? {
         guard source.width > 0, source.height > 0 else { return nil }
 
         switch self {
         case .square(let side):
-            // 短辺いっぱいの正方形を切り出してから、指定の 1 辺まで縮める
+            // Take the largest square the short edge allows, then shrink it to the requested side
             let cropSide = min(source.width, source.height)
             let outputSide = max(1, min(side, cropSide).rounded())
             let scale = outputSide / cropSide

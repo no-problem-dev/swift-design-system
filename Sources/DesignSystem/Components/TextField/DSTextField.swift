@@ -1,55 +1,54 @@
 import SwiftUI
 
-/// テキストフィールドコンポーネント
+/// An input field with a label, placeholder, icons, supporting text, and error display.
 ///
-/// ラベル、プレースホルダー、アイコン、補助テキスト、エラー表示を備えた高機能な入力フィールド。
-/// Outlined / Filled の 2 スタイルから選択できる。
+/// Pick between the outlined and filled styles.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// @State private var email = ""
 /// @State private var password = ""
 /// @State private var errorMessage: String?
 ///
 /// VStack {
-///     // 基本的な使い方
+///     // Basic usage
 ///     DSTextField(
-///         "メールアドレス",
+///         "Email address",
 ///         text: $email,
 ///         placeholder: "example@email.com",
 ///         leadingIcon: "envelope"
 ///     )
 ///
-///     // エラー表示
+///     // Showing an error
 ///     DSTextField(
-///         "パスワード",
+///         "Password",
 ///         text: $password,
-///         placeholder: "8文字以上",
+///         placeholder: "8 characters or more",
 ///         style: .filled,
 ///         error: errorMessage,
 ///         leadingIcon: "lock"
 ///     )
 ///
-///     // サポートテキスト付き
+///     // With supporting text
 ///     DSTextField(
-///         "ユーザー名",
+///         "User name",
 ///         text: $username,
-///         supportingText: "英数字のみ使用可能"
+///         supportingText: "Letters and numbers only"
 ///     )
 ///
-///     // 複数行入力
+///     // Multiline input
 ///     DSTextField(
-///         "コメント",
+///         "Comment",
 ///         text: $comment,
-///         placeholder: "コメントを入力...",
+///         placeholder: "Enter a comment...",
 ///         axis: .vertical
 ///     )
 /// }
 /// ```
 ///
-/// ## スタイル
-/// - **Outlined**: 枠線のみ（デフォルト）- クリーンな印象
-/// - **Filled**: 背景色あり - 入力欄が明確
+/// ## Styles
+/// - **Outlined**: A border and nothing else, the default. The cleaner look.
+/// - **Filled**: A filled background, which makes the input area obvious.
 public struct DSTextField: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.spacingScale) private var spacing
@@ -67,20 +66,22 @@ public struct DSTextField: View {
     private let trailingIcon: String?
     private let focus: FocusState<Bool>.Binding?
 
-    /// DSTextField を作成
+    /// Creates a text field.
     ///
     /// - Parameters:
-    ///   - title: ラベルテキスト
-    ///   - text: テキストのバインディング
-    ///   - placeholder: プレースホルダー
-    ///   - axis: 入力の展開方向。`.vertical` で複数行入力に対応（デフォルト: `.horizontal`）
-    ///   - style: Outlined / Filled
-    ///   - supportingText: 補助テキスト
-    ///   - error: エラーメッセージ
-    ///   - leadingIcon: 先頭アイコン（SF Symbols）
-    ///   - trailingIcon: 末尾アイコン（SF Symbols）
-    ///   - focus: 呼び出し側の `@FocusState` でフォーカスを制御したいときに渡す
-    ///     （スキャナからの復帰で名前欄へフォーカスを移す等）。省略時は内部管理のみ
+    ///   - title: The label text shown above the field. An empty string hides the label.
+    ///   - text: A binding to the text being edited.
+    ///   - placeholder: The text shown while the field is empty.
+    ///   - axis: The direction the input grows in. Pass `.vertical` for multiline input.
+    ///   - style: The outlined or filled style.
+    ///   - supportingText: The text shown below the field. An error message takes its place.
+    ///   - error: The error message. Passing one turns the label, icons, and border to the error
+    ///     color.
+    ///   - leadingIcon: The name of an SF Symbol shown at the leading edge.
+    ///   - trailingIcon: The name of an SF Symbol shown at the trailing edge.
+    ///   - focus: Pass a binding when the caller drives focus from its own `@FocusState`, such as
+    ///     moving focus to a name field on returning from a scanner. When omitted, focus is managed
+    ///     internally.
     public init(
         _ title: String = "",
         text: Binding<String>,
@@ -125,8 +126,9 @@ public struct DSTextField: View {
                 TextField(placeholder, text: text, axis: axis)
                     .typography(.bodyLarge)
                     .foregroundStyle(colorPalette.onSurface)
-                    // 内部の isFocused は枠線・ラベル色の描画用。外部 focus と二重に
-                    // バインドしても両方がフォーカス変化を受け取るだけで競合しない
+                    // The internal isFocused drives the border and label colors. Binding it
+                    // alongside the external focus does not conflict: both simply receive the
+                    // focus changes
                     .focused($isFocused)
                     .externalFocus(focus)
 
@@ -136,7 +138,8 @@ public struct DSTextField: View {
                         .foregroundStyle(iconColor)
                 }
             }
-            // macOS はポインタ操作前提でフィールド高を標準コントロールに寄せる（縦余白を縮小）。
+            // macOS assumes pointer input, so the field height is brought closer to the standard
+            // controls by shrinking the vertical padding.
             #if os(macOS)
             .padding(.horizontal, spacing.md)
             .padding(.vertical, spacing.xs)
@@ -214,11 +217,8 @@ public struct DSTextField: View {
     }
 }
 
-/// DSTextFieldのスタイル
 public enum DSTextFieldStyle {
-    /// 塗りつぶしスタイル
     case filled
-    /// アウトラインスタイル
     case outlined
 }
 
@@ -262,8 +262,9 @@ struct DSTextFieldPreview: View {
 }
 
 private extension View {
-    /// 呼び出し側の `@FocusState` バインディングが渡されたときだけ `.focused` を重ねる。
-    /// `.focused` は条件分岐で型が変わるため、optional を吸収するここに閉じ込める。
+    /// Applies `.focused` only when the caller passes a `@FocusState` binding.
+    ///
+    /// `.focused` changes the view type across the branch, so the optional is absorbed here.
     @ViewBuilder
     func externalFocus(_ focus: FocusState<Bool>.Binding?) -> some View {
         if let focus {

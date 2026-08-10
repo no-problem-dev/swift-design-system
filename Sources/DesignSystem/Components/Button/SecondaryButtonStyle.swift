@@ -1,29 +1,29 @@
 import SwiftUI
 
-/// セカンダリボタンスタイル
+/// A button style for supporting actions.
 ///
-/// 補助的なアクションに使用するボタンスタイル。
-/// SecondaryContainer 色の背景で Primary より控えめに強調する。画面内に複数配置できる。
+/// Draws on a SecondaryContainer background, so it reads as less prominent than Primary.
+/// A screen can hold several of them.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// HStack {
-///     Button("キャンセル") {
+///     Button("Cancel") {
 ///         cancel()
 ///     }
 ///     .buttonStyle(.secondary)
 ///
-///     Button("保存") {
+///     Button("Save") {
 ///         save()
 ///     }
 ///     .buttonStyle(.primary)
 /// }
 /// ```
 ///
-/// ## 使用シーン
-/// - キャンセルボタン
-/// - 代替アクション
-/// - フォームのリセットボタン
+/// ## When to use it
+/// - A cancel button
+/// - An alternative action
+/// - A form reset button
 public struct SecondaryButtonStyle: ButtonStyle {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.buttonSize) private var buttonSize
@@ -38,7 +38,7 @@ public struct SecondaryButtonStyle: ButtonStyle {
             .foregroundStyle(colorPalette.onSecondaryContainer)
             .padding(.horizontal, buttonSize.horizontalPadding)
             .frame(height: buttonSize.height)
-            // macOS は内容幅（HIG: フルワイド塗りは watchOS のイディオム。macOS は幅を内容に合わせる）。
+            // macOS sizes to the content (in the HIG a full-width fill is a watchOS idiom; macOS fits the width to the content).
             #if os(iOS)
             .frame(maxWidth: .infinity)
             #endif
@@ -55,7 +55,6 @@ public struct SecondaryButtonStyle: ButtonStyle {
 }
 
 public extension ButtonStyle where Self == SecondaryButtonStyle {
-    /// セカンダリボタンスタイル
     static var secondary: SecondaryButtonStyle {
         SecondaryButtonStyle()
     }

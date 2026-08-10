@@ -1,10 +1,11 @@
 import SwiftUI
 
-/// 状態レイヤーの不透明度トークン。hover/pressed/focus 等のインタラクション時に
-/// 前景色を重ねるオーバーレイの濃度を表す（Material の state layer 相当）。
+/// The opacity of the overlay drawn while a control is being interacted with.
 ///
-/// ブランドにより状態表現は異なる（SmartHR は hover=darken 5% + INPUT_HOVER リング、
-/// Material は overlay 不透明度）。ここでは不透明度オーバーレイモデルで統一する。
+/// Hover, press, focus, and the other states are expressed by laying the foreground color
+/// over the control at these opacities, the way a Material state layer does. Brands express
+/// these states in different ways, some by darkening the control rather than overlaying it;
+/// this scale settles on the opacity overlay model.
 public protocol StateLayer: Sendable {
     var hover: Double { get }
     var focus: Double { get }

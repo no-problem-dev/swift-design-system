@@ -1,19 +1,19 @@
 import SwiftUI
 
-/// 数値と単位を並べて表示するコンポーネント。
+/// Shows a number next to its unit.
 ///
-/// フォーマット済みの数値に任意の単位ラベルを付けて表示する。
-/// メトリクス・統計・数値ダッシュボードなどに適する。
+/// Takes an already formatted number and adds an optional unit label. It suits metrics,
+/// statistics, and numeric dashboards.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// // 単位付き数値
+/// // A number with a unit
 /// StatDisplay(value: "42.5", unit: "kg")
 ///
-/// // 大きい見出しスタイル
+/// // A large, headline-sized display
 /// StatDisplay(value: "1,234", unit: "steps", size: .large)
 ///
-/// // カスタムカラー
+/// // A custom color
 /// StatDisplay(
 ///     value: "98%",
 ///     unit: "complete",
@@ -30,14 +30,14 @@ public struct StatDisplay: View {
     private let unitColor: Color?
     private let alignment: HorizontalAlignment
 
-    /// 数値表示を作成する
+    /// Creates a numeric display.
     /// - Parameters:
-    ///   - value: フォーマット済みの数値文字列
-    ///   - unit: 単位ラベル（省略可）
-    ///   - size: 表示サイズ（デフォルト: `.medium`）
-    ///   - valueColor: 数値の色（デフォルト: onSurface）
-    ///   - unitColor: 単位の色（デフォルト: onSurfaceVariant）
-    ///   - alignment: 水平方向の整列（デフォルト: `.leading`）
+    ///   - value: The already formatted number, as a string.
+    ///   - unit: The unit label, which can be omitted.
+    ///   - size: The display size. Defaults to `.medium`.
+    ///   - valueColor: The color of the number. Defaults to onSurface.
+    ///   - unitColor: The color of the unit. Defaults to onSurfaceVariant.
+    ///   - alignment: The horizontal alignment. Defaults to `.leading`.
     public init(
         value: String,
         unit: String? = nil,
@@ -77,7 +77,6 @@ public struct StatDisplay: View {
     }
 }
 
-/// `StatDisplay` のサイズバリアント
 public enum StatDisplaySize {
     case small
     case medium

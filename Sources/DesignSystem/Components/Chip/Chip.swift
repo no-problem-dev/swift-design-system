@@ -1,41 +1,38 @@
 import SwiftUI
 
-/// Chipコンポーネント
+/// A compact label for a status, a category, a filter, or a piece of user input.
 ///
-/// ステータス表示、カテゴリ、フィルター、ユーザー入力など、様々な用途で使用できる
-/// コンパクトなラベルコンポーネント。
-///
-/// ## 基本的な使用例
+/// ## Example
 /// ```swift
-/// // シンプルなチップ
+/// // A plain chip
 /// Chip("Active")
 ///     .chipStyle(.filled)
 ///     .foregroundColor(.blue)
 ///
-/// // アイコン付きチップ
-/// Chip("完了", systemImage: "checkmark.circle.fill")
+/// // A chip with an icon
+/// Chip("Done", systemImage: "checkmark.circle.fill")
 ///     .chipStyle(.filled)
 ///     .foregroundColor(.green)
 ///
-/// // 削除可能なチップ（onDelete: ラベルが必須）
+/// // A deletable chip (the onDelete: label is required)
 /// Chip("Swift", systemImage: "tag.fill", onDelete: {
 ///     removeTag("Swift")
 /// })
 /// .chipStyle(.filled)
 ///
-/// // 選択可能なフィルターチップ
-/// Chip("フィルター", systemImage: "line.3.horizontal.decrease", isSelected: $isFiltered)
+/// // A selectable filter chip
+/// Chip("Filter", systemImage: "line.3.horizontal.decrease", isSelected: $isFiltered)
 ///     .chipStyle(.outlined)
 /// ```
 ///
-/// ## スタイルバリアント
-/// - **Filled**: 塗りつぶし背景（デフォルト）
-/// - **Outlined**: 境界線のみ
-/// - **Liquid Glass**: 半透明のガラス効果
+/// ## Style variants
+/// - **Filled**: a filled background, and the default
+/// - **Outlined**: a border only
+/// - **Liquid Glass**: a translucent glass effect
 ///
-/// ## サイズバリアント
-/// - **Small**: 24pt高さ、密集レイアウト向け
-/// - **Medium**: 32pt高さ、標準的な用途（デフォルト）
+/// ## Size variants
+/// - **Small**: 24pt tall, for dense layouts
+/// - **Medium**: 32pt tall, for standard use, and the default
 public struct Chip: View {
     @Environment(\.chipStyle) private var chipStyle
     @Environment(\.chipSize) private var size
@@ -54,8 +51,8 @@ public struct Chip: View {
 
     // MARK: - Initializers
 
-    /// テキストのみのChipを作成
-    /// - Parameter label: 表示するテキスト
+    /// Creates a chip that shows text only.
+    /// - Parameter label: The text to display.
     public init(_ label: String) {
         self.label = label
         self.systemImage = nil
@@ -65,10 +62,10 @@ public struct Chip: View {
         self._isSelected = .constant(false)
     }
 
-    /// アイコン付きChipを作成
+    /// Creates a chip with a leading icon.
     /// - Parameters:
-    ///   - label: 表示するテキスト
-    ///   - systemImage: SF Symbolsのアイコン名
+    ///   - label: The text to display.
+    ///   - systemImage: The SF Symbols name of the icon.
     public init(_ label: String, systemImage: String) {
         self.label = label
         self.systemImage = systemImage
@@ -78,15 +75,15 @@ public struct Chip: View {
         self._isSelected = .constant(false)
     }
 
-    /// アクションChipを作成（Action Chip）
+    /// Creates an action chip.
     ///
-    /// タップすると指定されたアクションを実行するChip。
-    /// 削除ボタンは表示されず、Chip 全体がタップ領域になる。
+    /// The chip runs the action when it is tapped. It shows no delete button, and the whole
+    /// chip is the tap target.
     ///
     /// - Parameters:
-    ///   - label: 表示するテキスト
-    ///   - systemImage: SF Symbolsのアイコン名（オプション）
-    ///   - action: タップ時に実行されるアクション
+    ///   - label: The text to display.
+    ///   - systemImage: The SF Symbols name of the icon.
+    ///   - action: The action to run when the chip is tapped.
     public init(
         _ label: String,
         systemImage: String? = nil,
@@ -100,11 +97,11 @@ public struct Chip: View {
         self._isSelected = .constant(false)
     }
 
-    /// 削除可能なChipを作成（Input Chip）
+    /// Creates a deletable input chip.
     /// - Parameters:
-    ///   - label: 表示するテキスト
-    ///   - systemImage: SF Symbolsのアイコン名（オプション）
-    ///   - onDelete: 削除ボタンタップ時のハンドラ
+    ///   - label: The text to display.
+    ///   - systemImage: The SF Symbols name of the icon.
+    ///   - onDelete: The handler called when the delete button is tapped.
     public init(
         _ label: String,
         systemImage: String? = nil,
@@ -118,11 +115,11 @@ public struct Chip: View {
         self._isSelected = .constant(false)
     }
 
-    /// 選択可能なChipを作成（Filter Chip）
+    /// Creates a selectable filter chip.
     /// - Parameters:
-    ///   - label: 表示するテキスト
-    ///   - systemImage: SF Symbolsのアイコン名（オプション）
-    ///   - isSelected: 選択状態のバインディング
+    ///   - label: The text to display.
+    ///   - systemImage: The SF Symbols name of the icon.
+    ///   - isSelected: A binding to the selection state, which a tap toggles.
     public init(
         _ label: String,
         systemImage: String? = nil,
@@ -154,13 +151,13 @@ public struct Chip: View {
 
         Group {
             if onDelete != nil || onAction != nil || isSelectable {
-                // タップ可能なチップ（削除、アクション、または選択）
+                // A tappable chip: delete, action, or selection
                 Button(action: handleTap) {
                     chipStyle.makeBody(configuration: configuration)
                 }
                 .buttonStyle(ChipButtonStyle(isPressed: $isPressed))
             } else {
-                // 静的なチップ
+                // A static chip
                 chipStyle.makeBody(configuration: configuration)
             }
         }
@@ -170,13 +167,13 @@ public struct Chip: View {
 
     private func handleTap() {
         if let onDelete = onDelete {
-            // 削除アクション
+            // Delete
             onDelete()
         } else if let onAction = onAction {
-            // アクション実行
+            // Run the action
             onAction()
         } else {
-            // 選択トグル
+            // Toggle the selection
             withAnimation(motion.toggle) {
                 isSelected.toggle()
             }
@@ -186,7 +183,9 @@ public struct Chip: View {
 
 // MARK: - ChipButtonStyle
 
-/// Chipのボタンスタイル（タップ時のフィードバック用）
+/// A button style that mirrors the pressed state into a binding.
+///
+/// The chip reads that binding to show its own tap feedback.
 private struct ChipButtonStyle: ButtonStyle {
     @Binding var isPressed: Bool
 

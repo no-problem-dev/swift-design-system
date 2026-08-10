@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// 機能行を表示するビュー
 struct FeatureRow: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

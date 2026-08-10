@@ -1,21 +1,21 @@
 import Foundation
 
-/// 基本角丸トークン
+/// The base corner radius values the design system is built from.
 ///
-/// 基本的な角丸の値を定義する。
-/// **直接使用は避け**、`RadiusScale` プロトコルの実装から参照すること。
+/// **Avoid using these directly.** Refer to them from an implementation of the
+/// `RadiusScale` protocol.
 ///
-/// ## 使用方法
+/// ## How to use it
 /// ```swift
-/// // ❌ 避けるべき
+/// // ❌ Avoid
 /// .cornerRadius(PrimitiveRadius.radius8)
 ///
-/// // ✅ 推奨
+/// // ✅ Preferred
 /// @Environment(\.radiusScale) var radius
 /// .cornerRadius(radius.md)
 /// ```
 ///
-/// カスタム角丸スケールでの使用：
+/// Using them in a custom radius scale:
 /// ```swift
 /// struct CustomRadiusScale: RadiusScale {
 ///     var md: CGFloat { PrimitiveRadius.radius8 }

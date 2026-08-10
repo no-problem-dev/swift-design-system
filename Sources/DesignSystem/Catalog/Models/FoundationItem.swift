@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// デザイントークン（Foundation）のアイテム
+/// The design token groups listed under Foundation.
 enum FoundationItem: String, CaseIterable, Identifiable {
     case colors = "カラー"
     case typography = "タイポグラフィ"

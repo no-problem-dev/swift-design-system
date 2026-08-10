@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Oceanテーマ - ダークモードパレット
 struct OceanDarkPalette: ColorPalette {
     // MARK: - Primary
     var primary: Color { Color(hex: "#3BA4DB") } // Lighter ocean blue for dark mode

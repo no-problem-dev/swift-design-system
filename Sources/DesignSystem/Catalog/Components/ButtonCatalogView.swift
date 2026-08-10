@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// ボタンコンポーネントのカタログビュー
 struct ButtonCatalogView: View {
     @Environment(\.spacingScale) private var spacing
     @State private var isButtonEnabled = true

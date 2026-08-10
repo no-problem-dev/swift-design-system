@@ -2,7 +2,6 @@ import SwiftUI
 
 #if canImport(UIKit)
 
-/// 画像ピッカーモディファイアのカタログビュー
 struct ImagePickerCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
@@ -12,7 +11,7 @@ struct ImagePickerCatalogView: View {
     @State private var selectedImageData: Data?
     @State private var resizeChoice: ResizeChoice = .none
 
-    /// 寸法の落とし方をその場で切り替えて、出来上がりの寸法とバイト数の差を見るための選択肢
+    /// The resize rules the demo can switch between, so the resulting dimensions and byte size can be compared.
     private enum ResizeChoice: String, CaseIterable {
         case none = "そのまま"
         case avatar = "square(720)"

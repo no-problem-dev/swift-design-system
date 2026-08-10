@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// FABコンポーネントのカタログビュー
 struct FloatingActionButtonCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

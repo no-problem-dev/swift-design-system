@@ -1,56 +1,56 @@
 import SwiftUI
 
-/// カードコンポーネント
+/// A container that groups content and gives it a visual hierarchy.
 ///
-/// Elevation（影）、角丸、背景色を備えた汎用コンテナ。
-/// コンテンツをグルーピングし、視覚的な階層を表現する。
+/// The card draws a rounded surface with an elevation, a corner radius, and a background color.
 ///
-/// 環境の ``SurfaceStyle`` に応じて描画が切り替わる:
-/// - `.solid`（デフォルト）: 従来の不透明サーフェス + Elevation 影
-/// - `.glass` / `.glassProminent`: Liquid Glass。背景を透かし、グラデーション
-///   ボーダーで縁の光を表現。Elevation は影の濃さではなく「ボーダーの輝度」と
-///   「ティント強度」に再解釈される。ネストされたカード（深度 1 以上）は
-///   ガラスの重なりによる濁りを避けるため、薄いティント面へ自動降格する。
+/// Rendering follows the ``SurfaceStyle`` in the environment:
+/// - `.solid` (the default): an opaque surface with an elevation shadow.
+/// - `.glass` / `.glassProminent`: Liquid Glass. The background shows through and a gradient
+///   border carries the light along the edge. Elevation is reinterpreted as border brightness
+///   and tint strength instead of shadow depth. A nested card (depth 1 or deeper) drops down
+///   to a light tint surface, because overlapping panes of glass turn muddy.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// @Environment(\.spacingScale) var spacing
 ///
-/// // 基本的な使い方
+/// // Basic use
 /// Card {
-///     Text("デフォルトカード")
+///     Text("Default card")
 ///         .typography(.bodyMedium)
 /// }
 ///
-/// // 配下のカードをすべてガラス面に（A2UI サーフェスなど動的ツリー向け）
+/// // Turn every card below this point into a glass surface
+/// // (for dynamic trees such as an A2UI surface)
 /// A2UISurfaceView(surface)
 ///     .surfaceStyle(.glass)
 ///
-/// // Elevationとスペーシングのカスタマイズ
+/// // Customizing the elevation and the spacing
 /// Card(elevation: .level2) {
 ///     VStack(alignment: .leading, spacing: spacing.md) {
-///         Text("カードタイトル")
+///         Text("Card title")
 ///             .typography(.titleMedium)
-///         Text("カードの説明文がここに入ります。")
+///         Text("The description of the card goes here.")
 ///             .typography(.bodyMedium)
 ///     }
 /// }
 ///
-/// // 角丸・背景色のカスタマイズ
+/// // Customizing the corner radius and the background color
 /// Card(elevation: .level3, cornerRadius: 20, backgroundColor: colors.primaryContainer) {
-///     Text("カスタムカード")
+///     Text("Custom card")
 /// }
 ///
-/// // パディングの均一指定
+/// // Uniform padding
 /// Card(elevation: .level1, allSides: 24) {
-///     Text("均一パディング")
+///     Text("Uniform padding")
 /// }
 /// ```
 ///
-/// ## デザインガイドライン
-/// - **level0〜level1**: リスト項目やフラットなカード
-/// - **level2**: 標準的なカード（推奨）
-/// - **level3〜level5**: 強調・モーダル的な用途
+/// ## Design guidelines
+/// - **level0 to level1**: list rows and flat cards
+/// - **level2**: the standard card, and the recommended choice
+/// - **level3 to level5**: emphasis and modal-like uses
 public struct Card<Content: View>: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.colorScheme) private var colorScheme
@@ -65,14 +65,17 @@ public struct Card<Content: View>: View {
     private let cornerRadius: CGFloat?
     private let backgroundColor: Color?
 
-    /// カードを作成する
+    /// Creates a card.
     ///
     /// - Parameters:
-    ///   - elevation: 影のレベル（デフォルト: `.level1`）
-    ///   - padding: コンテンツの内側余白（`nil`の場合は`SpacingScale.lg`を上下左右に適用）
-    ///   - cornerRadius: 角丸の半径（`nil`の場合は`RadiusScale.lg`を使用）
-    ///   - backgroundColor: 背景色（`nil`の場合はElevationに応じたSurface Tokenを使用）
-    ///   - content: カード内に表示するコンテンツ
+    ///   - elevation: The shadow level.
+    ///   - padding: The inset around the content. When `nil`, `SpacingScale.lg` is applied on
+    ///     all four sides.
+    ///   - cornerRadius: The corner radius. When `nil`, `RadiusScale.lg` is used.
+    ///   - backgroundColor: The background color. When `nil`, the surface token for the
+    ///     elevation is used. Passing a color forces solid rendering, even under a glass
+    ///     surface style.
+    ///   - content: The content shown inside the card.
     public init(
         elevation: Elevation = .level1,
         padding: EdgeInsets? = nil,
@@ -94,7 +97,7 @@ public struct Card<Content: View>: View {
             bottom: spacingScale.lg,
             trailing: spacingScale.lg
         )
-        // 明示的な backgroundColor 指定は常に solid 描画（呼び出し側の意図を最優先）
+        // An explicit backgroundColor always renders solid: the caller's intent comes first.
         let renderMode: RenderMode = if backgroundColor != nil || surfaceStyle == .solid {
             .solid
         } else if nestingLevel >= 1 {
@@ -111,7 +114,9 @@ public struct Card<Content: View>: View {
         }
     }
 
-    /// 描画モード。surfaceStyle とネスト深度から body 冒頭で解決する。
+    /// How the card is drawn.
+    ///
+    /// Resolved at the top of `body` from the surface style and the nesting depth.
     private enum RenderMode {
         case solid
         case glass
@@ -140,16 +145,17 @@ public struct Card<Content: View>: View {
                     glassBackground(in: shape)
                 }
                 .overlay {
-                    // 縁の光: 左上から差す光がボーダーを駆け抜けるグラデーション。
-                    // Elevation が高いほど輝度が上がる（影の濃さの再解釈）。
+                    // Edge light: a gradient that runs along the border as if lit from the
+                    // top leading corner. A higher elevation raises the brightness, which is
+                    // how a deeper shadow is expressed on glass.
                     shape.strokeBorder(glassBorderGradient, lineWidth: 1)
                 }
                 .clipShape(shape)
                 .elevation(elevation)
 
         case .nestedTint:
-            // ネストされたカード: ガラスの重なりは濁るため、近接グルーピングだけを
-            // 担う薄いティント面に降格する（影なし・ヘアラインボーダー）
+            // Nested card: overlapping panes of glass turn muddy, so it drops to a light tint
+            // surface that only groups nearby content (no shadow, hairline border).
             let shape = RoundedRectangle(cornerRadius: cornerRadius ?? radiusScale.lg, style: .continuous)
             padded()
                 .background {
@@ -217,8 +223,9 @@ public struct Card<Content: View>: View {
         return glass
     }
 
-    /// ガラスの縁を照らすグラデーションボーダー。
-    /// Elevation level0→level5 で輝度が段階的に上がる。
+    /// The gradient border that lights the edge of the glass.
+    ///
+    /// The brightness rises step by step from elevation level0 to level5.
     private var glassBorderGradient: LinearGradient {
         let highlight = glassBorderHighlightOpacity
         return LinearGradient(
@@ -241,21 +248,22 @@ public struct Card<Content: View>: View {
         case .level5: 0.64
         }
         let prominentBoost: Double = surfaceStyle == .glassProminent ? 0.12 : 0
-        // ライトモードでは白ボーダーが沈むため少し持ち上げる
+        // A white border sinks into a light background, so lift it a little.
         let schemeBoost: Double = colorScheme == .light ? 0.08 : 0
         return min(base + prominentBoost + schemeBoost, 0.85)
     }
 }
 
 public extension Card {
-    /// 均一なパディングでカードを作成する
+    /// Creates a card with the same padding on every side.
     ///
     /// - Parameters:
-    ///   - elevation: 影のレベル（デフォルト: `.level1`）
-    ///   - padding: 上下左右に均一に適用するパディング値
-    ///   - cornerRadius: 角丸の半径（`nil`の場合は`RadiusScale.lg`を使用）
-    ///   - backgroundColor: 背景色（`nil`の場合はElevationに応じたSurface Tokenを使用）
-    ///   - content: カード内に表示するコンテンツ
+    ///   - elevation: The shadow level.
+    ///   - padding: The padding applied to all four sides.
+    ///   - cornerRadius: The corner radius. When `nil`, `RadiusScale.lg` is used.
+    ///   - backgroundColor: The background color. When `nil`, the surface token for the
+    ///     elevation is used.
+    ///   - content: The content shown inside the card.
     init(
         elevation: Elevation = .level1,
         allSides padding: CGFloat,
@@ -299,7 +307,7 @@ public extension Card {
             Card(elevation: .level2) {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Glass Card")
-                    // ネストカードはティント面へ自動降格する
+                    // A nested card drops to a tint surface on its own
                     Card(elevation: .level1) {
                         Text("Nested Card（自動降格）")
                     }

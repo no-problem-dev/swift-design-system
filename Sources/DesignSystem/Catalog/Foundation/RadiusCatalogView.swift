@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// 角丸カタログビュー
 struct RadiusCatalogView: View {
     @Environment(\.radiusScale) private var radius
     @Environment(\.colorPalette) private var colors

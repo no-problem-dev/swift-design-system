@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// 仕様項目を表示するビュー
 struct SpecItem: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

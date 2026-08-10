@@ -1,23 +1,22 @@
 import SwiftUI
 
-// MediaViewer の公開 API。
-// 参照: Kavsoft「iOS Photos App Style Transitions Using SwiftUI」(2026-03) の
-// PhotoGridView グリッドアイテム側（sourceLocation 記録 + withoutAnimation での
-// fullScreenCover 表示 + ソースビュー非表示）を単一ビュー版に移植。
+// The public API of MediaViewer.
+// Reference: the grid item side of PhotoGridView from Kavsoft "iOS Photos App Style
+// Transitions Using SwiftUI" (2026-03), which records sourceLocation, presents the
+// fullScreenCover inside withoutAnimation and hides the source view, ported to a single view.
 
 extension View {
-    /// タップでフルスクリーンメディアビューアを開く
+    /// Opens a full screen media viewer when the view is tapped.
     ///
-    /// サムネイル位置からのヒーロー展開・ピンチズーム・下方向ドラッグでの
-    /// 閉じる操作を備えたフルスクリーンビューアを表示する。
+    /// The viewer expands from the position of the thumbnail, supports pinch to zoom, and
+    /// closes when dragged downwards.
     ///
-    /// - Note: iOS 18 以降でのみ動作する。macOS / tvOS / watchOS および
-    ///   iOS 17 では何も付与されません（従来挙動のまま）。
+    /// - Note: This works on iOS 18 and later only. On macOS, tvOS, watchOS and on iOS 17
+    ///   nothing is attached and the view keeps its existing behavior.
     ///
     /// - Parameters:
-    ///   - item: タップ時に表示するメディア
-    ///   - enabled: ビューアを有効にするか（デフォルト true）
-    /// - Returns: ビューア起動が付与されたビュー
+    ///   - item: The media to show when the view is tapped.
+    ///   - enabled: Whether the viewer is active.
     @ViewBuilder
     public func mediaViewable(_ item: MediaViewerItem, enabled: Bool = true) -> some View {
         #if os(iOS)

@@ -1,9 +1,10 @@
 import SwiftUI
 
-/// グラデーションを一級トークンとして表す値。色配列と方向を保持し、`LinearGradient` を生成する。
+/// A gradient held as a design token.
 ///
-/// 収益アプリ（Instagram / Coinbase / Robinhood 等）はグラデーションを多用するが、
-/// 既存ではコンポーネント内にインライン定義されていた。意味的グラデーションとして抽象化する。
+/// Stores the colors and the direction, and builds the linear gradient from them. Naming a
+/// gradient here rather than defining it inline in a component lets a theme restyle every
+/// gradient in the app at once.
 public struct GradientToken: Sendable, Equatable {
     public var colors: [Color]
     public var startPoint: UnitPoint
@@ -20,17 +21,16 @@ public struct GradientToken: Sendable, Equatable {
     }
 }
 
-/// 意味的グラデーションの集合。ブランドが固有のグラデーションを差し込む。
+/// The set of semantic gradients a theme supplies, so that a brand can substitute its own.
 public protocol GradientTokens: Sendable {
-    /// ブランドの主役グラデーション
+    /// The brand's headline gradient.
     var brand: GradientToken { get }
-    /// サーフェス（背景）用の控えめなグラデーション
+    /// A restrained gradient for surfaces and backgrounds.
     var surface: GradientToken { get }
-    /// アクセント
     var accent: GradientToken { get }
 }
 
-/// 既定のグラデーション。ブランド未指定時のプレースホルダ（ブランドが override する前提）。
+/// The gradients used when a theme does not supply its own.
 public struct DefaultGradientTokens: GradientTokens {
     public init() {}
     public var brand: GradientToken {

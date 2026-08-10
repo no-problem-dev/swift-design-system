@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// コード例表示コンポーネント
 struct CodeExample: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

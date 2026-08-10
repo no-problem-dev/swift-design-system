@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// StatusIndicatorコンポーネントのカタログビュー
 struct StatusIndicatorCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

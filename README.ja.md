@@ -2,7 +2,7 @@
 
 # DesignSystem
 
-SwiftUI 向けの型安全で拡張可能なデザインシステム
+SwiftUI アプリのための、型安全でテーマを差し替えられるデザインシステム。
 
 ![Swift](https://img.shields.io/badge/Swift-6.2-orange.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-iOS%2017.0+%20%7C%20macOS%2014.0+-blue.svg)
@@ -10,11 +10,60 @@ SwiftUI 向けの型安全で拡張可能なデザインシステム
 
 ## 特徴
 
-- **3 層トークンシステム** — Primitive → Semantic → Component の明確な階層
-- **型安全** — プロトコルベース設計により拡張性が高い
-- **7 種類のビルトインテーマ** — Default、Ocean、Forest、Sunset、PurpleHaze、Monochrome、HighContrast
-- **ライト/ダークモード対応** — 全テーマでシームレスなモード切り替え
-- **豊富なコンポーネント** — Button、Card、Chip、TextField、FAB、Snackbar、ProgressBar など
+- **3 層トークンシステム** — Primitive → Semantic → Component。View がどの層に触れてよいかの規則が明確
+- **プロトコルベース** — テーマは準拠して値を与える。トークンを実装し忘れたテーマはコンパイルが通らない
+- **7 種類のビルトインテーマ** — Default、Ocean、Forest、Sunset、PurpleHaze、Monochrome、HighContrast。それぞれライトとダークで別のパレットを持つ
+- **トークンの上に立つコンポーネント** — Button、Card、Chip、TextField、FAB、Snackbar、ProgressBar など。テーマを切り替えれば呼び出し側を触らずに一斉に見た目が変わる
+- **ガラス面** — `SurfaceStyle` に応じて描画が変わる。Elevation は影の濃さではなくボーダーの輝度として解釈し直される
+
+各コンポーネントの描画結果はリポジトリに入っている。
+[`Tests/DesignSystemTests/__Snapshots__/`](Tests/DesignSystemTests/__Snapshots__)
+に 22 コンポーネント × ライト/ダークの 148 枚があり、iOS シミュレータ上のスナップショットスイートが照合する。
+
+## クイックスタート
+
+ルートで一度テーマを差し込み、以降はどの View でも Environment からトークンを読む:
+
+```swift
+@main
+struct MyApp: App {
+    @State private var themeProvider = ThemeProvider()
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView().theme(themeProvider)
+        }
+    }
+}
+
+struct ContentView: View {
+    @Environment(\.spacingScale) var spacing
+
+    var body: some View {
+        Card(elevation: .level2) {
+            VStack(alignment: .leading, spacing: spacing.md) {
+                Text("週次レポート").typography(.titleMedium)
+                Chip("準備完了").chipStyle(.filled)
+            }
+        }
+        .padding(spacing.xl)
+    }
+}
+```
+
+実行中にテーマやモードを切り替えると、全体が一斉に追従する:
+
+```swift
+themeProvider.switchToTheme(id: "ocean")
+themeProvider.toggleMode()   // system → light → dark → system
+```
+
+## ドキュメント
+
+[**API リファレンスとガイド**](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/) —
+[Getting Started](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/gettingstarted/)、
+[Token Architecture](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/tokenarchitecture/)、
+[Custom Theme](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/customtheme/) を含む。
 
 ## インストール
 
@@ -25,83 +74,9 @@ dependencies: [
 ]
 ```
 
-## クイックスタート
-
-### テーマの適用
-
-```swift
-@main
-struct MyApp: App {
-    @State private var themeProvider = ThemeProvider()
-
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .theme(themeProvider)
-        }
-    }
-}
-```
-
-### デザイントークンの使用
-
-```swift
-struct MyView: View {
-    @Environment(\.colorPalette) var colors
-    @Environment(\.spacingScale) var spacing
-
-    var body: some View {
-        VStack(spacing: spacing.lg) {
-            Text("見出し")
-                .typography(.headlineLarge)
-                .foregroundStyle(colors.primary)
-            Text("本文")
-                .typography(.bodyMedium)
-                .foregroundStyle(colors.onSurface)
-        }
-        .padding(spacing.xl)
-        .background(colors.surface)
-    }
-}
-```
-
-### コンポーネント
-
-```swift
-// ボタン
-Button("保存") { save() }
-    .buttonStyle(.primary)
-    .buttonSize(.large)
-
-// カード
-Card(elevation: .level2) {
-    Text("カードの内容").typography(.bodyMedium)
-}
-
-// テキストフィールド
-DSTextField("メールアドレス", text: $email, placeholder: "example@email.com", leadingIcon: "envelope")
-```
-
-### テーマの切り替え
-
-```swift
-// ビルトインテーマに切り替え
-themeProvider.switchToTheme(id: "ocean")
-
-// モードを切り替え（system → light → dark → system）
-themeProvider.toggleMode()
-```
-
-## ドキュメント
-
-詳細なガイドと API リファレンスは DocC ドキュメントを参照。
-
-| ガイド | 内容 |
-|-------|------|
-| [はじめに](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/gettingstarted/) | セットアップと基本的な使い方 |
-| [トークンアーキテクチャ](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/tokenarchitecture/) | 3 層トークンシステムの設計思想 |
-| [カスタムテーマ](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/customtheme/) | カスタムテーマの作成方法 |
-| [API リファレンス](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/) | 全パブリック API |
+3 つのライブラリを提供する: `DesignSystem`（SwiftUI のデザインシステム本体）、
+`DesignSpec`（ブランドのデザイン仕様を表す純データ）、
+`DesignCatalogKit`（ブランド横断のギャラリーとトークン差分）。
 
 ## 要件
 
@@ -112,10 +87,3 @@ themeProvider.toggleMode()
 ## ライセンス
 
 MIT License — 詳細は [LICENSE](LICENSE) を参照
-
-## リンク
-
-- [完全なドキュメント](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/)
-- [Issue 報告](https://github.com/no-problem-dev/swift-design-system/issues)
-- [ディスカッション](https://github.com/no-problem-dev/swift-design-system/discussions)
-- [リリースプロセス](RELEASE_PROCESS.md)

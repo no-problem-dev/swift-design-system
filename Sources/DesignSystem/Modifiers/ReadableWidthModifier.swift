@@ -1,13 +1,15 @@
 import SwiftUI
 
 public extension View {
-    /// 本文の幅を読みやすい上限で頭打ちにして、余った横幅の中央に置く。
+    /// Caps body content at a readable width and centers it in the width that is left over.
     ///
-    /// SwiftUI には UIKit の `readableContentGuide` に相当する API が無く、画面ごとに
-    /// `.frame(maxWidth:)` を手で書くと値がばらつく。上限の決め方をここに 1 本化する。
+    /// SwiftUI has no equivalent of UIKit's `readableContentGuide`, and writing
+    /// `.frame(maxWidth:)` by hand on every screen makes the values drift apart. How the cap is
+    /// chosen lives in one place here.
     ///
-    /// 効くのは横も縦も `.regular` のときだけ。iPhone 縦・iPad の細い分割・横向きの
-    /// iPhone はもともと 1 行が読める幅なので、頭打ちにしても余白が増えるだけになる。
+    /// It only takes effect when both size classes are `.regular`. An iPhone in portrait, a narrow
+    /// iPad split, and an iPhone in landscape are already narrow enough to read a line of text, so
+    /// capping them would only add margins.
     ///
     /// ```swift
     /// ScrollView {
@@ -20,19 +22,19 @@ public extension View {
     }
 }
 
-/// 読みやすい本文幅。
+/// The readable width for body content.
 ///
-/// UIKit の `readableContentGuide` の実測（iPad の既定サイズで約 672pt、Dynamic Type の
-/// 両端で 560〜896pt）に合わせる。文字が大きいほど 1 行に入る文字数が減るので、
-/// 幅も一緒に広がるのが正しい。
+/// The values match measurements of UIKit's `readableContentGuide`: about 672pt at the default
+/// size on iPad, and 560 to 896pt at the two ends of the Dynamic Type range. The larger the text,
+/// the fewer characters fit on a line, so it is right for the width to grow along with it.
 enum ReadableWidth {
-    /// Dynamic Type 既定（`.large`）での上限
+    /// The cap at the default Dynamic Type size (`.large`).
     static let base: CGFloat = 672
 
     static let minimum: CGFloat = 560
     static let maximum: CGFloat = 896
 
-    /// Dynamic Type で伸縮した幅を実測の範囲に収める
+    /// Keeps a Dynamic Type scaled width inside the measured range.
     static func clamped(_ scaled: CGFloat) -> CGFloat {
         min(max(scaled, minimum), maximum)
     }
@@ -59,7 +61,7 @@ struct ReadableWidthModifier: ViewModifier {
         #if os(iOS) || os(tvOS) || os(visionOS)
         horizontalSizeClass == .regular && verticalSizeClass == .regular
         #else
-        // macOS にサイズクラスは無く、ウィンドウは横に広がるので常に頭打ちにする
+        // macOS has no size classes and windows spread out horizontally, so always apply the cap
         true
         #endif
     }

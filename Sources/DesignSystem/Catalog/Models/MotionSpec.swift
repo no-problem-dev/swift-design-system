@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// モーション仕様データモデル
 struct MotionSpec: Identifiable, Sendable {
     let id: String
     let name: String
@@ -11,7 +10,6 @@ struct MotionSpec: Identifiable, Sendable {
     let description: String
     let animation: @Sendable (Motion) -> Animation
 
-    /// モーションカテゴリ
     enum MotionCategory: String, CaseIterable {
         case microInteraction = "マイクロインタラクション"
         case stateChange = "状態変化"
@@ -37,9 +35,8 @@ struct MotionSpec: Identifiable, Sendable {
         }
     }
 
-    /// 全モーション仕様
     static let all: [MotionSpec] = [
-        // マイクロインタラクション
+        // Micro-interactions
         MotionSpec(
             id: "quick",
             name: "quick",
@@ -61,7 +58,7 @@ struct MotionSpec: Identifiable, Sendable {
             animation: { $0.tap }
         ),
 
-        // 状態変化
+        // State changes
         MotionSpec(
             id: "toggle",
             name: "toggle",
@@ -93,7 +90,7 @@ struct MotionSpec: Identifiable, Sendable {
             animation: { $0.fadeOut }
         ),
 
-        // トランジション
+        // Transitions
         MotionSpec(
             id: "slide",
             name: "slide",
@@ -125,7 +122,7 @@ struct MotionSpec: Identifiable, Sendable {
             animation: { $0.slower }
         ),
 
-        // スプリング
+        // Springs
         MotionSpec(
             id: "spring",
             name: "spring",
@@ -148,7 +145,6 @@ struct MotionSpec: Identifiable, Sendable {
         )
     ]
 
-    /// カテゴリ別にグループ化
     static func grouped() -> [MotionCategory: [MotionSpec]] {
         Dictionary(grouping: all, by: { $0.category })
     }

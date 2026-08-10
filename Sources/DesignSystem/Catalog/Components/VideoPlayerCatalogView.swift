@@ -2,7 +2,6 @@ import SwiftUI
 
 #if canImport(UIKit)
 
-/// VideoPlayerViewのカタログビュー
 struct VideoPlayerCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

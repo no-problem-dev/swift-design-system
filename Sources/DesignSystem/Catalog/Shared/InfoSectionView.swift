@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// カタログの情報セクションビュー
 struct InfoSectionView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

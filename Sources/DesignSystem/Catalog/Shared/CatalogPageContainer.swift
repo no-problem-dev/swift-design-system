@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// カタログページ全体のコンテナ
 struct CatalogPageContainer<Content: View>: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

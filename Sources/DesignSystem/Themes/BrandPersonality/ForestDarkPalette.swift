@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Forestテーマ - ダークモードパレット
 struct ForestDarkPalette: ColorPalette {
     // MARK: - Primary
     var primary: Color { Color(hex: "#74C69D") } // Lighter mint for dark mode

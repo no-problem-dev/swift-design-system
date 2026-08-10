@@ -1,29 +1,31 @@
 import Foundation
 
-/// ビルトインテーマのレジストリ
+/// The themes that ship with the design system.
 ///
-/// システムに組み込まれている全てのテーマを管理する。
+/// The set is fixed and every app starts from it. To offer a theme of your own, pass it to
+/// a theme provider as an additional theme; the provider appends it to this list and ignores
+/// it if its identifier is already taken.
 ///
-/// ## 利用可能なテーマ
-/// - **Standard**: デフォルトテーマ
+/// ## Themes
+/// - **Standard**: Default
 /// - **Brand Personality**: Ocean, Forest, Sunset, PurpleHaze, Monochrome
-/// - **Accessibility**: HighContrast (WCAG AAA準拠)
+/// - **Accessibility**: HighContrast, whose color pairs meet WCAG AAA
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// // 全テーマを取得
+/// // Every built-in theme
 /// let themes = ThemeRegistry.builtInThemes
 ///
-/// // カテゴリ別に取得
+/// // Grouped by category
 /// let brandThemes = ThemeRegistry.themesByCategory[.brandPersonality]
 ///
-/// // IDで検索
+/// // Looked up by identifier
 /// if let ocean = ThemeRegistry.theme(withID: "ocean") {
 ///     themeProvider.applyTheme(ocean)
 /// }
 /// ```
 public enum ThemeRegistry {
-    /// 全てのビルトインテーマ（7種類）
+    /// The built-in themes, in the order an app should offer them.
     public static let builtInThemes: [any Theme] = [
         // Standard
         DefaultTheme(),
@@ -39,14 +41,18 @@ public enum ThemeRegistry {
         HighContrastTheme(),
     ]
 
-    /// カテゴリ別にグループ化されたテーマ
+    /// The built-in themes grouped by category.
+    ///
+    /// A category that no built-in theme belongs to is absent from the dictionary rather
+    /// than mapped to an empty array.
     public static var themesByCategory: [ThemeCategory: [any Theme]] {
         Dictionary(grouping: builtInThemes) { $0.category }
     }
 
-    /// IDでテーマを検索
-    /// - Parameter id: テーマID
-    /// - Returns: 見つかったテーマ、またはnil
+    /// Returns the built-in theme with the given identifier, or `nil` if there is none.
+    ///
+    /// The comparison is exact, so identifiers that differ in case do not match.
+    /// - Parameter id: The identifier to look for.
     public static func theme(withID id: String) -> (any Theme)? {
         builtInThemes.first { $0.id == id }
     }

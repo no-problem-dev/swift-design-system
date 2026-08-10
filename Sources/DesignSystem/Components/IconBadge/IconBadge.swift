@@ -1,23 +1,23 @@
 import SwiftUI
 
-/// アイコン付き円形バッジ（atom）。
+/// A circular badge with an icon (atom).
 ///
-/// 円形の背景に SF Symbols アイコンを中央表示する。
-/// ステータス表示・カテゴリアイコン・アクション強調など幅広い用途で使用する。
+/// Centers an SF Symbols icon on a circular background. It covers a wide range of uses:
+/// showing status, marking a category, or drawing attention to an action.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// // シンプルなバッジ
+/// // A plain badge
 /// IconBadge(systemName: "star.fill")
 ///
-/// // カスタムカラー
+/// // Custom colors
 /// IconBadge(
 ///     systemName: "heart.fill",
 ///     foregroundColor: .white,
 ///     backgroundColor: .red
 /// )
 ///
-/// // サイズ指定
+/// // A specific size
 /// IconBadge(systemName: "bell.fill", size: .large)
 /// ```
 public struct IconBadge: View {
@@ -28,12 +28,12 @@ public struct IconBadge: View {
     private let foregroundColor: Color?
     private let backgroundColor: Color?
 
-    /// アイコンバッジを作成する
+    /// Creates an icon badge.
     /// - Parameters:
-    ///   - systemName: SF Symbols 名
-    ///   - size: バッジサイズ（デフォルト: `.medium`）
-    ///   - foregroundColor: アイコン色（デフォルト: primary）
-    ///   - backgroundColor: 円の背景色（デフォルト: primary の 15% 不透明度）
+    ///   - systemName: The SF Symbols name.
+    ///   - size: The badge size. Defaults to `.medium`.
+    ///   - foregroundColor: The icon color. Defaults to primary.
+    ///   - backgroundColor: The background color of the circle. Defaults to primary at 15% opacity.
     public init(
         systemName: String,
         size: IconBadgeSize = .medium,
@@ -59,7 +59,6 @@ public struct IconBadge: View {
     }
 }
 
-/// `IconBadge` のサイズバリアント
 public enum IconBadgeSize {
     case small
     case medium

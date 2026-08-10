@@ -1,8 +1,6 @@
 import SwiftUI
 
-/// カタログのルーティングロジック
-///
-/// カテゴリから適切な詳細ビューを返す
+/// Maps a catalog category to the detail view that presents it.
 @MainActor
 enum CatalogRouter {
     @ViewBuilder

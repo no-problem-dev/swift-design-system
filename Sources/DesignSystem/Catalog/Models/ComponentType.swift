@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// コンポーネントの種類
 enum ComponentType: String, CaseIterable, Identifiable {
     case attachment = "Attachment"
     case button = "Button"

@@ -1,6 +1,9 @@
 import SwiftUI
 
-/// テーマを適用するView Modifier
+/// Publishes a theme's tokens into the environment and applies its color scheme.
+///
+/// Apply it once near the root of the hierarchy. Views below read the resolved palette and the
+/// token scales from the environment, and the color scheme follows the provider's theme mode.
 public struct ThemeModifier: ViewModifier {
     @Bindable var provider: ThemeProvider
 
@@ -13,16 +16,18 @@ public struct ThemeModifier: ViewModifier {
     }
 }
 
-/// テーマ環境値を提供する内部ビュー
-/// @Bindableによる変更追跡を確実に行うための専用ビュー
+/// Supplies the theme environment values to its content.
+///
+/// A dedicated view so that change tracking through `@Bindable` is picked up reliably.
 private struct ThemeEnvironmentView<Content: View>: View {
     @Bindable var provider: ThemeProvider
     @Environment(\.colorScheme) private var systemColorScheme
     let content: Content
 
-    /// 実際に使用するモードを解決
-    /// - `.system`: システムのColorSchemeに従う
-    /// - `.light`/`.dark`: ユーザーの手動選択を尊重
+    /// Resolves the theme mode that is actually in effect.
+    ///
+    /// - `.system`: follows the system color scheme.
+    /// - `.light`/`.dark`: keeps the choice the user made.
     private var resolvedMode: ThemeMode {
         switch provider.themeMode {
         case .system:
@@ -32,13 +37,11 @@ private struct ThemeEnvironmentView<Content: View>: View {
         }
     }
 
-    /// 実際に適用するSwiftUIのColorScheme
     private var resolvedColorScheme: ColorScheme {
         resolvedMode == .dark ? .dark : .light
     }
 
-    /// 実際に適用するカラーパレット（リアクティブ）
-    /// provider.currentThemeが変更されると自動的に再計算される
+    /// The color palette in effect. It is recomputed whenever the provider's current theme changes.
     private var resolvedColorPalette: any ColorPalette {
         provider.currentTheme.colorPalette(for: resolvedMode)
     }

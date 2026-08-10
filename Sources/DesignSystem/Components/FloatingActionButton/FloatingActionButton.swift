@@ -1,18 +1,18 @@
 import SwiftUI
 
-/// Floating Action Button (FAB)
+/// A circular floating button (FAB) that stands for the main action on a screen.
 ///
-/// 画面の主要アクションを表す円形の浮遊ボタン。
-/// 通常は画面右下に配置し、最も重要な操作（作成・追加など）をトリガーする。
+/// It usually sits in the bottom trailing corner and triggers the most important operation,
+/// such as creating or adding something.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// // 標準サイズ
+/// // The standard size
 /// FloatingActionButton(icon: "plus") {
 ///     createNewItem()
 /// }
 ///
-/// // サイズバリエーション
+/// // Size variants
 /// FloatingActionButton(icon: "pencil", size: .small) {
 ///     edit()
 /// }
@@ -22,7 +22,7 @@ import SwiftUI
 /// }
 /// ```
 ///
-/// ## 配置例
+/// ## Placement
 /// ```swift
 /// ZStack {
 ///     ContentView()
@@ -40,10 +40,10 @@ import SwiftUI
 /// }
 /// ```
 ///
-/// ## サイズ
-/// - **Small**: 40pt直径 - コンパクトなレイアウト
-/// - **Regular**: 56pt直径 - 標準サイズ（推奨）
-/// - **Large**: 96pt直径 - 特に重要なアクション
+/// ## Sizes
+/// - **Small**: 40pt across. For compact layouts.
+/// - **Regular**: 56pt across. The standard size (recommended).
+/// - **Large**: 96pt across. For an especially important action.
 public struct FloatingActionButton: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.isEnabled) private var isEnabled
@@ -53,13 +53,13 @@ public struct FloatingActionButton: View {
     private let style: FABStyle
     private let action: () -> Void
 
-    /// FloatingActionButton を作成する。
+    /// Creates a floating action button.
     ///
     /// - Parameters:
-    ///   - icon: SF Symbols のシステムアイコン名（例: `"plus"`, `"pencil"`）
-    ///   - size: ボタンサイズ（デフォルト: `.regular`、直径 56pt）
-    ///   - style: 表示スタイル（デフォルト: `.primary`、テーマの Primary container 色）
-    ///   - action: タップ時に呼び出されるクロージャ
+    ///   - icon: The SF Symbols system icon name, for example `"plus"` or `"pencil"`.
+    ///   - size: The button size. Defaults to `.regular`, 56pt across.
+    ///   - style: The display style. Defaults to `.primary`, the Primary container color of the theme.
+    ///   - action: The closure called when the button is tapped.
     public init(
         icon: String,
         size: FABSize = .regular,
@@ -125,15 +125,14 @@ public struct FloatingActionButton: View {
 
 }
 
-/// FABの表示スタイル。
 public enum FABStyle: Sendable {
-    /// テーマのPrimary containerを使う標準の主要アクション。
+    /// The standard main action, drawn in the Primary container color of the theme.
     case primary
 
-    /// Secondary containerを使う補助的な浮遊アクション。
+    /// A supporting floating action, drawn in the Secondary container color.
     case secondary
 
-    /// Liquid Glass表現を使う浮遊アクション。
+    /// A floating action drawn with the Liquid Glass appearance.
     case glass
 
     var elevation: Elevation {
@@ -146,7 +145,6 @@ public enum FABStyle: Sendable {
     }
 }
 
-/// FABのサイズバリエーション
 public enum FABSize {
     case small
     case regular

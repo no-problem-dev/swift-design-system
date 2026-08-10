@@ -1,7 +1,7 @@
 import SwiftUI
 import DesignSystem
 
-/// 2 テーマのトークン差分を表で見せる計器。差分のある行を強調する。
+/// A table of the token differences between two themes, with the differing rows highlighted.
 public struct TokenDiffView: View {
     private let titleA: String
     private let titleB: String

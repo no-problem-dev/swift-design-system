@@ -1,30 +1,28 @@
 import SwiftUI
 
-/// Chip コンポーネントのサイズバリアント
+/// A token that sets the height, the padding, the icon size, and the typography of a chip.
 ///
-/// Chip のサイズを定義するトークン。ステータス表示・カテゴリタグ・フィルターなど
-/// 用途に応じて適切なサイズを選択できる。
+/// Pick the size that fits the context: a status label, a category tag, a filter, and so on.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// Chip("Active", systemImage: "circle.fill")
-///     .chipSize(.medium)  // デフォルト
+///     .chipSize(.medium)  // the default
 ///
 /// Chip("New", systemImage: "bell.fill")
-///     .chipSize(.small)   // コンパクトな表示
+///     .chipSize(.small)   // a compact display
 /// ```
 ///
-/// ## サイズの使い分け
-/// - **Small**: 密集したレイアウト、補助的な情報（24pt）
-/// - **Medium**: 標準的な用途、読みやすさ重視（32pt）
+/// ## Choosing a size
+/// - **Small**: dense layouts and supporting information (24pt)
+/// - **Medium**: standard use, where readability comes first (32pt)
 public enum ChipSize: Sendable {
-    /// 小さいサイズ（24pt）- コンパクトなレイアウト
+    /// A 24pt chip for compact layouts.
     case small
 
-    /// 中程度のサイズ（32pt）- 標準的なチップ
+    /// A 32pt chip, which is the standard size.
     case medium
 
-    /// Chipの高さ
     var height: CGFloat {
         switch self {
         case .small: return 24
@@ -32,7 +30,6 @@ public enum ChipSize: Sendable {
         }
     }
 
-    /// 水平パディング
     var horizontalPadding: CGFloat {
         switch self {
         case .small: return 6
@@ -40,7 +37,6 @@ public enum ChipSize: Sendable {
         }
     }
 
-    /// 垂直パディング
     var verticalPadding: CGFloat {
         switch self {
         case .small: return 2
@@ -48,7 +44,6 @@ public enum ChipSize: Sendable {
         }
     }
 
-    /// アイコンサイズ
     var iconSize: CGFloat {
         switch self {
         case .small: return 14
@@ -56,7 +51,6 @@ public enum ChipSize: Sendable {
         }
     }
 
-    /// タイポグラフィトークン
     var typography: Typography {
         switch self {
         case .small: return .labelSmall
@@ -65,13 +59,14 @@ public enum ChipSize: Sendable {
     }
 }
 
-/// ChipSize用のEnvironmentKey
 private struct ChipSizeKey: EnvironmentKey {
     static let defaultValue: ChipSize = .medium
 }
 
 public extension EnvironmentValues {
-    /// 環境から取得するChipSize
+    /// The size applied to the chips in this environment.
+    ///
+    /// Set it with the `chipSize(_:)` modifier. The default is `.medium`.
     var chipSize: ChipSize {
         get { self[ChipSizeKey.self] }
         set { self[ChipSizeKey.self] = newValue }

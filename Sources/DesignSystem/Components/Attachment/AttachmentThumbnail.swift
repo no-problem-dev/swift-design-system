@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// 選択済み添付を 1 件だけ表す角丸サムネイル（atom）。
+/// A rounded thumbnail that stands for a single selected attachment (atom).
 ///
-/// 画像プレビューと「ファイル（アイコン + 名前）」の両方を表現できる。
-/// 右上の ✕ で削除を要求する。ドメイン型は受けず、内部 state も持たない。
-/// 削除という副作用は呼び出し側の `onRemove` に委譲する。
+/// It can show either an image preview or a file as an icon plus a name. The ✕ in the top
+/// trailing corner requests removal. It takes no domain type and holds no internal state:
+/// removal is left to the caller through `onRemove`.
 ///
 /// ```swift
 /// AttachmentThumbnail(image: Image("photo")) { remove(id) }
@@ -23,20 +23,20 @@ public struct AttachmentThumbnail: View {
     private let content: Content
     private let onRemove: () -> Void
 
-    /// 画像添付用。プレビュー画像をそのまま塗りつぶし表示する。
+    /// Creates a thumbnail for an image attachment, filling the frame with the preview image.
     /// - Parameters:
-    ///   - image: 表示するプレビュー画像。
-    ///   - onRemove: ✕ タップ時に呼ばれる削除要求。
+    ///   - image: The preview image to show.
+    ///   - onRemove: Called when the ✕ is tapped to request removal.
     public init(image: Image, onRemove: @escaping () -> Void) {
         self.content = .image(image)
         self.onRemove = onRemove
     }
 
-    /// ファイル/ドキュメント添付用。プレビュー画像がないものをアイコン + 名前で表す。
+    /// Creates a thumbnail for a file or document attachment, which has no preview image, as an icon plus a name.
     /// - Parameters:
-    ///   - systemImage: ファイル種別を表す SF Symbols 名。
-    ///   - fileName: ファイル名（1〜2 行で省略表示）。
-    ///   - onRemove: ✕ タップ時に呼ばれる削除要求。
+    ///   - systemImage: The SF Symbols name that stands for the file type.
+    ///   - fileName: The file name, truncated to one or two lines.
+    ///   - onRemove: Called when the ✕ is tapped to request removal.
     public init(systemImage: String, fileName: String?, onRemove: @escaping () -> Void) {
         self.content = .file(systemImage: systemImage, fileName: fileName)
         self.onRemove = onRemove

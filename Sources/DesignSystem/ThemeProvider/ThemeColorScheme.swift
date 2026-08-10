@@ -1,22 +1,23 @@
 import Foundation
 
-/// テーマのカラースキーム。アプリで使用可能なテーマの種類を定義する。
+/// A light or dark appearance, with no option to follow the device.
 ///
-/// ## 使用例
+/// Use it for a setting that offers exactly those two choices. A setting that also offers
+/// "follow the system" needs `ThemeMode` instead, which is what `ThemeProvider` stores.
+///
+/// ## Example
 /// ```swift
 /// @State private var selectedScheme: ThemeColorScheme = .light
 ///
-/// Picker("テーマ", selection: $selectedScheme) {
+/// Picker("Theme", selection: $selectedScheme) {
 ///     ForEach(ThemeColorScheme.allCases) { scheme in
 ///         Text(scheme.rawValue.capitalized).tag(scheme)
 ///     }
 /// }
 /// ```
 public enum ThemeColorScheme: String, CaseIterable, Identifiable {
-    /// ライトテーマ
     case light
 
-    /// ダークテーマ
     case dark
 
     public var id: String { rawValue }

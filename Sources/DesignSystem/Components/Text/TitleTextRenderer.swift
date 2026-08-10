@@ -1,16 +1,17 @@
 import SwiftUI
 
-/// 文字スライス単位で blur + opacity + 縦オフセットが解けながら順次出現する TextRenderer。
+/// A text renderer that reveals text slice by slice, resolving blur, opacity and a vertical
+/// offset as it goes.
 ///
-/// `progress` を 0 → 1 にアニメーションさせて使う。
+/// Animate `progress` from 0 to 1 to run the effect.
 ///
 /// ```swift
-/// Text("UI を組み上げています…")
+/// Text("Building the UI…")
 ///     .textRenderer(TitleTextRenderer(progress: progress))
 ///     .onAppear { withAnimation(.smooth(duration: 1.2)) { progress = 1 } }
 /// ```
 ///
-/// 出典: Kavsoft "Apple Invites App OnBoarding UI" (2025-02) CustomTextEffect.swift
+/// Source: CustomTextEffect.swift from Kavsoft "Apple Invites App OnBoarding UI" (2025-02)
 @available(iOS 18.0, macOS 15.0, *)
 public struct TitleTextRenderer: TextRenderer, Animatable {
     public var progress: CGFloat
@@ -31,7 +32,7 @@ public struct TitleTextRenderer: TextRenderer, Animatable {
             let sliceProgressIndex = CGFloat(slices.count) * progress
             let sliceProgress = max(min(sliceProgressIndex / CGFloat(index + 1), 1), 0)
 
-            // コンテキストはループ間で累積させる（出典コメント準拠）
+            // The context is meant to accumulate across iterations, as in the source
             ctx.addFilter(.blur(radius: 5 - (5 * sliceProgress)))
             ctx.opacity = sliceProgress
             ctx.translateBy(x: 0, y: 5 - (5 * sliceProgress))

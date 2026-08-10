@@ -1,8 +1,12 @@
 import SwiftUI
 
-/// 絵文字ピッカーを表示するViewModifier
+/// Presents a searchable sheet of emoji and writes the chosen one back to a binding.
 ///
-/// ## 使用例
+/// Tapping an emoji sets the binding and dismisses the sheet, so the picker is a single decision
+/// rather than a place to browse. Apply it with the
+/// `emojiPicker(categories:selectedEmoji:isPresented:)` modifier.
+///
+/// ## Example
 /// ```swift
 /// struct MyView: View {
 ///     @State private var selectedEmoji: String?
@@ -11,16 +15,16 @@ import SwiftUI
 ///     let categories = [
 ///         EmojiCategory(
 ///             id: "smileys",
-///             displayName: "顔・感情",
+///             displayName: "Smileys & Emotion",
 ///             emojis: [
-///                 EmojiItem(id: "smile", emoji: "😊", displayName: "笑顔"),
-///                 EmojiItem(id: "laugh", emoji: "😂", displayName: "笑い"),
+///                 EmojiItem(id: "smile", emoji: "😊", displayName: "Smiling"),
+///                 EmojiItem(id: "laugh", emoji: "😂", displayName: "Laughing"),
 ///             ]
 ///         )
 ///     ]
 ///
 ///     var body: some View {
-///         Button("絵文字を選択") {
+///         Button("Select an emoji") {
 ///             showEmojiPicker = true
 ///         }
 ///         .emojiPicker(
@@ -32,8 +36,8 @@ import SwiftUI
 /// }
 /// ```
 ///
-/// ## 注意
-/// このピッカーは絵文字専用。SF Symbols を使う場合は `.iconPicker()` を使用すること。
+/// ## Note
+/// This picker only handles emoji. Use `.iconPicker()` for SF Symbols.
 public struct EmojiPickerModifier: ViewModifier {
     let categories: [any EmojiCategoryProtocol]
     @Binding var selectedEmoji: String?
@@ -56,13 +60,13 @@ public struct EmojiPickerModifier: ViewModifier {
 // MARK: - View Extension
 
 public extension View {
-    /// 絵文字ピッカーを表示する。
+    /// Attaches an emoji picker sheet to this view.
     ///
     /// - Parameters:
-    ///   - categories: 表示する絵文字カテゴリのリスト
-    ///   - selectedEmoji: 選択された絵文字の値
-    ///   - isPresented: ピッカーの表示状態
-    /// - Returns: 絵文字ピッカーが追加されたView
+    ///   - categories: The categories to show, one section each, in the order given.
+    ///   - selectedEmoji: The chosen emoji. Set to nil when the picker is cleared, and nil means
+    ///     nothing is selected yet.
+    ///   - isPresented: Whether the sheet is showing.
     func emojiPicker(
         categories: [any EmojiCategoryProtocol],
         selectedEmoji: Binding<String?>,
@@ -78,7 +82,6 @@ public extension View {
 
 // MARK: - Internal View
 
-/// 絵文字ピッカーの内部実装View（非公開）
 struct DSEmojiPickerView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
@@ -94,12 +97,10 @@ struct DSEmojiPickerView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // 検索バー
                 searchBar
                     .padding(.horizontal, spacing.md)
                     .padding(.vertical, spacing.sm)
 
-                // カテゴリごとの絵文字表示
                 ScrollView {
                     VStack(alignment: .leading, spacing: spacing.lg) {
                         ForEach(Array(filteredCategories.enumerated()), id: \.offset) { index, category in

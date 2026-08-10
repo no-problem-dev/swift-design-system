@@ -1,15 +1,19 @@
 import SwiftUI
 
-/// カラーピッカーを表示するViewModifier
+/// Presents a sheet of preset colors and writes the chosen hex string back to a binding.
 ///
-/// ## 使用例
+/// Tapping a color updates the binding but leaves the sheet open, so the choice can be compared
+/// against the preview at the top. The sheet is dismissed from the toolbar or by dragging it down.
+/// Apply it with the `colorPicker(preset:selectedColor:isPresented:)` modifier.
+///
+/// ## Example
 /// ```swift
 /// struct MyView: View {
 ///     @State private var selectedColor: String?
 ///     @State private var showColorPicker = false
 ///
 ///     var body: some View {
-///         Button("色を選択") {
+///         Button("Select a color") {
 ///             showColorPicker = true
 ///         }
 ///         .colorPicker(
@@ -42,13 +46,13 @@ public struct ColorPickerModifier: ViewModifier {
 // MARK: - View Extension
 
 public extension View {
-    /// カラーピッカーを表示する。
+    /// Attaches a color picker sheet to this view.
     ///
     /// - Parameters:
-    ///   - preset: 表示するカラープリセット（デフォルト: `.tagFriendly`）
-    ///   - selectedColor: 選択された色のHexコード
-    ///   - isPresented: ピッカーの表示状態
-    /// - Returns: カラーピッカーが追加されたView
+    ///   - preset: The colors to offer. Defaults to `.tagFriendly`.
+    ///   - selectedColor: The hex string of the chosen color. Set to nil when the picker is
+    ///     cleared, and nil means nothing is selected yet.
+    ///   - isPresented: Whether the sheet is showing.
     func colorPicker(
         preset: ColorPreset = .tagFriendly,
         selectedColor: Binding<String?>,
@@ -64,7 +68,6 @@ public extension View {
 
 // MARK: - Internal View
 
-/// カラーピッカーの内部実装View（非公開）
 struct DSColorPickerView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
@@ -79,12 +82,10 @@ struct DSColorPickerView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: spacing.lg) {
-                    // プレビューセクション
                     if let selectedHex = selectedColor {
                         previewSection(hex: selectedHex)
                     }
 
-                    // カラーグリッド
                     colorGridSection
                 }
                 .padding(spacing.md)

@@ -1,8 +1,6 @@
 import SwiftUI
 
-/// テーマギャラリービュー
-///
-/// 全テーマをカテゴリ別に表示し、テーマの選択と切り替えを可能にする。
+/// Lists every theme by category and lets you select and switch between them.
 public struct ThemeGalleryView: View {
     @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colors
@@ -13,7 +11,7 @@ public struct ThemeGalleryView: View {
     public var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: spacing.xl) {
-                // ヘッダー
+                // Header
                 VStack(alignment: .leading, spacing: spacing.sm) {
                     HStack(spacing: spacing.sm) {
                         Image(systemName: "paintpalette.fill")
@@ -36,10 +34,10 @@ public struct ThemeGalleryView: View {
                 }
                 .padding(.top, spacing.lg)
 
-                // 外観モード設定
+                // Appearance mode setting
                 AppearanceModeSection()
 
-                // カテゴリ別テーマリスト
+                // Themes grouped by category
                 ForEach(ThemeCategory.allCases) { category in
                     let categoryThemes = themeProvider.availableThemes.filter { $0.category == category }
                     if !categoryThemes.isEmpty {
@@ -50,7 +48,7 @@ public struct ThemeGalleryView: View {
                     }
                 }
 
-                // 情報セクション
+                // Information section
                 InfoSection()
             }
             .padding(.bottom, spacing.xl)
@@ -76,7 +74,7 @@ private struct ThemeCategorySection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: spacing.md) {
-            // カテゴリヘッダー
+            // Category header
             HStack(spacing: spacing.sm) {
                 Image(systemName: category.icon)
                     .font(.title3)
@@ -94,7 +92,7 @@ private struct ThemeCategorySection: View {
             }
             .padding(.horizontal, spacing.lg)
 
-            // テーマカードグリッド
+            // Theme card grid
             LazyVGrid(
                 columns: [
                     GridItem(.flexible(), spacing: spacing.md),

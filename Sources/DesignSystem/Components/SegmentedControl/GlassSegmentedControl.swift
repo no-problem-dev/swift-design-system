@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// Liquid Glass の選択インジケーターがスライドするセグメンテッドコントロール。
+/// A segmented control whose Liquid Glass selection indicator slides between segments.
 ///
-/// `SegmentedControl` のフラットな配色切替に対し、選択中セグメントを 1 枚のガラスカプセルとして
-/// `matchedGeometryEffect` で滑らかに動かす。ドラッグ中もインジケーターが指に追従する。
-/// iOS 26 未満では ultraThinMaterial にフォールバックする。
+/// Where `SegmentedControl` swaps flat colors, this moves the selected segment as a single glass
+/// capsule with `matchedGeometryEffect`. The indicator follows the finger during a drag as well.
+/// Below iOS 26 it falls back to `ultraThinMaterial`.
 public struct GlassSegmentedControl<Selection: Hashable, Content: View>: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.spacingScale) private var spacingScale
@@ -87,7 +87,7 @@ public struct GlassSegmentedControl<Selection: Hashable, Content: View>: View {
         }
     }
 
-    /// タップ / ドラッグ位置から等幅セグメントの index を引いて選択する。
+    /// Selects the option whose equal width segment contains the given tap or drag position.
     private func select(at x: CGFloat) {
         guard trackWidth > 0, !options.isEmpty else { return }
         let segmentWidth = trackWidth / CGFloat(options.count)

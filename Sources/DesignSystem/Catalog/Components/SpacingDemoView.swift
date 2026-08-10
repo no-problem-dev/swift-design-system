@@ -1,7 +1,6 @@
 import SwiftUI
 
-/// スペーシング値のデモコンポーネント
-/// 実際のサイズを視覚的に表示
+/// Shows a spacing token next to a bar drawn at that width.
 struct SpacingDemoView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
@@ -24,7 +23,7 @@ struct SpacingDemoView: View {
                     .foregroundStyle(colors.onSurfaceVariant)
             }
 
-            // 視覚的表現
+            // Visual representation
             HStack(spacing: 0) {
                 Rectangle()
                     .fill(colors.primary.opacity(0.2))

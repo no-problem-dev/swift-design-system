@@ -1,16 +1,17 @@
 import SwiftUI
 import Combine
 
-/// 無限ループ + 自動スクロールする横スクロールビュー。
+/// A horizontal scroll view that loops endlessly and scrolls on its own.
 ///
-/// 末尾に到達すると先頭へシームレスに巻き戻り、タイマーで自動的に流れ続ける。
-/// `scrollingSpeed` を負にすると逆方向に流れる。ユーザーのドラッグ操作も共存できる。
+/// Reaching the end wraps back to the start without a visible seam, and a timer keeps the
+/// content moving. A negative `scrollingSpeed` moves it the other way. The user can still
+/// drag it while it moves.
 ///
-/// 出典: Kavsoft "Apple Stocks UI Animation: Auto Scroll & Looping ScrollView" (2026-01)
+/// Source: Kavsoft "Apple Stocks UI Animation: Auto Scroll & Looping ScrollView" (2026-01)
 @available(iOS 18.0, macOS 15.0, *)
 public struct LoopingScrollView<Data: RandomAccessCollection, Content: View>: View where Data.Element: Identifiable {
     public var spacing: CGFloat
-    /// 1 tick (0.01s) あたりのスクロール量。負で逆方向。
+    /// How far the content moves per tick of 0.01 seconds. A negative value reverses it.
     public var scrollingSpeed: CGFloat
     public var itemWidth: CGFloat
     public var data: Data
@@ -38,7 +39,7 @@ public struct LoopingScrollView<Data: RandomAccessCollection, Content: View>: Vi
     public var body: some View {
         ScrollView(.horizontal) {
             HStack(spacing: spacing) {
-                // オリジナル
+                // The original items
                 HStack(spacing: spacing) {
                     ForEach(data) { item in
                         content(item, false)
@@ -46,7 +47,7 @@ public struct LoopingScrollView<Data: RandomAccessCollection, Content: View>: Vi
                     }
                 }
 
-                // ループを成立させるための繰り返し分
+                // The repeats that make the loop work
                 HStack(spacing: spacing) {
                     ForEach(0..<repeatingCount, id: \.self) { index in
                         let actualIndex = index % data.count
@@ -60,7 +61,7 @@ public struct LoopingScrollView<Data: RandomAccessCollection, Content: View>: Vi
         }
         .scrollPosition($scrollPosition)
         .scrollIndicators(.hidden)
-        // コンテナ幅から必要な繰り返し数を計算
+        // Work out how many repeats the container width needs
         .onScrollGeometryChange(for: CGFloat.self) {
             $0.containerSize.width
         } action: { _, newValue in
@@ -82,7 +83,7 @@ public struct LoopingScrollView<Data: RandomAccessCollection, Content: View>: Vi
 
             let resetOffset = min(totalContentWidth - newValue, 0)
 
-            // 進行中のスクロールを乱さずに巻き戻す
+            // Wrap around without disturbing the scroll that is in progress
             if resetOffset < 0 || newValue < 0 {
                 var transaction = Transaction()
                 transaction.scrollPositionUpdatePreservesVelocity = true
@@ -96,11 +97,12 @@ public struct LoopingScrollView<Data: RandomAccessCollection, Content: View>: Vi
                 }
             }
         }
-        // 自動スクロール
+        // Automatic scrolling
         .onReceive(Timer.publish(every: 0.01, on: .main, in: .default).autoconnect()) { _ in
             let target = currentOffset + scrollingSpeed
-            // 逆方向はオフセット 0 でクランプされ `newValue < 0` の巻き戻しが
-            // 発火しないため（出典実装の穴）、端に達する前にこちらで折り返す。
+            // Scrolling in reverse is clamped at offset 0, so the `newValue < 0` wrap above
+            // never fires (a hole in the source implementation). Wrap around here instead,
+            // before the content reaches the edge.
             if scrollingSpeed < 0, target <= 0, repeatingCount > 0, !data.isEmpty {
                 let totalContentWidth = CGFloat(data.count) * (itemWidth + spacing)
                 var transaction = Transaction()

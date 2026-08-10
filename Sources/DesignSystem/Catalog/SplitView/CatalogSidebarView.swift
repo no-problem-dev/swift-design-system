@@ -1,7 +1,6 @@
 import SwiftUI
 
-/// カタログのサイドバービュー
-/// NavigationSplitViewの最初のカラムで、カテゴリ一覧を表示
+/// The first column of the navigation split view, listing the catalog categories.
 struct CatalogSidebarView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
@@ -12,7 +11,7 @@ struct CatalogSidebarView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: spacing.xl) {
-                // ヘッダー
+                // Header
                 VStack(spacing: spacing.sm) {
                     Image(systemName: "book.fill")
                         .font(.system(size: 32))
@@ -29,7 +28,7 @@ struct CatalogSidebarView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.top, spacing.lg)
 
-                // カテゴリリスト
+                // Category list
                 VStack(spacing: spacing.sm) {
                     ForEach(CatalogCategory.allCases) { category in
                         Button {

@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Elevationを適用するViewModifier
 struct ElevationModifier: ViewModifier {
     let level: Elevation
     @Environment(\.colorPalette) private var colorPalette
@@ -19,7 +18,7 @@ struct ElevationModifier: ViewModifier {
 }
 
 public extension View {
-    /// Elevationレベルを適用
+    /// Applies the shadow for an elevation level, taken from the theme and the current color scheme.
     ///
     /// ```swift
     /// RoundedRectangle(cornerRadius: 8)

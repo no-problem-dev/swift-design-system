@@ -1,29 +1,21 @@
-# はじめに
+# Getting started
 
-DesignSystem のセットアップと基本的な使い方。
+Set up a theme, then build screens out of tokens instead of literals.
 
 ## Overview
 
-DesignSystem の導入は 3 ステップで完了する:
-パッケージの追加、テーマのセットアップ、デザイントークンの利用開始。
+Adopting DesignSystem takes two steps: install a ``ThemeProvider`` at the root of the app,
+and read tokens from the environment in every view below it. Everything else in the package
+— components, modifiers, pickers — is built on those same tokens, so it inherits whatever
+theme is in effect without further wiring.
 
-## インストール
+The package is distributed with Swift Package Manager. The dependency line is in the
+README, which is kept in sync with the current release.
 
-### Swift Package Manager
+## Installing a theme
 
-`Package.swift` に依存を追加する:
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/no-problem-dev/swift-design-system.git", from: "1.7.0")
-]
-```
-
-または、Xcode の File > Add Package Dependencies から URL を入力する。
-
-## セットアップ
-
-アプリのルートに ``ThemeProvider`` を設定し、`.theme()` モディファイアで適用する:
+``ThemeProvider`` owns the active theme and the active ``ThemeMode``. Create one at the app
+level and apply it with `.theme(_:)`:
 
 ```swift
 @main
@@ -39,106 +31,106 @@ struct MyApp: App {
 }
 ```
 
-これにより、全ての子 View でデザイントークンが利用可能になる。
+`.theme(_:)` publishes every token of the resolved theme into the environment at once, and
+puts the provider itself there as well. A view that needs to change the theme can reach it
+with `@Environment(ThemeProvider.self)`.
 
-## デザイントークンの利用
+## Reading tokens
 
-### カラーパレット
+### Color
 
-``ColorPalette`` は Environment から取得する:
+``ColorPalette`` names colors by role rather than by hue, and each role has a matching
+`on-` role for content drawn on top of it. Pairing `surface` with `onSurface`, rather than
+picking a text color by eye, is what keeps contrast correct after a theme or mode switch:
 
 ```swift
-struct MyView: View {
+struct StatusBanner: View {
     @Environment(\.colorPalette) var colors
 
     var body: some View {
-        Text("Hello")
-            .foregroundStyle(colors.primary)
-            .background(colors.surface)
+        Text("Saved")
+            .foregroundStyle(colors.onSuccess)
+            .background(colors.success)
     }
 }
 ```
 
-### スペーシング
+### Spacing
 
-``SpacingScale`` で一貫したスペーシングを適用する:
+``SpacingScale`` replaces ad-hoc padding numbers with ten named steps, so unrelated screens
+end up on the same rhythm:
 
 ```swift
 @Environment(\.spacingScale) var spacing
 
-VStack(spacing: spacing.lg) {  // 16pt
-    Text("項目1")
-    Text("項目2")
+VStack(spacing: spacing.lg) {
+    Text("First item")
+    Text("Second item")
 }
-.padding(spacing.xl)  // 24pt
+.padding(spacing.xl)
 ```
 
-### タイポグラフィ
+### Typography
 
-``Typography`` モディファイアでテキストスタイルを適用する:
+The `typography(_:)` modifier applies a role from ``TypographyScale``. Roles scale with
+Dynamic Type, which a raw `.font(.system(size:))` does not:
 
 ```swift
-Text("大見出し").typography(.headlineLarge)
-Text("本文").typography(.bodyMedium)
-Text("ラベル").typography(.labelSmall)
+Text("Large heading").typography(.headlineLarge)
+Text("Body copy").typography(.bodyMedium)
+Text("Caption").typography(.labelSmall)
 ```
 
-## コンポーネントの利用
+## Using components
 
-### ボタン
+Components take their sizing and styling from tokens, so they need no per-call color work:
 
 ```swift
-Button("保存") { save() }
+Button("Save") { save() }
     .buttonStyle(.primary)
     .buttonSize(.large)
 
-Button("キャンセル") { cancel() }
+Button("Cancel") { cancel() }
     .buttonStyle(.secondary)
-```
 
-### カード
-
-```swift
 Card(elevation: .level2) {
     VStack(alignment: .leading, spacing: spacing.md) {
-        Text("タイトル").typography(.titleMedium)
-        Text("内容").typography(.bodyMedium)
+        Text("Title").typography(.titleMedium)
+        Text("Supporting copy").typography(.bodyMedium)
     }
 }
-```
 
-### テキストフィールド
-
-```swift
 DSTextField(
-    "メールアドレス",
+    "Email",
     text: $email,
     placeholder: "example@email.com",
     leadingIcon: "envelope"
 )
 ```
 
-## テーマの切り替え
+## Switching themes at runtime
 
-``ThemeProvider`` を使ってテーマやモードを動的に切り替えられる:
+``ThemeProvider`` can change theme and mode while the app is running; the change propagates
+to every view that reads tokens from the environment:
 
 ```swift
 @Environment(ThemeProvider.self) private var themeProvider
 
-// テーマ切り替え
 themeProvider.switchToTheme(id: "ocean")
 
-// モード切り替え（system → light → dark → system の順で循環）
+// Cycles system → light → dark → system.
 themeProvider.toggleMode()
 ```
 
-7 種類のビルトインテーマが用意されている:
-Default, Ocean, Forest, Sunset, PurpleHaze, Monochrome, HighContrast
+Seven themes are registered out of the box: Default, Ocean, Forest, Sunset, PurpleHaze,
+Monochrome, and HighContrast. To add your own, see <doc:CustomTheme>.
 
 ## Topics
 
-### 関連
+### Related
 
+- <doc:TokenArchitecture>
+- <doc:CustomTheme>
 - ``ThemeProvider``
 - ``Theme``
 - ``ColorPalette``

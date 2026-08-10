@@ -32,14 +32,14 @@ let package = Package(
             name: "DesignSystem",
             dependencies: []
         ),
-        // ブランドのデザイン仕様（DESIGN.md 9 セクション）の Codable モデル。
-        // SwiftUI 非依存・純データ。CLI で生成/検証/差分/取り込みが可能。
+        // A Codable model of a brand's design specification (the nine DESIGN.md sections).
+        // Pure data with no SwiftUI dependency, so a CLI can generate, validate, diff, and import it.
         .target(
             name: "DesignSpec",
             dependencies: []
         ),
-        // 「可視化して示唆を得る」計器の枠組み。ブランド横断のギャラリー・比較・
-        // トークン差分・示唆注釈を提供する。各ブランドは CatalogEntry を登録する。
+        // Instrumentation for seeing what differs between brands: cross-brand galleries,
+        // side-by-side comparison, token diffing, and annotations. Each brand registers a CatalogEntry.
         .target(
             name: "DesignCatalogKit",
             dependencies: ["DesignSystem", "DesignSpec"]

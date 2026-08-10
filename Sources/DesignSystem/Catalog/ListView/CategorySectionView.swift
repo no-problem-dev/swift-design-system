@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// カタログのカテゴリセクションビュー
 struct CategorySectionView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

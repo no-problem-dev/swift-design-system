@@ -1,35 +1,29 @@
 import SwiftUI
 
-/// 非同期の作業状態を表す意味的なステータス。
+/// A semantic status for asynchronous work.
 ///
-/// エージェント実行、アップロード、同期など「待機 → 実行 → 終端」の
-/// ライフサイクルを持つあらゆる処理の状態表現に使える。
+/// Use it for anything with a waiting, then running, then finished lifecycle: an agent run,
+/// an upload, a sync.
 public enum StatusKind: Sendable, Equatable, CaseIterable {
-    /// 開始待ち
     case pending
-    /// 実行中
     case running
-    /// 正常終了
     case success
-    /// 失敗
     case failure
-    /// 中断
     case canceled
 }
 
-/// StatusIndicatorコンポーネント
+/// Shows the state of a piece of work as a single glyph: an icon in a semantic color.
 ///
-/// `StatusKind` をアイコン + セマンティックカラーの 1 グリフで表すインジケーター。
-/// 実行中はシステムの `ProgressView` を表示する。
+/// While the work is running it shows the system `ProgressView`.
 ///
-/// ## 基本的な使用例
+/// ## Example
 /// ```swift
 /// StatusIndicator(.running)
 /// StatusIndicator(.success)
 ///
-/// // リスト行のトレーリングに
+/// // At the trailing edge of a list row
 /// HStack {
-///     Text("調査エージェント")
+///     Text("Research agent")
 ///     Spacer()
 ///     StatusIndicator(.running)
 /// }
@@ -39,8 +33,6 @@ public struct StatusIndicator: View {
 
     private let kind: StatusKind
 
-    /// ステータスインジケーターを作成
-    /// - Parameter kind: 表示するステータス
     public init(_ kind: StatusKind) {
         self.kind = kind
     }
@@ -79,11 +71,13 @@ public struct StatusIndicator: View {
     }
 }
 
-// MARK: - StatusKind のセマンティックカラー
+// MARK: - Semantic colors for StatusKind
 
 public extension StatusKind {
-    /// ステータスに対応するセマンティックカラー。
-    /// 周辺要素（アイコンバッジの色等）をインジケーターと揃えるために公開する。
+    /// The semantic color that goes with the status.
+    ///
+    /// It is public so that surrounding elements, such as the color of an icon badge, can be
+    /// kept in step with the indicator.
     func color(in palette: any ColorPalette) -> Color {
         switch self {
         case .pending, .canceled: palette.onSurfaceVariant

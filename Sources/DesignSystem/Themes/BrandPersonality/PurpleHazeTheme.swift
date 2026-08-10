@@ -1,9 +1,8 @@
 import SwiftUI
 
-/// PurpleHazeテーマ - クリエイティブ・革新的
+/// An inventive theme built on vivid purple and magenta.
 ///
-/// 鮮やかな紫とマゼンタをベースとした、創造性と革新性を感じるテーマ。
-/// テクノロジー、デザイン、クリエイティブツールに最適。
+/// Suited to technology, design, and creative tools.
 public struct PurpleHazeTheme: Theme {
     public init() {}
 

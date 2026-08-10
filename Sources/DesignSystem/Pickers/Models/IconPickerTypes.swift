@@ -1,12 +1,12 @@
 import Foundation
 
-/// アイコンアイテム（SF Symbols 専用）。
+/// One selectable symbol in an icon picker.
 ///
-/// アイコンピッカーで表示される個々の SF Symbols アイコン。
-/// `systemName` には SF Symbols の名前を指定する（例: "star.fill", "heart.circle"）。
+/// `systemName` is an SF Symbols name such as "star.fill" or "heart.circle". The picker's search
+/// field matches against both that name and `displayName`.
 ///
-/// ## 注意
-/// このピッカーは SF Symbols 専用。絵文字を使う場合は `EmojiPicker` を使用すること。
+/// ## Note
+/// This picker only handles SF Symbols. Use the emoji picker for emoji.
 public struct IconItem: Identifiable, Sendable, Hashable {
     public let id: String
     public let systemName: String
@@ -19,23 +19,26 @@ public struct IconItem: Identifiable, Sendable, Hashable {
     }
 }
 
-/// アイコンのカテゴリを表すプロトコル。アイコンをグループ化するために使う。
+/// A named group of icons, drawn as one section of the picker with `displayName` as its heading.
+///
+/// Conform an existing model to this to feed the picker without converting it first. Otherwise use
+/// `IconCategory`.
 public protocol IconCategoryProtocol: Identifiable, Sendable {
     var id: String { get }
     var displayName: String { get }
     var icons: [IconItem] { get }
 }
 
-/// 汎用的なアイコンカテゴリ実装（SF Symbols専用）
+/// A ready-made icon category, for when there is no existing model to conform.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// let generalCategory = IconCategory(
 ///     id: "general",
-///     displayName: "一般",
+///     displayName: "General",
 ///     icons: [
-///         IconItem(id: "book", systemName: "book.fill", displayName: "本"),
-///         IconItem(id: "briefcase", systemName: "briefcase.fill", displayName: "ビジネス"),
+///         IconItem(id: "book", systemName: "book.fill", displayName: "Book"),
+///         IconItem(id: "briefcase", systemName: "briefcase.fill", displayName: "Business"),
 ///     ]
 /// )
 ///
@@ -45,7 +48,7 @@ public protocol IconCategoryProtocol: Identifiable, Sendable {
 ///     let categories = [generalCategory, /* ... */]
 ///
 ///     var body: some View {
-///         Button("SF Symbolsを選択") {
+///         Button("Select a symbol") {
 ///             showIconPicker = true
 ///         }
 ///         .iconPicker(

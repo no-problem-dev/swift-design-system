@@ -1,22 +1,22 @@
 import SwiftUI
 
-/// StepIndicatorコンポーネント
+/// A row of dots showing where you are in a sequence of steps that only moves forward.
 ///
-/// 一方向に進む N ステップの現在位置をドット列で表すミニインジケーター。
-/// 現在のステップは `primary`、通過したステップは薄い `primary`、
-/// 未来のステップは `outlineVariant` で塗られる。
+/// The current step is filled with `primary`, the steps already passed with a faded
+/// `primary`, and the steps still ahead with `outlineVariant`.
 ///
-/// ## 基本的な使用例
+/// ## Example
 /// ```swift
-/// // 3 ステップ中 2 番目（index 1）が進行中
+/// // The second of three steps (index 1) is in progress
 /// StepIndicator(stepCount: 3, currentIndex: 1)
 ///
-/// // 全ステップ終了（nil = 進行中の位置なし）
+/// // Every step is finished (nil = no step in progress)
 /// StepIndicator(stepCount: 3, currentIndex: nil)
 /// ```
 ///
-/// アクセシビリティラベルは「ステップ 2 / 3」の形式で自動生成される。
-/// ステップに固有の名前がある場合は `accessibilityText` で上書きする。
+/// The accessibility label is generated automatically as a Japanese phrase meaning
+/// "step N of M". Pass `accessibilityText` to override it, both when the steps have names
+/// of their own and whenever the app is not Japanese.
 public struct StepIndicator: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
@@ -27,12 +27,13 @@ public struct StepIndicator: View {
     private let accessibilityText: String?
     private let dotDiameter: CGFloat
 
-    /// ステップインジケーターを作成
+    /// Creates a step indicator.
     /// - Parameters:
-    ///   - stepCount: ステップ総数
-    ///   - currentIndex: 現在のステップ（0 始まり）。nil = 全ステップ終了
-    ///   - accessibilityText: アクセシビリティラベルの上書き（nil なら「ステップ N / M」）
-    ///   - dotDiameter: ドット径（デフォルト 6pt）
+    ///   - stepCount: The total number of steps.
+    ///   - currentIndex: The current step, counting from 0. Pass nil once every step is finished.
+    ///   - accessibilityText: Overrides the accessibility label. When nil, a Japanese
+    ///     "step N of M" phrase is generated.
+    ///   - dotDiameter: The diameter of a dot. Defaults to 6pt.
     public init(
         stepCount: Int,
         currentIndex: Int?,

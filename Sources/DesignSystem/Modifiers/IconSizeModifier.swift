@@ -1,25 +1,25 @@
 import SwiftUI
 
 public extension View {
-    /// アイコン (Image / Text emoji) のサイズをトークンで指定する。
+    /// Sets the size of an icon, either an image or an emoji in a text view, from a token.
     ///
-    /// `Typography` と分離された責務: icon は視覚要素のサイズであり、
-    /// テキストの line-height / letter-spacing とは独立した scale を持つ。
-    /// `SF Symbol` / `Emoji` のいずれにも適用可能。
+    /// This responsibility is kept separate from `Typography`: an icon is a visual element whose
+    /// size follows its own scale, independent of the line height and letter spacing of text.
+    /// It applies to both SF Symbols and emoji.
     ///
-    /// Swift 6 strict concurrency 下で Sendable closure (PhotosPicker 等) 内の
-    /// Image にも適用できるよう、`ViewModifier` 経由ではなく SwiftUI 標準 modifier を
-    /// 直接チェーンする実装にしている (typography() と同じ理由)。
+    /// Under Swift 6 strict concurrency, the size is applied by chaining the standard SwiftUI
+    /// modifiers rather than going through a `ViewModifier`, so it can also be applied to an image
+    /// inside a Sendable closure such as `PhotosPicker`. This is the same reason as `typography()`.
     ///
     /// ```swift
     /// Image(systemName: "checkmark")
-    ///     .iconSize(.sm)      // 16pt、body テキスト並び
+    ///     .iconSize(.sm)      // 16pt, matches body text
     ///
-    /// Text(emoji).iconSize(.lg)   // 32pt、カテゴリ表示
+    /// Text(emoji).iconSize(.lg)   // 32pt, for category display
     /// ```
     func iconSize(_ size: IconSizeToken) -> some View {
-        // resolveSize を inline 化して pure computation のみに保つ
-        // (typography() と同じ shape を意図的に揃える、@MainActor 継承を回避)。
+        // Size resolution is inlined here to keep this a pure computation
+        // (deliberately the same shape as typography(), which avoids inheriting @MainActor).
         let scale = DefaultIconSizeScale()
         let pt: CGFloat
         switch size {
@@ -35,7 +35,7 @@ public extension View {
     }
 }
 
-/// `.iconSize(.xs/.sm/.md/.lg/.xl/.xxl)` で指定するトークン値。
+/// The token values accepted by the icon size modifier.
 public enum IconSizeToken: Sendable {
     case xxs, xs, sm, md, lg, xl, xxl
 }

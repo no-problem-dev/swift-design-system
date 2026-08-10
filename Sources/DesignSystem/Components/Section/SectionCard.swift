@@ -1,39 +1,39 @@
 import SwiftUI
 
-/// 設定画面・ハブ画面の Section 相当の角丸 surface カード。
+/// A rounded surface card that plays the part of a `Section` on settings and hub screens.
 ///
-/// `List { Section { ... } }` と同等の視覚階層を、DS トークン
-/// （surface / spacing / typography / radius）だけで構成する。
+/// Builds the same visual hierarchy as `List { Section { ... } }` out of design system tokens
+/// alone (surface / spacing / typography / radius).
 ///
-/// ## 2 種類の使い方
+/// ## Two ways to use it
 ///
-/// ### 1. Surface Section（推奨、新 API）
-/// 小さな uppercase ヘッダー + 角丸 surface カード + footer 説明文。
-/// 内部は `SectionRow` を縦に並べ、必要に応じて `SectionRowDivider` を挟む。
+/// ### 1. Surface section (recommended)
+/// A small uppercase header, a rounded surface card, and a footer description.
+/// Stack `SectionRow` vertically inside, with `SectionRowDivider` between rows where needed.
 ///
 /// ```swift
-/// SectionCard("通知", footer: "通知センターの設定はシステム設定から") {
+/// SectionCard("Notifications", footer: "Notification Center is configured in system settings") {
 ///     SectionRow {
-///         Text("朝のリマインド")
+///         Text("Morning reminder")
 ///         Spacer(minLength: 0)
 ///         Toggle("", isOn: $isOn).labelsHidden()
 ///     }
 ///     SectionRowDivider()
 ///     NavigationLink(destination: DetailView()) {
-///         SectionNavigationLabel("詳細", systemImage: "gear")
+///         SectionNavigationLabel("Details", systemImage: "gear")
 ///     }
 /// }
 /// ```
 ///
-/// ### 2. Titled Card（従来 API、互換維持）
-/// タイトル + `Card` でラップされた汎用コンテナ。フォーム・ダッシュボードなど
-/// 自由配置のレイアウトに。
+/// ### 2. Titled card
+/// A title plus a general purpose container wrapped in `Card`. Use it for freely arranged
+/// layouts such as forms and dashboards.
 ///
 /// ```swift
-/// SectionCard(title: "プロフィール", elevation: .level2) {
+/// SectionCard(title: "Profile", elevation: .level2) {
 ///     VStack(alignment: .leading) {
-///         Text("名前: 山田太郎")
-///         Text("メール: yamada@example.com")
+///         Text("Name: Taro Yamada")
+///         Text("Email: yamada@example.com")
 ///     }
 /// }
 /// ```
@@ -50,12 +50,12 @@ public struct SectionCard<Content: View>: View {
         case titled(title: String, elevation: Elevation)
     }
 
-    /// Surface Section スタイル（新 API）。
+    /// Creates a card in the surface section style.
     ///
     /// - Parameters:
-    ///   - header: カード外側のヘッダーラベル（大文字化、`nil` 指定で非表示）
-    ///   - footer: カード外側の説明文
-    ///   - content: カード内部のコンテンツ。通常は `SectionRow` を縦に並べる
+    ///   - header: The label shown above the card, uppercased. Pass `nil` to hide it.
+    ///   - footer: The explanatory text shown below the card.
+    ///   - content: The content inside the card, usually a vertical stack of `SectionRow`.
     public init(
         _ header: String? = nil,
         footer: String? = nil,
@@ -65,12 +65,12 @@ public struct SectionCard<Content: View>: View {
         self.content = content
     }
 
-    /// Titled Card スタイル（従来 API、互換維持用）。
+    /// Creates a card in the titled card style.
     ///
     /// - Parameters:
-    ///   - title: セクションタイトル
-    ///   - elevation: カードの elevation レベル（デフォルト `.level1`）
-    ///   - content: カード内に表示するコンテンツ
+    ///   - title: The section title.
+    ///   - elevation: The elevation level of the card.
+    ///   - content: The content shown inside the card.
     public init(
         title: String,
         elevation: Elevation = .level1,

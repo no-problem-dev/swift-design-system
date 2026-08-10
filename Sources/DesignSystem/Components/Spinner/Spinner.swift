@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// 2 重回転のサークルスピナー。実行中のインライン表示に使う。
+/// A circular spinner built from two overlaid rotations, for showing inline that work is running.
 ///
-/// 出典: Kavsoft "Animated Async Button With Custom Spinner" (2025-03)
+/// Source: Kavsoft "Animated Async Button With Custom Spinner" (2025-03)
 public struct Spinner: View {
     public var tint: Color
     public var lineWidth: CGFloat

@@ -1,16 +1,17 @@
 import SwiftUI
 
 public extension View {
-    /// スケルトンローディング。redacted + softLight の光帯が横切る。
+    /// Shows skeleton loading: the content is redacted and a soft-light band of light sweeps across it.
     ///
-    /// 実コンテンツに `.skeleton(isRedacted: isLoading)` を付けるか、
-    /// プレースホルダ用の Shape 群に付けて使う。
-    /// 親ビューのアニメーショントランザクションに上書きされないよう内部でガードしている。
+    /// Apply it to the real content as `.skeleton(isRedacted: isLoading)`, or to a group of
+    /// placeholder shapes.
+    /// The sweep is guarded internally so that an animation transaction from a parent view
+    /// cannot override it.
     ///
-    /// 出典: Kavsoft "SwiftUI Skeleton View - Skeleton Loading Animations" (2025-04)
+    /// Source: Kavsoft "SwiftUI Skeleton View - Skeleton Loading Animations" (2025-04)
     /// - Parameters:
-    ///   - isRedacted: スケルトン表示中かどうか。
-    ///   - tint: 光帯の色。nil ならカラースキームに応じて白/黒。
+    ///   - isRedacted: Whether the skeleton is showing.
+    ///   - tint: The color of the band of light. When nil, it is white or black depending on the color scheme.
     func skeleton(isRedacted: Bool, tint: Color? = nil) -> some View {
         modifier(SkeletonModifier(isRedacted: isRedacted, tint: tint))
     }
@@ -26,17 +27,18 @@ struct SkeletonModifier: ViewModifier {
             .redacted(reason: isRedacted ? .placeholder : [])
             .overlay {
                 if isRedacted {
-                    // 時刻駆動（TimelineView）: @State + withAnimation(.repeatForever) は
-                    // 祖先の再描画・挿入トランジションにアニメーションを殺される脆さがある。
-                    // 時刻から毎フレーム位置を導出すれば、何に再描画されても止まらない。
+                    // Driven by the clock (TimelineView): @State plus withAnimation(.repeatForever)
+                    // is fragile, because a redraw of an ancestor or an insertion transition kills
+                    // the animation. Deriving the position from the clock on every frame keeps it
+                    // running no matter what causes a redraw.
                     TimelineView(.animation) { timeline in
                         GeometryReader {
                             let size = $0.size
                             let skeletonWidth = size.width / 2
-                            // ブラー半径は 30 以上を保証
+                            // Keep the blur radius at 30 or above
                             let blurRadius = max(skeletonWidth / 2, 30)
                             let blurDiameter = blurRadius * 2
-                            // 移動の端点
+                            // The endpoints of the travel
                             let minX = -(skeletonWidth + blurDiameter)
                             let maxX = size.width + skeletonWidth + blurDiameter
                             let progress = Self.easeInOut(
@@ -50,7 +52,7 @@ struct SkeletonModifier: ViewModifier {
                                 .frame(height: size.height)
                                 .blur(radius: blurRadius)
                                 .rotationEffect(.degrees(rotation))
-                                // 左 → 右へ無限に流す
+                                // Sweep from left to right, forever
                                 .offset(x: minX + (maxX - minX) * progress)
                         }
                     }
@@ -66,7 +68,7 @@ struct SkeletonModifier: ViewModifier {
     var rotation: Double { 5 }
     var period: Double { 1.5 }
 
-    /// 旧実装の .easeInOut(duration: 1.5) と同じ緩急。
+    /// The same easing curve as .easeInOut(duration: 1.5).
     private static func easeInOut(_ t: Double) -> Double {
         t < 0.5 ? 2 * t * t : 1 - pow(-2 * t + 2, 2) / 2
     }

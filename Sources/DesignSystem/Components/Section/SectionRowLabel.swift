@@ -1,22 +1,23 @@
 import SwiftUI
 
-/// ``SectionRow`` の先頭に置く、アイコン列付きのラベル。
+/// A label with a leading icon column, for the start of a section row.
 ///
-/// アイコンの無い行でも列のぶんを空けるため、アイコンのある行と無い行でラベルの
-/// 左端が縦に揃う。列の幅・字面サイズ・行の最小高は ``SectionRowMetrics`` が
-/// トークンから導出し、Dynamic Type に追随する。
+/// Rows without an icon still reserve the column, so labels keep their leading edge on the same
+/// vertical line whether or not the row has an icon. The width of the column, the glyph size, and
+/// the minimum height of the row are derived from tokens by `SectionRowMetrics` and follow
+/// Dynamic Type.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// SectionCard("通知") {
+/// SectionCard("Notifications") {
 ///     SectionRow {
-///         SectionRowLabel("朝のリマインド", systemImage: "bell")
+///         SectionRowLabel("Morning reminder", systemImage: "bell")
 ///         Spacer(minLength: 0)
 ///         Toggle("", isOn: $isOn).labelsHidden()
 ///     }
 ///     SectionRowDivider()
 ///     SectionRow {
-///         SectionRowLabel("メール", subtitle: "user@example.com")
+///         SectionRowLabel("Email", subtitle: "user@example.com")
 ///     }
 /// }
 /// ```
@@ -30,11 +31,13 @@ public struct SectionRowLabel: View {
     private let systemImage: String?
     private let subtitle: String?
 
-    /// セクション行のラベルを生成する
+    /// Creates the label of a section row.
+    ///
     /// - Parameters:
-    ///   - title: 主ラベル
-    ///   - systemImage: 先頭に置く SF Symbols 名。省略しても列の幅は確保される
-    ///   - subtitle: タイトルの下に置く補足
+    ///   - title: The primary label text.
+    ///   - systemImage: The name of an SF Symbol placed at the leading edge. The column keeps its
+    ///     width even when this is omitted.
+    ///   - subtitle: Supplementary text placed below the title.
     public init(_ title: String, systemImage: String? = nil, subtitle: String? = nil) {
         self.title = title
         self.systemImage = systemImage
@@ -67,8 +70,9 @@ public struct SectionRowLabel: View {
                     .font(.system(size: metrics.iconGlyphSize))
                     .foregroundStyle(colors.onSurface)
             } else {
-                // アイコンが無い行も列を空ける。空けないと行ごとにラベルの左端が動く。
-                // 高さを字面ぶんに閉じるのは、Color が縦に伸びきって行だけ高くなるため
+                // Rows without an icon reserve the column too. Without it, the leading edge of the
+                // label moves from row to row. The height is closed to the glyph size because Color
+                // otherwise stretches vertically and makes this row alone taller
                 Color.clear.frame(height: metrics.iconGlyphSize)
             }
         }

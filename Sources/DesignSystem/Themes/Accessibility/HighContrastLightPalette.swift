@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// HighContrastテーマ - ライトモードパレット（WCAG AAA準拠）
+/// Light-mode palette for the high contrast theme, where each pair of colors meets WCAG AAA.
 struct HighContrastLightPalette: ColorPalette {
     // MARK: - Primary
     var primary: Color { Color(hex: "#0050B3") } // Deep blue for high contrast
@@ -27,9 +27,10 @@ struct HighContrastLightPalette: ColorPalette {
     var onSurfaceVariant: Color { Color(hex: "#212121") }
 
     // MARK: - Semantic State
-    // 白背景でも白文字を載せた時でも AAA (7.0) を満たす暗さに揃えてある。
-    // warning だけは既定の on 色が .black で、その組み合わせでは AAA に届かないため
-    // 他のセマンティック色と同じ「暗い塗り + 白文字」へ寄せて onWarning を上書きする。
+    // Every fill is dark enough to reach AAA (7.0) both against a white background and beneath
+    // white text. warning is the exception: its default on-color is black, and that pairing
+    // falls short of AAA, so onWarning is overridden to give it the dark fill with white text
+    // the other semantic colors use.
     var error: Color { Color(hex: "#991B1B") } // Deep red for high contrast
     var warning: Color { Color(hex: "#8F2900") } // Deep orange for high contrast
     var onWarning: Color { .white }

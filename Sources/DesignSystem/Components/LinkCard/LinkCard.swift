@@ -1,26 +1,25 @@
 import SwiftUI
 
-/// LinkCardコンポーネント
+/// A card that stands for a reference to a URL, such as a source, a related link or a citation.
 ///
-/// URL への参照（出典、関連リンク、引用元など）を 1 枚のカードで表すコンポーネント。
-/// タイトル・ドメイン・任意のアクセサリ（ステータスチップ等）を表示し、
-/// タップで任意のアクション（アプリ内ブラウザ表示など）を実行する。
+/// It shows a title, the domain, and an accessory of your choice such as a status chip, and
+/// runs any action you give it on tap, for example opening an in-app browser.
 ///
-/// メタデータの取得（LinkPresentation 等）は呼び出し側の責務 —
-/// このコンポーネントは渡されたデータの表示だけを行う。
+/// Fetching metadata, with LinkPresentation or anything else, is the caller's job. This
+/// component only displays the data it is handed.
 ///
-/// ## 基本的な使用例
+/// ## Basic example
 /// ```swift
-/// // シンプルなリンクカード
+/// // A plain link card
 /// LinkCard(title: "Swift.org - Concurrency", url: url) {
 ///     openInBrowser(url)
 /// }
 ///
-/// // ステータス付き（出典の検証結果など）
-/// LinkCard(title: "WWDC25 セッションノート", url: url) {
+/// // With a status, for example the result of verifying a source
+/// LinkCard(title: "WWDC25 session notes", url: url) {
 ///     openInBrowser(url)
 /// } accessory: {
-///     Chip("取得済み", systemImage: "checkmark")
+///     Chip("Fetched", systemImage: "checkmark")
 ///         .chipStyle(.filled)
 ///         .chipSize(.small)
 /// }
@@ -36,13 +35,13 @@ public struct LinkCard<Accessory: View>: View {
     private let action: (() -> Void)?
     private let accessory: Accessory
 
-    /// リンクカードを作成
+    /// Creates a link card.
     /// - Parameters:
-    ///   - title: 表示タイトル。nil ならホスト名を使う
-    ///   - url: 参照先 URL（ホスト名をサブタイトルとして表示）
-    ///   - systemImage: 先頭アイコン（デフォルト "globe"）
-    ///   - action: タップ時のアクション。nil なら静的表示
-    ///   - accessory: 末尾のアクセサリビュー（ステータスチップ等）
+    ///   - title: The title to show. When `nil`, the host name is used instead.
+    ///   - url: The URL being referenced. Its host name is shown as the subtitle.
+    ///   - systemImage: The name of the symbol shown in the leading badge.
+    ///   - action: What to run when the card is tapped. When `nil`, the card is not tappable.
+    ///   - accessory: The view placed at the trailing edge, such as a status chip.
     public init(
         title: String?,
         url: URL,
@@ -110,12 +109,12 @@ public struct LinkCard<Accessory: View>: View {
 }
 
 public extension LinkCard where Accessory == EmptyView {
-    /// アクセサリなしのリンクカードを作成
+    /// Creates a link card with no accessory.
     /// - Parameters:
-    ///   - title: 表示タイトル。nil ならホスト名を使う
-    ///   - url: 参照先 URL
-    ///   - systemImage: 先頭アイコン（デフォルト "globe"）
-    ///   - action: タップ時のアクション。nil なら静的表示
+    ///   - title: The title to show. When `nil`, the host name is used instead.
+    ///   - url: The URL being referenced.
+    ///   - systemImage: The name of the symbol shown in the leading badge.
+    ///   - action: What to run when the card is tapped. When `nil`, the card is not tappable.
     init(
         title: String?,
         url: URL,

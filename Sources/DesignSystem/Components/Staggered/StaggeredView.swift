@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// サブビューを index に応じた遅延付きで順次出現させるコンテナ。
+/// A container that brings its subviews in one after another, delayed by their index.
 ///
-/// 中身の表示/非表示をアニメーション付きトランザクションの中で切り替えると、
-/// 各サブビューが opacity / blur / scale / offset を伴ってカスケード出現する。
+/// Toggling the content in and out inside an animated transaction makes each subview cascade
+/// in with its own opacity, blur, scale and offset.
 ///
 /// ```swift
 /// StaggeredView {
@@ -14,7 +14,7 @@ import SwiftUI
 /// .animation(.snappy, value: show)
 /// ```
 ///
-/// 出典: Kavsoft "Staggered Animated View Using SwiftUI" (2025-03)
+/// Source: Kavsoft "Staggered Animated View Using SwiftUI" (2025-03)
 @available(iOS 18.0, macOS 15.0, *)
 public struct StaggeredView<Content: View>: View {
     public var config: StaggeredConfig
@@ -67,20 +67,20 @@ private struct CustomStaggeredTransition: Transition {
     }
 }
 
-/// StaggeredView の出現アニメーション設定。
+/// The settings for the cascade that `StaggeredView` applies to its subviews.
 public struct StaggeredConfig {
     public var delay: Double
     public var maxDelay: Double
     public var blurRadius: CGFloat
     public var offset: CGSize
     public var scale: CGFloat
-    /// スケールエフェクトのアンカーポイント。
     public var scaleAnchor: UnitPoint
-    /// 各サブビューに適用するアニメーション。
+    /// The animation applied to each subview, with the stagger added on top as a delay.
     public var animation: Animation
-    /// `true` のとき、消える方向を出現と同じ向きにする。`false`（デフォルト）は逆方向。
+    /// When `true`, subviews leave in the same direction they arrived from. The default is
+    /// `false`, which sends them back the other way.
     public var disappearInSameDirection: Bool
-    /// `true` のとき、消えるトランジションでオフセットアニメーションを省略する。
+    /// When `true`, the leaving transition skips the offset animation.
     public var noOffsetDisappearAnimation: Bool
 
     public init(

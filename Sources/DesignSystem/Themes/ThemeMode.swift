@@ -1,32 +1,30 @@
 import Foundation
 
-/// テーマのライト/ダークモード
+/// Which of a theme's color palettes is in use.
 ///
-/// テーマごとに異なるカラーパレットを切り替えるためのモード。
+/// ## Modes
+/// - **system**: Follows the system appearance. This is the default.
+/// - **light**: Always light.
+/// - **dark**: Always dark.
 ///
-/// ## モードの種類
-/// - **system**: システム設定に従う（デフォルト）
-/// - **light**: 常にライトモード
-/// - **dark**: 常にダークモード
-///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// // システム設定に従う（デフォルト）
+/// // Follow the system appearance (the default)
 /// themeProvider.themeMode = .system
 ///
-/// // ライトモード固定
+/// // Stay light
 /// themeProvider.themeMode = .light
 ///
-/// // ダークモード固定
+/// // Stay dark
 /// themeProvider.themeMode = .dark
 /// ```
 public enum ThemeMode: String, Sendable, CaseIterable {
-    /// システム設定に従う
+    /// Follows the system appearance.
     case system = "System"
 
-    /// ライトモード固定
+    /// Stays light whatever the system appearance is.
     case light = "Light"
 
-    /// ダークモード固定
+    /// Stays dark whatever the system appearance is.
     case dark = "Dark"
 }

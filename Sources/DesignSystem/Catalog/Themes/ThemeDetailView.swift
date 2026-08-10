@@ -1,8 +1,6 @@
 import SwiftUI
 
-/// テーマ詳細ビュー
-///
-/// 選択したテーマの詳細情報を表示し、プレビューと適用が可能。
+/// Shows the details of a theme, with a preview and a button that applies it.
 public struct ThemeDetailView: View {
     @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colors
@@ -19,7 +17,7 @@ public struct ThemeDetailView: View {
     public var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: spacing.xl) {
-                // ヘッダー
+                // Header
                 VStack(alignment: .leading, spacing: spacing.sm) {
                     HStack {
                         Text(theme.name)
@@ -28,7 +26,7 @@ public struct ThemeDetailView: View {
 
                         Spacer()
 
-                        // カテゴリバッジ
+                        // Category badge
                         Text(theme.category.rawValue)
                             .typography(.labelSmall)
                             .foregroundStyle(colors.onPrimaryContainer)
@@ -44,7 +42,7 @@ public struct ThemeDetailView: View {
                 }
                 .padding(.horizontal, spacing.lg)
 
-                // モード切り替え
+                // Appearance mode switch
                 VStack(alignment: .leading, spacing: spacing.md) {
                     Text("モード")
                         .typography(.titleMedium)
@@ -75,13 +73,13 @@ public struct ThemeDetailView: View {
                     .padding(.horizontal, spacing.lg)
                 }
 
-                // カラーパレット
+                // Color palette
                 ThemeColorPreview(theme: theme)
 
-                // コンポーネントプレビュー
+                // Component preview
                 ComponentPreview()
 
-                // 適用ボタン
+                // Apply button
                 Button {
                     withAnimation(motion.slow) {
                         themeProvider.applyTheme(theme)
@@ -123,7 +121,7 @@ private struct ComponentPreview: View {
                 .padding(.horizontal, spacing.lg)
 
             VStack(spacing: spacing.md) {
-                // ボタン
+                // Buttons
                 HStack(spacing: spacing.sm) {
                     Button("Primary") {}
                         .buttonStyle(.primary)
@@ -138,7 +136,7 @@ private struct ComponentPreview: View {
                         .buttonSize(.medium)
                 }
 
-                // カード
+                // Card
                 Card(elevation: .level2) {
                     VStack(alignment: .leading, spacing: spacing.sm) {
                         Text("カードコンポーネント")

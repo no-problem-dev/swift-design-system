@@ -1,11 +1,11 @@
 import SwiftUI
 
-/// Chip コンポーネントのスタイルプロトコル
+/// A type that defines the appearance of a chip.
 ///
-/// Chip の視覚的バリエーションを定義する。
-/// SwiftUI の ButtonStyle と同様のパターンで再利用可能なスタイルを作成できる。
+/// Adopt it to build a reusable style, the same way `ButtonStyle` works in SwiftUI, then apply
+/// it with the `chipStyle(_:)` modifier.
 ///
-/// ## カスタムスタイルの作成
+/// ## Creating a custom style
 /// ```swift
 /// struct CustomChipStyle: ChipStyle {
 ///     func makeBody(configuration: ChipStyleConfiguration) -> some View {
@@ -28,66 +28,64 @@ import SwiftUI
 /// }
 /// ```
 public protocol ChipStyle: Sendable {
-    /// スタイルが生成するViewの型
     associatedtype Body: View
 
-    /// Chip の外観を構築する
-    /// - Parameter configuration: Chip の設定情報
-    /// - Returns: スタイル適用後の View
+    /// Creates the view that represents the body of a chip.
+    /// - Parameter configuration: The content and the state of the chip being styled.
     @MainActor
     func makeBody(configuration: ChipStyleConfiguration) -> Body
 }
 
-/// ChipStyle に渡される設定情報。
+/// The content and the state a style uses to build the body of a chip.
 ///
-/// Chip のラベル・アイコン・削除ハンドラ・選択状態などの情報を含む。
+/// It carries the label, the icon, the delete handler, the interaction state, and the design
+/// tokens already resolved from the environment.
 public struct ChipStyleConfiguration {
-    /// Chipのラベルテキスト
     public let label: AnyView
 
-    /// 先頭に表示するアイコン（オプション）
+    /// The icon shown ahead of the label, if there is one.
     public let icon: AnyView?
 
-    /// 削除ボタンのハンドラ（オプション）
-    /// 設定されている場合、削除可能なInput Chipとして動作
+    /// The handler called when the delete button is tapped.
+    ///
+    /// When it is not `nil`, draw a delete button: the chip acts as a deletable input chip.
     public let onDelete: (() -> Void)?
 
-    /// 選択状態（フィルターチップなど）
+    /// Whether the chip is selected, as in a filter chip.
     public let isSelected: Bool
 
-    /// 押下状態（タップ時のフィードバック用）
+    /// Whether the chip is being pressed. Use it to show tap feedback.
     public let isPressed: Bool
 
-    /// 現在のChipサイズ
     public let size: ChipSize
 
-    /// カラーパレット
     public let colorPalette: any ColorPalette
 
-    /// スペーシングスケール
     public let spacingScale: any SpacingScale
 
-    /// 角丸スケール
     public let radiusScale: any RadiusScale
 
-    /// モーションタイミング
     public let motion: any Motion
 }
 
-/// ChipStyle用のEnvironmentKey
 private struct ChipStyleKey: EnvironmentKey {
     static let defaultValue: AnyChipStyle = AnyChipStyle(FilledChipStyle())
 }
 
 public extension EnvironmentValues {
-    /// 環境から取得するChipStyle
+    /// The style applied to the chips in this environment.
+    ///
+    /// Set it with the `chipStyle(_:)` modifier. The default is ``FilledChipStyle``.
     var chipStyle: AnyChipStyle {
         get { self[ChipStyleKey.self] }
         set { self[ChipStyleKey.self] = newValue }
     }
 }
 
-/// 型消去されたChipStyle
+/// A type-erased chip style.
+///
+/// Use it to hold a style whose concrete type is not known, such as the one carried in the
+/// environment.
 public struct AnyChipStyle: ChipStyle {
     private let _makeBody: @MainActor @Sendable (ChipStyleConfiguration) -> AnyView
 

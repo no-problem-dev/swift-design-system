@@ -1,6 +1,9 @@
 import SwiftUI
 
-/// カラーアイテム。カラーピッカーで表示される個々の色。
+/// One selectable color in a color picker.
+///
+/// The hex string doubles as the identity, so two items with the same hex are the same item as far
+/// as the picker is concerned, whatever their names say.
 public struct ColorItem: Identifiable, Sendable, Hashable {
     public let id: String
     public let hex: String
@@ -13,16 +16,18 @@ public struct ColorItem: Identifiable, Sendable, Hashable {
     }
 }
 
-/// カラープリセット。カラーピッカーで使用するプリセットカラーのコレクション。
+/// The set of colors a color picker offers.
 ///
-/// ## 使用例
+/// Two presets ship with the design system, and a custom one can be built from any list of colors.
+///
+/// ## Example
 /// ```swift
 /// struct MyView: View {
 ///     @State private var selectedColor: String?
 ///     @State private var showColorPicker = false
 ///
 ///     var body: some View {
-///         Button("色を選択") {
+///         Button("Select a color") {
 ///             showColorPicker = true
 ///         }
 ///         .colorPicker(
@@ -42,9 +47,7 @@ public struct ColorPreset: Identifiable, Sendable {
         self.colors = colors
     }
 
-    /// タグやカテゴリ選択に適した配色セット
-    ///
-    /// 視認性が高く、区別しやすい 10 色のセット。
+    /// Ten colors for tags and categories, chosen to stay legible and to tell apart at a glance.
     public static var tagFriendly: ColorPreset {
         ColorPreset(id: "tagFriendly", colors: [
             ColorItem(hex: "#EF4444", name: "Red"),
@@ -60,9 +63,7 @@ public struct ColorPreset: Identifiable, Sendable {
         ])
     }
 
-    /// すべてのプリミティブカラーの500番台
-    ///
-    /// より多くの選択肢が必要な場合に使用する。
+    /// The 500 step of every primitive color, for when the tag palette does not offer enough choice.
     public static var allPrimitives: ColorPreset {
         ColorPreset(id: "allPrimitives", colors: [
             ColorItem(hex: "#6B7280", name: "Gray"),

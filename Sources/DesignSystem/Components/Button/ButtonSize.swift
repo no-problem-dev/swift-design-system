@@ -1,43 +1,41 @@
 import SwiftUI
 
-/// ボタンのサイズバリアント
+/// The size of a button: its height, horizontal padding, and label typography.
 ///
-/// ボタンの高さ・パディング・フォントサイズを統一的に管理する。
-///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// Button("ログイン") {
+/// Button("Sign in") {
 ///     login()
 /// }
 /// .buttonStyle(.primary)
-/// .buttonSize(.large)  // 56pt高さ（デフォルト）
+/// .buttonSize(.large)  // 56pt tall (default)
 ///
-/// Button("キャンセル") {
+/// Button("Cancel") {
 ///     cancel()
 /// }
 /// .buttonStyle(.secondary)
-/// .buttonSize(.small)  // 40pt高さ
+/// .buttonSize(.small)  // 40pt tall
 /// ```
 ///
-/// ## サイズ一覧
-/// - **Large**: 56pt高さ - 主要なアクション（デフォルト）
-/// - **Medium**: 48pt高さ - 標準的なボタン
-/// - **Small**: 40pt高さ - コンパクトなレイアウト
+/// ## Sizes
+/// - **Large**: 56pt tall. For the main action (default).
+/// - **Medium**: 48pt tall. For a standard button.
+/// - **Small**: 40pt tall. For compact layouts.
 public enum ButtonSize: Sendable {
-    /// 大きいサイズ（56pt）- 主要なアクション
+    /// 56pt tall. For the main action on a screen.
     case large
 
-    /// 中程度のサイズ（48pt）- 標準的なボタン
+    /// 48pt tall. For a standard button.
     case medium
 
-    /// 小さいサイズ（40pt）- コンパクトなレイアウト
+    /// 40pt tall. For compact layouts.
     case small
 
-    /// ボタンの高さ
+    /// The height of the button, which differs by platform.
     ///
-    /// macOS はポインタ操作前提のため、タッチ用の大きな高さ（56/48/40）ではなく
-    /// 標準コントロールに近い寸法へ縮める（HIG: 44pt は hit region の最小値であって
-    /// ボタン本体サイズではない）。iOS の寸法は従来どおり維持する。
+    /// macOS assumes pointer input, so the touch-sized heights (56/48/40) shrink to
+    /// dimensions closer to those of standard controls. In the HIG, 44pt is the minimum
+    /// hit region rather than the size of the button itself. iOS keeps its own dimensions.
     var height: CGFloat {
         #if os(macOS)
         switch self {
@@ -54,7 +52,6 @@ public enum ButtonSize: Sendable {
         #endif
     }
 
-    /// 水平パディング
     var horizontalPadding: CGFloat {
         #if os(macOS)
         switch self {
@@ -71,7 +68,6 @@ public enum ButtonSize: Sendable {
         #endif
     }
 
-    /// タイポグラフィトークン
     var typography: Typography {
         switch self {
         case .large: return .labelLarge
@@ -95,19 +91,19 @@ public extension EnvironmentValues {
 }
 
 public extension View {
-    /// ボタンのサイズを設定
+    /// Sets the size of a button.
     ///
-    /// ボタンの高さ・パディング・テキストサイズを一括で変更する。
+    /// Changes the height, padding, and text size of the button together.
     ///
-    /// - Parameter size: ボタンサイズ（`.large`, `.medium`, `.small`）
+    /// - Parameter size: The button size (`.large`, `.medium`, or `.small`).
     ///
-    /// ## 使用例
+    /// ## Example
     /// ```swift
-    /// Button("ログイン") { }
+    /// Button("Sign in") { }
     ///     .buttonStyle(.primary)
     ///     .buttonSize(.medium)
     ///
-    /// Button("小さいボタン") { }
+    /// Button("Small button") { }
     ///     .buttonStyle(.secondary)
     ///     .buttonSize(.small)
     /// ```

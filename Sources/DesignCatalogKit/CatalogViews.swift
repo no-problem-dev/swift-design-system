@@ -1,8 +1,9 @@
 import SwiftUI
 import DesignSystem
 
-/// 1 エントリを**そのブランド自身のテーマ下で**描画する。
-/// SmartHR のエントリは SmartHR テーマ（warm 色・広い行間）で出る。
+/// Draws a single entry under that entry's own brand theme.
+///
+/// A SmartHR entry comes out in the SmartHR theme, with its warm colors and generous leading.
 public struct ThemedEntryView: View {
     private let entry: CatalogEntry
     @State private var provider: ThemeProvider
@@ -18,7 +19,7 @@ public struct ThemedEntryView: View {
     }
 }
 
-/// 注釈付きのエントリカード（コンポーネント描画 + 「なぜ」）。
+/// A card that shows an entry's component together with the reasoning behind it.
 public struct CatalogEntryCard: View {
     private let entry: CatalogEntry
     public init(_ entry: CatalogEntry) { self.entry = entry }
@@ -46,7 +47,7 @@ public struct CatalogEntryCard: View {
     }
 }
 
-/// ギャラリー: 全エントリを archetype ごとにグルーピングして縦に並べる。
+/// A gallery that stacks every entry vertically, grouped by archetype.
 public struct CatalogGalleryView: View {
     private let entries: [CatalogEntry]
     public init(_ entries: [CatalogEntry]) { self.entries = entries }
@@ -70,7 +71,9 @@ public struct CatalogGalleryView: View {
     }
 }
 
-/// compare-mode: 1 つの archetype を選び、全ブランド実装を横並びで比較する（示唆の核心）。
+/// Compare mode: shows how every brand implements one archetype, side by side.
+///
+/// This is where the comparison pays off, since the differences sit next to each other.
 public struct CatalogCompareView: View {
     private let archetype: String
     private let entries: [CatalogEntry]

@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// スペーシングカタログビュー
 struct SpacingCatalogView: View {
     @Environment(\.spacingScale) private var spacing
     @Environment(\.colorPalette) private var colors

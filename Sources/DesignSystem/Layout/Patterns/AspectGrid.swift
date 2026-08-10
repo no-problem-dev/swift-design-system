@@ -1,25 +1,20 @@
 import SwiftUI
 
-/// アスペクト比固定グリッド
+/// A grid whose items all share one aspect ratio, with the column count set by the available width.
 ///
-/// すべてのアイテムに統一されたアスペクト比を適用するグリッドレイアウトコンポーネント。
-/// 写真ギャラリー、商品一覧、メディアライブラリなど、一貫したアスペクト比が求められる
-/// コンテンツの表示に最適。
+/// Suits photo galleries, product lists, and media libraries, where items of different shapes would
+/// leave a ragged edge. The item width floats between the minimum and maximum given, so the number
+/// of columns changes with the screen while no single item grows past the maximum on an iPad.
+/// Items are laid out lazily, so long collections stay cheap.
 ///
-/// ## 特徴
-/// - **固定アスペクト比**: すべてのアイテムに統一された比率を適用
-/// - **レスポンシブ幅**: 画面サイズに応じてアイテム幅を自動調整
-/// - **最大幅制御**: iPad等の大画面でのオーバーサイズを防止
-/// - **遅延読み込み**: LazyVGridベースの効率的なレンダリング
+/// ## Examples
 ///
-/// ## 使用例
-///
-/// ### 商品一覧グリッド
+/// ### Product list
 /// ```swift
 /// AspectGrid(
 ///     minItemWidth: 140,
 ///     maxItemWidth: 180,
-///     itemAspectRatio: 1,  // 正方形
+///     itemAspectRatio: 1,  // square
 ///     spacing: .md
 /// ) {
 ///     ForEach(products) { product in
@@ -28,12 +23,12 @@ import SwiftUI
 /// }
 /// ```
 ///
-/// ### 写真ギャラリー
+/// ### Photo gallery
 /// ```swift
 /// AspectGrid(
 ///     minItemWidth: 160,
 ///     maxItemWidth: 200,
-///     itemAspectRatio: 3/4,  // 写真の一般的な比率
+///     itemAspectRatio: 3/4,  // the usual photo proportion
 ///     spacing: .sm
 /// ) {
 ///     ForEach(photos) { photo in
@@ -42,12 +37,12 @@ import SwiftUI
 /// }
 /// ```
 ///
-/// ### 動画サムネイルグリッド
+/// ### Video thumbnails
 /// ```swift
 /// AspectGrid(
 ///     minItemWidth: 200,
 ///     maxItemWidth: 280,
-///     itemAspectRatio: 16/9,  // 動画の標準比率
+///     itemAspectRatio: 16/9,  // the standard video proportion
 ///     spacing: .lg
 /// ) {
 ///     ForEach(videos) { video in
@@ -56,23 +51,23 @@ import SwiftUI
 /// }
 /// ```
 ///
-/// ## デザインガイドライン
+/// ## Design guidelines
 ///
-/// ### アスペクト比の選択
-/// - **1:1 (1.0)**: 商品サムネイル、プロフィール画像、アイコン
-/// - **3:4 (0.75)**: 写真、ポートレート
-/// - **16:9 (1.78)**: 動画サムネイル、ワイドコンテンツ
+/// ### Choosing the aspect ratio
+/// - **1:1 (1.0)**: product thumbnails, profile pictures, icons
+/// - **3:4 (0.75)**: photographs and portraits
+/// - **16:9 (1.78)**: video thumbnails and wide content
 ///
-/// ### アイテム幅の設定
-/// - **minItemWidth**: コンパクト表示時の最小幅（通常80-160pt）
-/// - **maxItemWidth**: 大画面での最大幅（通常200-300pt）
+/// ### Choosing the item widths
+/// - **minItemWidth**: the narrowest an item may get in a compact width, usually 80 to 160pt
+/// - **maxItemWidth**: the widest an item may get on a large screen, usually 200 to 300pt
 ///
-/// ### 間隔の選択
-/// - **.xs (8pt)**: 密集したアイコングリッド
-/// - **.sm (12pt)**: コンパクトなサムネイル
-/// - **.md (16pt)**: 標準的なグリッド（デフォルト）
-/// - **.lg (20pt)**: ゆとりのあるレイアウト
-/// - **.xl (24pt)**: プレミアムコンテンツ
+/// ### Choosing the spacing
+/// - **.xs (8pt)**: dense icon grids
+/// - **.sm (12pt)**: compact thumbnails
+/// - **.md (16pt)**: the standard grid, and the default
+/// - **.lg (20pt)**: a more open layout
+/// - **.xl (24pt)**: showcase content
 public struct AspectGrid<Content: View>: View {
     private let minItemWidth: CGFloat
     private let maxItemWidth: CGFloat
@@ -81,17 +76,20 @@ public struct AspectGrid<Content: View>: View {
     private let alignment: HorizontalAlignment
     private let content: () -> Content
 
-    /// アスペクト比固定グリッドを作成する。
+    /// Creates a grid whose items share one aspect ratio.
     ///
     /// - Parameters:
-    ///   - minItemWidth: アイテムの最小幅（pt）
-    ///   - maxItemWidth: アイテムの最大幅（pt）
-    ///   - itemAspectRatio: アイテムのアスペクト比（幅/高さ）
-    ///   - spacing: グリッドアイテム間の間隔（デフォルト: .md）
-    ///   - alignment: グリッド内でのアイテムの水平配置（デフォルト: .center）
-    ///   - content: グリッドに表示するコンテンツ
+    ///   - minItemWidth: The narrowest an item may be, in points. A wider minimum means fewer
+    ///     columns.
+    ///   - maxItemWidth: The widest an item may be, in points, which keeps items from stretching
+    ///     on a large screen.
+    ///   - itemAspectRatio: The proportion every item is given, as width divided by height.
+    ///   - spacing: The gap between items, both across and down. Defaults to `.md`.
+    ///   - alignment: How the columns sit within the grid's width when they do not fill it.
+    ///     Defaults to `.center`.
+    ///   - content: The items to lay out.
     ///
-    /// ## 例
+    /// ## Example
     /// ```swift
     /// AspectGrid(
     ///     minItemWidth: 160,

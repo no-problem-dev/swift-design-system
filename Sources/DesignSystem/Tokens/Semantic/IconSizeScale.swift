@@ -1,52 +1,52 @@
 import Foundation
 
-/// アイコンサイズスケールプロトコル。
+/// The display sizes for SF Symbols, emoji, and images.
 ///
-/// SF Symbol / Emoji / Image の表示サイズを token 化する。
-/// `Typography` (テキスト) と `SpacingScale` (余白) とは責務が異なる — icon は
-/// 「視覚要素のサイズ」であり、テキストの lineHeight や余白とは独立した scale を持つ。
+/// This is a separate scale from `Typography` (text) and `SpacingScale` (padding) on
+/// purpose: an icon size measures a visual element, so it follows neither a line height
+/// nor a margin.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// @Environment(\.iconSizeScale) var iconSize
 ///
 /// Image(systemName: "checkmark")
-///     .iconSize(.sm)          // body テキストと並ぶインラインアイコン
+///     .iconSize(.sm)          // An inline icon alongside body text
 ///
 /// Image(systemName: "star.fill")
-///     .iconSize(.lg)          // セクションヘッダーアイコン
+///     .iconSize(.lg)          // A section header icon
 ///
 /// Image(systemName: "sparkles")
-///     .iconSize(.xl)          // ヒーローアイコン (onboarding / empty state)
+///     .iconSize(.xl)          // A hero icon (onboarding, empty state)
 /// ```
 ///
-/// ## スケール一覧
-/// - `xxs`: 8pt - 極小 badge
+/// ## The scale
+/// - `xxs`: 8pt - a very small badge
 /// - `xs`: 12pt - badge indicator / decoration
-/// - `sm`: 16pt - body テキストと並ぶインラインアイコン
-/// - `md`: 24pt - 標準的なアイコン（推奨デフォルト）
-/// - `lg`: 32pt - 中見出しやカテゴリアイコン
-/// - `xl`: 48pt - ヒーローアイコン（section header / empty state）
-/// - `xxl`: 64pt - ディスプレイアイコン（onboarding welcome 等）
+/// - `sm`: 16pt - an inline icon alongside body text
+/// - `md`: 24pt - the standard icon (recommended default)
+/// - `lg`: 32pt - subheadings and category icons
+/// - `xl`: 48pt - a hero icon (section header / empty state)
+/// - `xxl`: 64pt - a display icon (onboarding welcome and the like)
 public protocol IconSizeScale: Sendable {
-    /// 極小（8pt）
+    /// An extra small icon (8pt).
     var xxs: CGFloat { get }
 
-    /// 最小（12pt）
+    /// A very small icon (12pt).
     var xs: CGFloat { get }
 
-    /// 小（16pt）- body インライン
+    /// A small icon (16pt), sized to sit inline with body text.
     var sm: CGFloat { get }
 
-    /// 中（24pt）- 標準
+    /// A medium icon (24pt), the standard size.
     var md: CGFloat { get }
 
-    /// 大（32pt）
+    /// A large icon (32pt).
     var lg: CGFloat { get }
 
-    /// 特大（48pt）- ヒーロー
+    /// An extra large icon (48pt), for hero use.
     var xl: CGFloat { get }
 
-    /// 最大（64pt）- ディスプレイ
+    /// The largest icon (64pt), for display use.
     var xxl: CGFloat { get }
 }

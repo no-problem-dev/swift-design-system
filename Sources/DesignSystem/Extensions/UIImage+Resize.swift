@@ -1,48 +1,52 @@
 #if canImport(UIKit)
 import UIKit
 
-/// JPEG のデフォルト品質。`maxSize` を指定しないときはここで打ち止め。
+/// The JPEG quality used when no size limit is given, in which case nothing lowers it further.
 private let defaultJPEGQuality: CGFloat = 0.8
 
-/// `maxSize` に収めるために順に試す品質。下限まで下げても収まらなければ、いちばん小さいものを返す。
+/// The qualities tried in turn to meet a size limit. If even the lowest overshoots, the smallest
+/// result is returned anyway.
 private let jpegQualitySteps: [CGFloat] = [0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]
 
 public extension UIImage {
-    /// 規則に従って寸法を落とした画像を返す。
+    /// Returns the image cut down to the size the rule asks for.
     ///
-    /// 戻り値は必ず向きが `.up`、scale が 1 になる。`UIImage` は EXIF 由来の `imageOrientation` を
-    /// 持っていて、`jpegData(compressionQuality:)` はそれを尊重するが、自分で描き直すときは効かない。
-    /// 正規化せずに描くと、縦で撮った写真が横になる。`draw(in:)` は向きを解決して正立で描くため、
-    /// 描き直すこと自体が正規化になる——だから規則が渡されたときは、縮小が要らなくても必ず描き直す。
+    /// The result always has an orientation of `.up` and a scale of 1. A `UIImage` carries an
+    /// `imageOrientation` that comes from EXIF; `jpegData(compressionQuality:)` honors it, but
+    /// drawing by hand does not, so drawing without normalizing turns a portrait photo sideways.
+    /// Because `draw(in:)` resolves the orientation and draws upright, redrawing is itself the
+    /// normalization, which is why a rule always redraws even when no downscale is needed.
     ///
-    /// - Parameter rule: 落とし方の規則
-    /// - Returns: 寸法を落として向きを正規化した画像。寸法が 0 の画像はそのまま返す
+    /// - Parameter rule: How far to cut the dimensions down.
+    /// - Returns: The resized, upright image. An image with no area is returned unchanged.
     func resized(by rule: ImageResizeRule) -> UIImage {
-        // size は向きを解決したあとの寸法（縦で撮った写真なら幅と高さが入れ替わっている）。
-        // これに scale を掛けたものが、見たままの向きでのピクセル数になる
+        // size is already orientation-resolved, so a portrait photo has its width and height
+        // swapped here. Multiplying by scale gives the pixel count as the image is seen.
         let sourcePixels = CGSize(width: size.width * scale, height: size.height * scale)
         guard let plan = rule.plan(for: sourcePixels) else { return self }
 
         let format = UIGraphicsImageRendererFormat.preferred()
-        // ピクセルと点を一致させて、以降の寸法をピクセルのまま扱えるようにする
+        // Pin a point to a pixel so every size from here on can stay in pixels
         format.scale = 1
         format.opaque = false
 
         return UIGraphicsImageRenderer(size: plan.outputSize, format: format).image { _ in
-            // レンダラが出力矩形で切り落とすので、はみ出す分がそのまま center-crop になる
+            // The renderer clips to the output rect, so the overflow is the center crop
             draw(in: plan.drawRect)
         }
     }
 
-    /// ピッカーが返す JPEG データを作る。
+    /// Encodes the image as the JPEG data a picker hands back.
     ///
-    /// 寸法 → JPEG 化 → 品質、の順で落とす。品質より先に寸法を落とすのは、表示に使わない画素を
-    /// 運ぶのが一番無駄だから。寸法で削ってなお `maxSize` を超えるときだけ、品質を段階的に下げる。
+    /// Dimensions come down first, then the encode, then quality if it is still needed. Cutting
+    /// dimensions before quality matters because carrying pixels that are never displayed is the
+    /// most wasteful thing here. Quality drops step by step only when the resized image still
+    /// exceeds the limit.
     ///
     /// - Parameters:
-    ///   - resize: 寸法を落とす規則。nil なら元の寸法のまま
-    ///   - maxSize: 上限バイト数。nil なら品質 0.8 で 1 回変換するだけ
-    /// - Returns: JPEG データ。変換できなければ nil
+    ///   - resize: How far to cut the dimensions down. Pass nil to keep the original size.
+    ///   - maxSize: An upper bound on the encoded bytes. Pass nil for a single encode at 0.8.
+    /// - Returns: The JPEG data, or nil if the image cannot be encoded.
     func jpegData(resize: ImageResizeRule?, maxSize: ByteSize?) -> Data? {
         let source = resize.map { resized(by: $0) } ?? self
 
@@ -52,10 +56,11 @@ public extension UIImage {
         return source.jpegData(fittingIn: maxSize)
     }
 
-    /// 品質を段階的に下げて上限バイト数に収める。
+    /// Lowers quality step by step until the encoded data fits the limit.
     ///
-    /// 下限品質でも収まらないときは、そこで得たいちばん小さいデータを返す。上限を守れないからと
-    /// nil を返すと、呼び出し側は「変換できなかった」のか「大きすぎた」のか区別できないため。
+    /// When even the lowest quality overshoots, the smallest data produced along the way is
+    /// returned. Returning nil instead would leave the caller unable to tell "could not encode"
+    /// apart from "too large".
     private func jpegData(fittingIn maxSize: ByteSize) -> Data? {
         var smallest: Data?
 

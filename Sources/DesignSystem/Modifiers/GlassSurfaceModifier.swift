@@ -1,30 +1,31 @@
 import SwiftUI
 
 public extension View {
-    /// Liquid Glass のサーフェス背景を敷く。カード・行・コンポーザーなどの面に使う。
+    /// Lays a Liquid Glass surface behind the content, for cards, rows, and composers.
     ///
-    /// iOS 26 未満では ultraThinMaterial + アウトラインにフォールバックする。
+    /// Below iOS 26 it falls back to an ultra thin material with an outline.
     ///
-    /// 注意: ScrollView 内で複数並べる用途（カルーセル・チップ行・マーキー等）には
-    /// ``frostedSurface(cornerRadius:tint:)`` を使うこと。glassEffect はスクロール領域
-    /// 全幅のガラス板を描くアーティファクト（行の高さぶんの「帯」）が出る。
+    /// Note: for several surfaces lined up inside a `ScrollView` (carousels, chip rows, marquees),
+    /// use ``frostedSurface(cornerRadius:tint:)`` instead. There, the glass effect leaves an
+    /// artifact: a pane of glass spanning the full width of the scrolling area, which reads as a
+    /// band the height of the row.
     /// - Parameters:
-    ///   - cornerRadius: 角丸半径。
-    ///   - tint: ガラスに重ねるティント色。
-    ///   - interactive: タッチに反応するガラスにするか。
+    ///   - cornerRadius: The corner radius.
+    ///   - tint: A tint color laid over the glass.
+    ///   - interactive: Whether the glass responds to touch.
     func glassSurface(cornerRadius: CGFloat = 16, tint: Color? = nil, interactive: Bool = false) -> some View {
         modifier(GlassSurfaceModifier(cornerRadius: cornerRadius, tint: tint, interactive: interactive))
     }
 
-    /// スクロール領域内で並ぶ面に使う、マテリアルベースのフロストサーフェス背景。
+    /// Lays a material based frosted surface behind content that is lined up inside a scrolling area.
     ///
-    /// `glassEffect` は ScrollView 内に複数並ぶとスクロール領域全幅のガラス板
-    /// （行の高さぶんの「帯」）を描くため、カルーセル・チップ行・マーキーなど
-    /// 流れる要素はこちらを使う。見た目はガラス面と揃うよう、グラデーション
-    /// ヘアラインの縁の光を持つ。
+    /// When several of them sit inside a `ScrollView`, `glassEffect` draws a pane of glass spanning
+    /// the full width of the scrolling area, which reads as a band the height of the row. Use this
+    /// for elements that flow past, such as carousels, chip rows, and marquees. It carries a
+    /// gradient hairline edge highlight so that it looks the same as a glass surface.
     /// - Parameters:
-    ///   - cornerRadius: 角丸半径。
-    ///   - tint: マテリアルに重ねるティント色。
+    ///   - cornerRadius: The corner radius.
+    ///   - tint: A tint color laid over the material.
     func frostedSurface(cornerRadius: CGFloat = 16, tint: Color? = nil) -> some View {
         modifier(FrostedSurfaceModifier(cornerRadius: cornerRadius, tint: tint))
     }

@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Monochromeテーマ - ライトモードパレット
 struct MonochromeLightPalette: ColorPalette {
     // MARK: - Primary
     var primary: Color { Color(hex: "#2D3748") } // Charcoal

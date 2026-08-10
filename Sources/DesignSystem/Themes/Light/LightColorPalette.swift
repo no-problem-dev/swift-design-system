@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Lightテーマのカラーパレット
 public struct LightColorPalette: ColorPalette {
     public init() {}
 
@@ -18,11 +17,13 @@ public struct LightColorPalette: ColorPalette {
 
     // MARK: - Background & Surface
 
-    // 面の段差は色で作る。影は光の当たり方の表現なので、暗い場所・スクリーンショット・
-    // コントラストを上げた設定のどれでも消え、そこに頼るとカードの輪郭がなくなる。
+    // Depth between surfaces is made with color, not shadow. A shadow depicts how light falls,
+    // so it vanishes in a dark room, in a screenshot, and under increased contrast settings,
+    // and a card that relies on one loses its outline.
     //
-    // 地を沈めて面を白へ置く。逆（地が白・カードが灰）にすると、手前にあるものほど
-    // 暗いという上下関係の逆転が起きる。Apple のグループ化リストも地が灰で面が白。
+    // The background sits low and surfaces are white. Reversing that (white background, gray
+    // cards) inverts the depth order, so the nearer thing is the darker one. Apple's grouped
+    // lists also put white surfaces on a gray background.
     public var background: Color { PrimitiveColors.gray100 }
     public var onBackground: Color { PrimitiveColors.gray900 }
     public var surface: Color { .white }

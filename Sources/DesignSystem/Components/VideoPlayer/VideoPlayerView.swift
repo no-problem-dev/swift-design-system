@@ -5,20 +5,20 @@ import UIKit
 import AVKit
 import Photos
 
-/// 動画プレイヤービュー
+/// A player for video held in memory or at a URL.
 ///
-/// 動画データまたはURLから動画を再生するコンポーネント。
-/// 再生コントロール・メタデータ表示・共有/保存アクションを提供する。
+/// It provides playback controls, and optionally a metadata line and chips for sharing the
+/// video or saving it to the photo library.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// // Dataから再生
+/// // Play from Data
 /// VideoPlayerView(data: videoData)
 ///
-/// // URLから再生
+/// // Play from a URL
 /// VideoPlayerView(url: videoURL)
 ///
-/// // メタデータとアクション付き
+/// // With metadata and actions
 /// VideoPlayerView(data: videoData)
 ///     .showMetadata(true)
 ///     .showActions([.share, .saveToPhotos])
@@ -43,36 +43,39 @@ public struct VideoPlayerView: View {
 
     // MARK: - Initializers
 
-    /// Dataから初期化
+    /// Creates a player for video held in memory.
     ///
-    /// - Parameter data: 動画データ
+    /// The data is written to a temporary file so that it can be played, and that file is
+    /// removed when the view disappears.
+    ///
+    /// - Parameter data: The video data to play.
     public init(data: Data) {
         self.source = .data(data)
     }
 
-    /// URLから初期化
+    /// Creates a player for video at a URL.
     ///
-    /// - Parameter url: 動画のURL（ローカルまたはリモート）
+    /// - Parameter url: The URL of the video, either local or remote.
     public init(url: URL) {
         self.source = .url(url)
     }
 
     // MARK: - Modifiers
 
-    /// メタデータ表示を設定
+    /// Sets whether the duration, resolution and file size are shown below the player.
     ///
-    /// - Parameter show: メタデータを表示するかどうか
-    /// - Returns: 設定が適用されたビュー
+    /// - Parameter show: Whether to show the metadata line.
     public func showMetadata(_ show: Bool) -> VideoPlayerView {
         var view = self
         view.showMetadata = show
         return view
     }
 
-    /// アクションボタンを設定
+    /// Sets which action chips appear below the player.
     ///
-    /// - Parameter actions: 表示するアクション
-    /// - Returns: 設定が適用されたビュー
+    /// The chips are shown only once the video has loaded.
+    ///
+    /// - Parameter actions: The actions to offer.
     public func showActions(_ actions: [VideoPlayerAction]) -> VideoPlayerView {
         var view = self
         view.actions = actions
@@ -83,15 +86,15 @@ public struct VideoPlayerView: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: spacing.md) {
-            // 動画プレイヤー
+            // Video player
             playerSection
 
-            // メタデータ
+            // Metadata
             if showMetadata, let metadata = videoMetadata {
                 metadataSection(metadata)
             }
 
-            // アクションボタン
+            // Action buttons
             if !actions.isEmpty && player != nil {
                 actionsSection
             }
@@ -221,20 +224,20 @@ public struct VideoPlayerView: View {
 
                 switch source {
                 case .data(let data):
-                    // 一時ファイルに保存
+                    // Write to a temporary file
                     let tempDir = FileManager.default.temporaryDirectory
                     let fileURL = tempDir.appendingPathComponent("\(UUID().uuidString).mp4")
                     try data.write(to: fileURL)
                     tempFileURL = fileURL
                     url = fileURL
 
-                    // メタデータを取得
+                    // Load the metadata
                     videoMetadata = await extractMetadata(from: url, dataSize: data.count)
 
                 case .url(let sourceURL):
                     url = sourceURL
 
-                    // メタデータを取得
+                    // Load the metadata
                     if sourceURL.isFileURL {
                         let data = try Data(contentsOf: sourceURL)
                         videoMetadata = await extractMetadata(from: url, dataSize: data.count)
@@ -257,12 +260,12 @@ public struct VideoPlayerView: View {
         var duration: TimeInterval?
         var resolution: String?
 
-        // 動画の長さを取得
+        // Load the duration
         if let cmDuration = try? await asset.load(.duration) {
             duration = CMTimeGetSeconds(cmDuration)
         }
 
-        // 解像度を取得
+        // Load the resolution
         if let tracks = try? await asset.loadTracks(withMediaType: .video),
            let track = tracks.first,
            let size = try? await track.load(.naturalSize) {
@@ -351,17 +354,15 @@ public struct VideoPlayerView: View {
 
 // MARK: - Supporting Types
 
-/// 動画プレイヤーのアクション
 public enum VideoPlayerAction: Sendable, Hashable {
-    /// 再生/一時停止ボタン
+    /// A chip that toggles between playing and pausing, restarting from the beginning.
     case play
-    /// 共有ボタン
+    /// A chip that presents the system share sheet for the video file.
     case share
-    /// カメラロールに保存
+    /// A chip that saves the video to the photo library, asking for add only access first.
     case saveToPhotos
 }
 
-/// 動画ソース
 private enum VideoSource {
     case data(Data)
     case url(URL)
@@ -376,7 +377,6 @@ private enum VideoSource {
     }
 }
 
-/// 動画メタデータ
 private struct VideoMetadata {
     let duration: TimeInterval?
     let resolution: String?

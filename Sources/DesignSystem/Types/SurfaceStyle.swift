@@ -1,29 +1,31 @@
 import SwiftUI
 
-/// サーフェス（カードなどの「面」コンポーネント）の描画スタイル。
+/// How surface components such as cards paint themselves: opaque, or as glass over the background.
 ///
-/// `Card` をはじめとする面コンポーネントが、不透明なサーフェスとして描画するか、
-/// 背景を透かす Liquid Glass として描画するかを Environment 経由で切り替える。
-/// 動的に生成される UI ツリー（例: A2UI レンダリング）に対して、レンダラーへ手を
-/// 入れずにアプリのデザイン言語を注入する仕組み。
+/// The style travels through the environment, so a whole subtree can be switched at once. That
+/// makes it possible to give a dynamically generated view tree the app's design language without
+/// touching the code that builds the tree.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// // 配下の Card がすべてガラス面になる
+/// // Every card below this point becomes a glass surface
 /// A2UISurfaceView(surface)
 ///     .surfaceStyle(.glass)
 /// ```
 ///
-/// ## ネストの自動降格
-/// ガラスは重ねると濁って可読性を損なうため、`Card` はネスト深度を自動追跡し、
-/// 深度 1 以上のカードを「薄いティント面」へ自動降格する。近接性による
-/// グルーピングは保ちつつ、ガラスの透明感はトップレベルにのみ与える。
+/// ## Nested cards step down automatically
+/// Stacked glass turns muddy and costs legibility, so a card tracks its own nesting depth and
+/// paints any card at depth 1 or deeper as a thin tinted surface instead. Grouping by proximity
+/// survives, and the transparency stays where it reads: the top level.
 public enum SurfaceStyle: Sendable, Equatable {
-    /// 不透明なサーフェス（Elevation トークンに基づく従来描画）
+    /// An opaque surface drawn from the elevation tokens. The right choice for dense, text-heavy
+    /// screens and for anything that has to stay legible over an unknown background.
     case solid
-    /// Liquid Glass。背景を透かし、グラデーションボーダーで縁の光を表現する
+    /// Glass that lets the background through, edged with a gradient border. Suits screens with
+    /// artwork or color behind the content, where the depth is worth the contrast it costs.
     case glass
-    /// 強調ガラス。primary ティントとより明るいボーダーで主役の面を演出する
+    /// Glass with a primary tint and a brighter border, for the one surface on screen that leads.
+    /// Using it for more than a single surface flattens the hierarchy it exists to create.
     case glassProminent
 }
 
@@ -38,14 +40,17 @@ private struct CardNestingLevelKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    /// 面コンポーネントの描画スタイル。デフォルトは `.solid`（従来描画）。
+    /// How surface components paint themselves. Opaque unless something sets it.
     public var surfaceStyle: SurfaceStyle {
         get { self[SurfaceStyleKey.self] }
         set { self[SurfaceStyleKey.self] = newValue }
     }
 
-    /// カードのネスト深度。`Card` がコンテンツへ自動的に +1 して伝播する。
-    /// glass スタイル時、深度 1 以上のカードはティント面へ自動降格する。
+    /// How deep the current card is inside other cards.
+    ///
+    /// A card raises this by one for its own content, and under a glass style any card at depth 1
+    /// or deeper paints as a tinted surface rather than glass. Set it by hand only to lie to a
+    /// card about where it sits.
     public var cardNestingLevel: Int {
         get { self[CardNestingLevelKey.self] }
         set { self[CardNestingLevelKey.self] = newValue }
@@ -53,9 +58,11 @@ extension EnvironmentValues {
 }
 
 public extension View {
-    /// 配下の面コンポーネント（``Card`` など）の描画スタイルを切り替える。
+    /// Sets how surface components in this subtree paint themselves.
     ///
-    /// - Parameter style: 適用する ``SurfaceStyle``
+    /// Applies to ``Card`` and every other surface component below it.
+    ///
+    /// - Parameter style: The style to apply.
     func surfaceStyle(_ style: SurfaceStyle) -> some View {
         environment(\.surfaceStyle, style)
     }

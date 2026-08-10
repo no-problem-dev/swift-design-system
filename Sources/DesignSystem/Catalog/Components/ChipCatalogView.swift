@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Chipコンポーネントのカタログビュー
 struct ChipCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
@@ -156,7 +155,7 @@ struct ChipCatalogView: View {
     }
 }
 
-/// チップを水平に並べ、折り返すレイアウト
+/// A layout that places subviews in a row and wraps to the next line when they no longer fit.
 private struct FlowLayout: Layout {
     var spacing: CGFloat = 8
 

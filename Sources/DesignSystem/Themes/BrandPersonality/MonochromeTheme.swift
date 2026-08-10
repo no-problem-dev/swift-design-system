@@ -1,9 +1,8 @@
 import SwiftUI
 
-/// Monochromeテーマ - ミニマル・エレガント
+/// A spare, refined theme built on grayscale.
 ///
-/// グレースケールをベースとした、ミニマルで洗練されたテーマ。
-/// ビジネス、エディトリアル、プレミアムアプリに最適。
+/// Suited to business, editorial, and premium apps.
 public struct MonochromeTheme: Theme {
     public init() {}
 

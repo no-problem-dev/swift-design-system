@@ -1,21 +1,21 @@
 import Foundation
 
-/// 基本スペーシングトークン
+/// The base spacing values the design system is built from.
 ///
-/// 基本的なスペーシング値を定義する。
-/// **直接使用は避け**、`SpacingScale` プロトコルの実装から参照すること。
+/// **Avoid using these directly.** Refer to them from an implementation of the
+/// `SpacingScale` protocol.
 ///
-/// ## 使用方法
+/// ## How to use it
 /// ```swift
-/// // ❌ 避けるべき
+/// // ❌ Avoid
 /// .padding(PrimitiveSpacing.space16)
 ///
-/// // ✅ 推奨
+/// // ✅ Preferred
 /// @Environment(\.spacingScale) var spacing
 /// .padding(spacing.lg)
 /// ```
 ///
-/// カスタムスペーシングスケールでの使用：
+/// Using them in a custom spacing scale:
 /// ```swift
 /// struct CustomSpacingScale: SpacingScale {
 ///     var lg: CGFloat { PrimitiveSpacing.space16 }

@@ -2,8 +2,8 @@
 import SwiftUI
 import UIKit
 
-// MediaViewer 内部で使用するピンチズーム実装。
-// 参照: Kavsoft「Pinch to Zoom | SwiftUI | iOS 17」(2024-03) の忠実移植。
+// The pinch to zoom implementation used inside MediaViewer.
+// Reference: a faithful port of Kavsoft "Pinch to Zoom | SwiftUI | iOS 17" (2024-03).
 
 extension View {
     @ViewBuilder
@@ -15,7 +15,7 @@ extension View {
 }
 
 /// Zoom Container View
-/// ズーム中のビューをコンテナの最前面レイヤーに表示する
+/// Draws the view being zoomed on the frontmost layer of the container.
 struct ZoomContainer<Content: View>: View {
     var content: Content
     init(@ViewBuilder content: @escaping () -> Content) {
@@ -49,7 +49,7 @@ struct ZoomContainer<Content: View>: View {
     }
 }
 
-/// コンテナと内部ビューの間で状態を共有する Observable クラス
+/// The observable state shared between the container and the views inside it.
 @Observable
 fileprivate class ZoomContainerData {
     var zoomingView: AnyView?

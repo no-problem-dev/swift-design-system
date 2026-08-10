@@ -1,29 +1,28 @@
 import SwiftUI
 
-/// プライマリボタンスタイル
+/// The most prominent button style, for the main action on a screen such as signing in, submitting, or saving.
 ///
-/// 最も強調されるボタンスタイル。画面内の主要アクション（ログイン・送信・保存など）に使用する。
-/// Primary 色の背景に onPrimary テキストを配置する。押下時にスケールアニメーションが適用される。
+/// Places onPrimary text on a Primary-colored background, and scales down while pressed.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// Button("ログイン") {
+/// Button("Sign in") {
 ///     login()
 /// }
 /// .buttonStyle(.primary)
-/// .buttonSize(.large)  // サイズ指定（オプション）
+/// .buttonSize(.large)  // size is optional
 ///
-/// Button("保存") {
+/// Button("Save") {
 ///     save()
 /// }
 /// .buttonStyle(.primary)
 /// .buttonSize(.medium)
 /// ```
 ///
-/// ## スタイルの使い分け
-/// - **Primary**: 最重要アクション（1画面に1つ推奨）
-/// - **Secondary**: 補助的なアクション
-/// - **Tertiary**: 控えめなアクション
+/// ## Choosing a style
+/// - **Primary**: the most important action. One per screen.
+/// - **Secondary**: a supporting action.
+/// - **Tertiary**: a quiet action.
 public struct PrimaryButtonStyle: ButtonStyle {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.buttonSize) private var buttonSize
@@ -38,7 +37,7 @@ public struct PrimaryButtonStyle: ButtonStyle {
             .foregroundStyle(colorPalette.onPrimary)
             .padding(.horizontal, buttonSize.horizontalPadding)
             .frame(height: buttonSize.height)
-            // macOS は内容幅（HIG: フルワイド塗りは watchOS のイディオム。macOS は幅を内容に合わせる）。
+            // macOS sizes to the content (in the HIG a full-width fill is a watchOS idiom; macOS fits the width to the content).
             #if os(iOS)
             .frame(maxWidth: .infinity)
             #endif
@@ -55,7 +54,6 @@ public struct PrimaryButtonStyle: ButtonStyle {
 }
 
 public extension ButtonStyle where Self == PrimaryButtonStyle {
-    /// プライマリボタンスタイル
     static var primary: PrimaryButtonStyle {
         PrimaryButtonStyle()
     }

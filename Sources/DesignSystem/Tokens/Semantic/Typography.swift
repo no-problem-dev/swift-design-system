@@ -1,102 +1,101 @@
 import SwiftUI
 
-/// タイポグラフィトークン
+/// The text roles the design system provides.
 ///
-/// 一貫したテキストスタイリングを提供する定義済みのフォントスケール。
-/// フォントサイズ、ウェイト、行間が最適化されており、`.typography()` モディファイアで簡単に適用できる。
+/// Each role carries a font size, a weight, and a line height, which keeps text styling
+/// consistent. Apply a role with the `.typography()` modifier.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// Text("大きな見出し")
+/// Text("Large heading")
 ///     .typography(.headlineLarge)
 ///
-/// Text("本文テキスト")
+/// Text("Body text")
 ///     .typography(.bodyMedium)
 ///
-/// Button("ボタンラベル") { }
+/// Button("Button label") { }
 ///     .typography(.labelLarge)
 /// ```
 ///
-/// ## カテゴリ
-/// - **Display**: 最大サイズ（57pt〜36pt）- ヒーロー、ランディングページ
-/// - **Headline**: 見出し（32pt〜24pt）- セクション見出し
-/// - **Title**: タイトル（22pt〜14pt）- カードタイトル、ダイアログ
-/// - **Body**: 本文（16pt〜12pt）- 段落、説明文
-/// - **Label**: ラベル（14pt〜11pt）- ボタン、タブ、フォーム
+/// ## Categories
+/// - **Display**: the largest sizes (57pt to 36pt) - heroes and landing pages
+/// - **Headline**: headings (32pt to 24pt) - section headings
+/// - **Title**: titles (22pt to 14pt) - card titles and dialogs
+/// - **Body**: body text (16pt to 12pt) - paragraphs and descriptions
+/// - **Label**: labels (14pt to 11pt) - buttons, tabs, and forms
 public enum Typography: CaseIterable, Sendable {
     // MARK: - Display
 
-    /// Display Large - 最大かつ最も目立つテキスト
-    /// サイズ: 57pt, ウェイト: Bold
+    /// Display Large - the largest and most prominent text.
+    /// Size: 57pt, weight: Bold
     case displayLarge
 
     /// Display Medium
-    /// サイズ: 45pt, ウェイト: Bold
+    /// Size: 45pt, weight: Bold
     case displayMedium
 
     /// Display Small
-    /// サイズ: 36pt, ウェイト: Bold
+    /// Size: 36pt, weight: Bold
     case displaySmall
 
     // MARK: - Headline
 
-    /// Headline Large - 大きな見出し
-    /// サイズ: 32pt, ウェイト: Semibold
+    /// Headline Large - a large heading.
+    /// Size: 32pt, weight: Semibold
     case headlineLarge
 
-    /// Headline Medium - 中程度の見出し
-    /// サイズ: 28pt, ウェイト: Semibold
+    /// Headline Medium - a medium heading.
+    /// Size: 28pt, weight: Semibold
     case headlineMedium
 
-    /// Headline Small - 小さな見出し
-    /// サイズ: 24pt, ウェイト: Semibold
+    /// Headline Small - a small heading.
+    /// Size: 24pt, weight: Semibold
     case headlineSmall
 
     // MARK: - Title
 
-    /// Title Large - 大きなタイトル
-    /// サイズ: 22pt, ウェイト: Semibold
+    /// Title Large - a large title.
+    /// Size: 22pt, weight: Semibold
     case titleLarge
 
-    /// Title Medium - 中程度のタイトル
-    /// サイズ: 16pt, ウェイト: Semibold
+    /// Title Medium - a medium title.
+    /// Size: 16pt, weight: Semibold
     case titleMedium
 
-    /// Title Small - 小さなタイトル
-    /// サイズ: 14pt, ウェイト: Semibold
+    /// Title Small - a small title.
+    /// Size: 14pt, weight: Semibold
     case titleSmall
 
     // MARK: - Body
 
-    /// Body Large - 大きな本文
-    /// サイズ: 16pt, ウェイト: Regular
+    /// Body Large - large body text.
+    /// Size: 16pt, weight: Regular
     case bodyLarge
 
-    /// Body Medium - 標準的な本文
-    /// サイズ: 14pt, ウェイト: Regular
+    /// Body Medium - the standard body text.
+    /// Size: 14pt, weight: Regular
     case bodyMedium
 
-    /// Body Small - 小さな本文
-    /// サイズ: 12pt, ウェイト: Regular
+    /// Body Small - small body text.
+    /// Size: 12pt, weight: Regular
     case bodySmall
 
     // MARK: - Label
 
-    /// Label Large - 大きなラベル（ボタン、タブなど）
-    /// サイズ: 14pt, ウェイト: Medium
+    /// Label Large - a large label, for buttons and tabs.
+    /// Size: 14pt, weight: Medium
     case labelLarge
 
-    /// Label Medium - 標準的なラベル
-    /// サイズ: 12pt, ウェイト: Medium
+    /// Label Medium - the standard label.
+    /// Size: 12pt, weight: Medium
     case labelMedium
 
-    /// Label Small - 小さなラベル
-    /// サイズ: 11pt, ウェイト: Medium
+    /// Label Small - a small label.
+    /// Size: 11pt, weight: Medium
     case labelSmall
 
     // MARK: - Properties
 
-    /// フォントサイズ
     public var size: CGFloat {
         switch self {
         // Display
@@ -126,7 +125,6 @@ public enum Typography: CaseIterable, Sendable {
         }
     }
 
-    /// フォントウェイト
     public var weight: Font.Weight {
         switch self {
         // Display
@@ -151,25 +149,29 @@ public enum Typography: CaseIterable, Sendable {
         }
     }
 
-    /// SwiftUI Font
-    /// Dynamic Type自動対応
+    /// A SwiftUI font at the fixed size of this role.
+    ///
+    /// The size does not scale with Dynamic Type. Apply the role with the `.typography()`
+    /// modifier instead when the text should scale.
     public var font: Font {
         .system(size: size, weight: weight, design: .default)
     }
 
-    /// デザインを指定して SwiftUI Font を生成する。
-    /// - Parameter design: フォントデザイン（.default, .serif, .rounded, .monospaced）
-    /// - Returns: 指定されたデザインのフォント
+    /// Creates a SwiftUI font with the given design.
+    ///
+    /// The size does not scale with Dynamic Type.
+    /// - Parameter design: The font design, such as .default, .serif, .rounded, or .monospaced.
     public func font(design: Font.Design) -> Font {
         .system(size: size, weight: weight, design: design)
     }
 
-    /// Dynamic Type で追随する先のテキストスタイル。
+    /// The text style this role scales against under Dynamic Type.
     ///
-    /// 役割の意味から選ぶ。iOS のテキストスタイルは大きいものほど拡大率が小さい
-    /// （アクセシビリティ最大で body が約 3.1 倍、largeTitle は約 1.9 倍）ため、
-    /// 大きい役割を大きいテキストスタイルに相対させると、文字を最大まで上げても
-    /// 見出しと本文の差が保たれ、見出しだけが画面を埋め尽くすことがない。
+    /// The style is chosen by what the role means. Larger iOS text styles grow by less than
+    /// smaller ones: at the largest accessibility size, body grows about 3.1x while
+    /// largeTitle grows about 1.9x. Relating a large role to a large text style keeps the
+    /// difference between a heading and body text intact at the largest sizes, so headings
+    /// do not fill the screen on their own.
     public var relativeTextStyle: Font.TextStyle {
         switch self {
         case .displayLarge, .displayMedium, .displaySmall: return .largeTitle
@@ -185,8 +187,7 @@ public enum Typography: CaseIterable, Sendable {
         }
     }
 
-    /// 行の高さ（Line Height）
-    /// Material Design 3仕様に基づく
+    /// The line height, as specified by Material Design 3.
     public var lineHeight: CGFloat {
         switch self {
         // Display

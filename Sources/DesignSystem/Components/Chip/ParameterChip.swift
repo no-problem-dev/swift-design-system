@@ -1,9 +1,10 @@
 import SwiftUI
 
-/// 現在値を要約表示するパラメータチップ。
+/// A chip that summarizes the current value of a parameter.
 ///
-/// 畳まれた状態でも選択中の値が読めるよう、値そのものをラベルにする。
-/// それ自体はアクションを持たない表示ビュー。`Button` や `Menu` の label として使う。
+/// The value itself is the label, so the selection stays readable while the control is
+/// collapsed. The chip carries no action of its own. Use it as the label of a `Button` or a
+/// `Menu`.
 ///
 /// ```swift
 /// Menu {
@@ -21,9 +22,9 @@ public struct ParameterChip: View {
     private let prominent: Bool
 
     /// - Parameters:
-    ///   - value: 現在値の要約ラベル。
-    ///   - systemImage: 先頭アイコン。
-    ///   - prominent: primary ティントで強調するか。
+    ///   - value: The short label that stands for the current value.
+    ///   - systemImage: The SF Symbols name of the leading icon.
+    ///   - prominent: Whether to emphasize the chip with the primary tint.
     public init(_ value: String, systemImage: String? = nil, prominent: Bool = false) {
         self.value = value
         self.systemImage = systemImage

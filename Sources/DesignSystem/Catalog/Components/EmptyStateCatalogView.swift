@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// EmptyStateコンポーネントのカタログビュー
 struct EmptyStateCatalogView: View {
     @Environment(\.spacingScale) private var spacing
 

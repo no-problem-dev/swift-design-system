@@ -1,9 +1,8 @@
 import SwiftUI
 
-/// Sunsetテーマ - 温かみ・エネルギッシュ
+/// A warm, energetic theme built on sunset orange.
 ///
-/// 夕焼けのオレンジをベースとした、温かみとエネルギーを感じるテーマ。
-/// クリエイティブ、ソーシャル、エンターテイメント関連アプリに最適。
+/// Suited to creative, social, and entertainment apps.
 public struct SunsetTheme: Theme {
     public init() {}
 

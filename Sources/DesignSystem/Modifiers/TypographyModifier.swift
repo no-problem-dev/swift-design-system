@@ -1,30 +1,33 @@
 import SwiftUI
 
 public extension View {
-    /// タイポグラフィトークンを適用する。
+    /// Applies a typography token.
     ///
-    /// 役割（``Typography``）を渡すと、Environment の ``TypographyScale`` で解決された
-    /// サイズ・ウェイト・行間・書体が適用される。テーマが scale を差し替えればブランド固有の
-    /// 型に切り替わり、未適用時は ``DefaultTypographyScale``（既存値由来）で従来と同じ見た目になる。
+    /// Passing a role (``Typography``) applies the size, weight, line height, and typeface
+    /// resolved by the ``TypographyScale`` in the environment. A theme can swap the scale to move
+    /// to a brand specific type set; with no theme applied, ``DefaultTypographyScale`` keeps the
+    /// built-in appearance.
     ///
-    /// サイズは ``Typography/relativeTextStyle`` を基準に Dynamic Type で伸縮する。
-    /// 行間・字間もそのサイズから引き直すため、文字だけが大きくなって行が詰まることはない。
+    /// The size grows and shrinks with Dynamic Type, relative to ``Typography/relativeTextStyle``.
+    /// Line spacing and tracking are derived from that same size, so the glyphs never grow while
+    /// the lines stay cramped.
     ///
-    /// 解決には Environment 参照が要るため軽量 View ``TypographyStyledView`` でラップする。
-    /// `ViewModifier` を使わないのは、その `body(content:)` が `@MainActor` isolated になり
-    /// Sendable closure（PhotosPicker 等）からの呼び出しで "non-Sendable result" エラーを
-    /// 起こすため。View の構築自体は nonisolated なので Sendable closure でも安全。
+    /// Resolving the scale requires an environment lookup, so the content is wrapped in the
+    /// lightweight view `TypographyStyledView`. A `ViewModifier` is not used because its
+    /// `body(content:)` becomes `@MainActor` isolated, which raises a "non-Sendable result" error
+    /// when called from a Sendable closure such as `PhotosPicker`. Building a view is itself
+    /// nonisolated, so it is safe inside a Sendable closure.
     ///
     /// ```swift
-    /// Text("見出し").typography(.headlineLarge)
-    /// Text("見出し").typography(.headlineLarge, design: .serif)
+    /// Text("Heading").typography(.headlineLarge)
+    /// Text("Heading").typography(.headlineLarge, design: .serif)
     /// ```
     func typography(_ token: Typography, design: Font.Design? = nil) -> some View {
         TypographyStyledView(role: token, design: design, content: self)
     }
 }
 
-/// `.typography(_:)` の解決を担う内部 View。Environment の scale を読んで適用する。
+/// Resolves a typography role against the scale in the environment and applies it to the content.
 private struct TypographyStyledView<Content: View>: View {
     let role: Typography
     let design: Font.Design?
@@ -41,15 +44,15 @@ private struct TypographyStyledView<Content: View>: View {
     }
 }
 
-/// 解決済みスタイルに Dynamic Type の倍率を掛ける内部 View。
+/// Applies the Dynamic Type multiplier to an already resolved type style.
 ///
-/// `@ScaledMetric` は基準値と相対先を init で受け取るが、基準値は Environment の
-/// ``TypographyScale`` から解決するので親でしか読めない。そのため解決とスケールを
-/// 親子に分ける。
+/// `@ScaledMetric` takes its base value and its relative text style in `init`, but the base value
+/// is resolved from the ``TypographyScale`` in the environment, which only the parent can read.
+/// That is why resolution and scaling are split between a parent and a child.
 ///
-/// 倍率は `.system` と `.named`（ブランド書体）で共通に掛ける。`Font.custom` の
-/// `relativeTo:` に任せると `.system` 側に同じ手段が無く、行間・字間を引き直すための
-/// 実サイズも手元に残らない。
+/// The multiplier is applied the same way for `.system` and for `.named` (brand typefaces).
+/// Leaving it to `relativeTo:` on `Font.custom` is not an option: `.system` has no equivalent, and
+/// the actual size needed to recompute line spacing and tracking would not be available here.
 private struct ScaledTypographyView<Content: View>: View {
     private let style: TypeStyle
     private let design: Font.Design?

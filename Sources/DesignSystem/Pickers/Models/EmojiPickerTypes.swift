@@ -1,6 +1,9 @@
 import Foundation
 
-/// 絵文字アイテム。絵文字ピッカーで表示される個々の絵文字。
+/// One selectable emoji in an emoji picker.
+///
+/// The picker's search field matches against `displayName` as well as the emoji itself, so an item
+/// without a display name can only be found by scrolling to it.
 public struct EmojiItem: Identifiable, Sendable, Hashable {
     public let id: String
     public let emoji: String
@@ -13,23 +16,26 @@ public struct EmojiItem: Identifiable, Sendable, Hashable {
     }
 }
 
-/// 絵文字のカテゴリを表すプロトコル。絵文字をグループ化するために使う。
+/// A named group of emoji, drawn as one section of the picker with `displayName` as its heading.
+///
+/// Conform an existing model to this to feed the picker without converting it first. Otherwise use
+/// `EmojiCategory`.
 public protocol EmojiCategoryProtocol: Identifiable, Sendable {
     var id: String { get }
     var displayName: String { get }
     var emojis: [EmojiItem] { get }
 }
 
-/// 汎用的な絵文字カテゴリ実装
+/// A ready-made emoji category, for when there is no existing model to conform.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// let smileyCategory = EmojiCategory(
 ///     id: "smileys",
-///     displayName: "顔・感情",
+///     displayName: "Smileys & Emotion",
 ///     emojis: [
-///         EmojiItem(id: "smile", emoji: "😊", displayName: "笑顔"),
-///         EmojiItem(id: "laugh", emoji: "😂", displayName: "笑い"),
+///         EmojiItem(id: "smile", emoji: "😊", displayName: "Smiling"),
+///         EmojiItem(id: "laugh", emoji: "😂", displayName: "Laughing"),
 ///     ]
 /// )
 ///
@@ -39,7 +45,7 @@ public protocol EmojiCategoryProtocol: Identifiable, Sendable {
 ///     let categories = [smileyCategory, /* ... */]
 ///
 ///     var body: some View {
-///         Button("絵文字を選択") {
+///         Button("Select an emoji") {
 ///             showEmojiPicker = true
 ///         }
 ///         .emojiPicker(

@@ -1,11 +1,16 @@
 import SwiftUI
 
-/// テーマ管理クラス。
+/// Holds the theme and the light/dark mode for a view hierarchy.
 ///
-/// アプリケーション全体のテーマとモード（ライト/ダーク/システム）を管理する。
-/// `@Observable` によりテーマ・モードの変更は自動的に UI へ反映される。
+/// Create one instance near the app entry point, keep it in `@State`, and apply it with `.theme(_:)`.
+/// The type is `@Observable`, so changing the theme or the mode updates every view that reads a
+/// design token.
 ///
-/// ## 基本的な使い方
+/// The selection lives in memory only. Nothing is written to disk, so to restore a choice on the
+/// next launch, persist it and pass it back through
+/// `init(initialTheme:initialMode:additionalThemes:)`.
+///
+/// ## Applying a theme
 /// ```swift
 /// @main
 /// struct MyApp: App {
@@ -20,67 +25,70 @@ import SwiftUI
 /// }
 /// ```
 ///
-/// ## モードの設定
+/// ## Setting the mode
 /// ```swift
-/// // システム設定に従う（デフォルト）
+/// // Follow the system setting (the default)
 /// themeProvider.themeMode = .system
 ///
-/// // ライトモード固定
+/// // Always light
 /// themeProvider.themeMode = .light
 ///
-/// // ダークモード固定
+/// // Always dark
 /// themeProvider.themeMode = .dark
 /// ```
 ///
-/// ## テーマの切り替え
+/// ## Switching themes
 /// ```swift
-/// // テーマを切り替え
 /// themeProvider.switchToTheme(id: "ocean")
 /// ```
 @Observable
 @MainActor
 public final class ThemeProvider {
-    /// 現在選択されているテーマ
     public var currentTheme: any Theme
 
-    /// 現在のモード（システム/ライト/ダーク）
+    /// Whether the palette follows the device appearance or is pinned to light or dark.
     ///
-    /// - `.system`: システム設定に従う（デフォルト）
-    /// - `.light`: 常にライトモード
-    /// - `.dark`: 常にダークモード
+    /// Set from `initialMode` at creation, which follows the device by default.
     public var themeMode: ThemeMode
 
-    /// 利用可能な全テーマ
+    /// The themes this provider can switch between.
+    ///
+    /// Starts as the built-in themes plus anything passed to the initializer, and grows as custom
+    /// themes are registered.
     public private(set) var availableThemes: [any Theme]
 
-    /// 現在のテーマとモードに基づくカラーパレット
+    /// The palette of the current theme for the current mode.
+    ///
+    /// This resolves the mode as stored, so while the mode follows the device this returns the
+    /// light palette. Views should read the palette from the environment instead, because
+    /// `.theme(_:)` resolves the device appearance before handing the palette down.
     public var colorPalette: any ColorPalette {
         currentTheme.colorPalette(for: themeMode)
     }
 
-    /// ThemeProviderを初期化
+    /// Creates a provider with a starting theme, a starting mode, and any custom themes to register.
     ///
     /// - Parameters:
-    ///   - initialTheme: 初期テーマ（デフォルト: DefaultTheme）
-    ///   - initialMode: 初期モード（デフォルト: .system - システム設定に従う）
-    ///   - additionalThemes: 追加で登録するカスタムテーマ
+    ///   - initialTheme: The theme to start with. Defaults to the built-in default theme.
+    ///   - initialMode: The mode to start in. Defaults to following the device appearance.
+    ///   - additionalThemes: Custom themes to make selectable alongside the built-in ones. Themes
+    ///     whose identifier is already registered are ignored.
     public init(
         initialTheme: (any Theme)? = nil,
         initialMode: ThemeMode = .system,
         additionalThemes: [any Theme] = []
     ) {
-        // ビルトインテーマを基本リストとして開始
+        // Start from the built-in themes
         var themes = ThemeRegistry.builtInThemes
         
-        // initialThemeが提供されている場合、利用可能テーマに追加
         if let initialTheme {
-            // 重複チェック: 同じIDのテーマが既に存在しない場合のみ追加
+            // Register it only when no theme already claims that identifier
             if !themes.contains(where: { $0.id == initialTheme.id }) {
                 themes.append(initialTheme)
             }
         }
         
-        // additionalThemesを追加（重複排除）
+        // Append the extra themes, again skipping identifiers already present
         for theme in additionalThemes {
             if !themes.contains(where: { $0.id == theme.id }) {
                 themes.append(theme)
@@ -89,7 +97,7 @@ public final class ThemeProvider {
         
         self.availableThemes = themes
 
-        // 初期テーマを設定
+        // Prefer the requested theme, then the built-in default, then whatever comes first
         if let initialTheme {
             self.currentTheme = initialTheme
         } else if let defaultTheme = themes.first(where: { $0.id == "default" }) {
@@ -101,11 +109,14 @@ public final class ThemeProvider {
         self.themeMode = initialMode
     }
 
-    /// テーマIDでテーマを切り替え
+    /// Selects one of the available themes by identifier.
     ///
-    /// - Parameter id: 切り替え先のテーマID
+    /// An identifier that is not registered leaves the current theme in place and logs a warning,
+    /// so a typo shows up as nothing happening rather than as a crash.
     ///
-    /// ## 使用例
+    /// - Parameter id: The identifier of the theme to select.
+    ///
+    /// ## Example
     /// ```swift
     /// withAnimation {
     ///     themeProvider.switchToTheme(id: "ocean")
@@ -119,16 +130,20 @@ public final class ThemeProvider {
         currentTheme = theme
     }
 
-    /// テーマオブジェクトを直接適用
+    /// Applies a theme instance without requiring it to be registered first.
     ///
-    /// - Parameter theme: 適用するテーマ
+    /// The theme does not join `availableThemes`, so a theme list will not show it and
+    /// `switchToTheme(id:)` cannot come back to it. Register it as well if it needs to be pickable.
+    ///
+    /// - Parameter theme: The theme to apply.
     public func applyTheme(_ theme: any Theme) {
         currentTheme = theme
     }
 
-    /// モードを切り替え
+    /// Advances to the next mode.
     ///
-    /// システム → ライト → ダーク → システム の順で循環する。
+    /// The cycle runs system, light, dark, and back to system. Wrap the call in `withAnimation`
+    /// to cross-fade the palette.
     public func toggleMode() {
         switch themeMode {
         case .system:
@@ -140,21 +155,22 @@ public final class ThemeProvider {
         }
     }
 
-    /// カスタムテーマを登録
+    /// Makes a custom theme selectable, replacing any theme that shares its identifier.
     ///
-    /// - Parameter theme: 登録するテーマ
+    /// Registering does not switch to the theme. Follow with `switchToTheme(id:)` to apply it.
     ///
-    /// ## 使用例
+    /// - Parameter theme: The theme to register.
+    ///
+    /// ## Example
     /// ```swift
     /// struct MyCustomTheme: Theme {
     ///     var id: String { "my-theme" }
-    ///     // ... その他の実装
+    ///     // ... the rest of the conformance
     /// }
     ///
     /// themeProvider.registerTheme(MyCustomTheme())
     /// ```
     public func registerTheme(_ theme: any Theme) {
-        // 既存のテーマを更新または追加
         if let index = availableThemes.firstIndex(where: { $0.id == theme.id }) {
             availableThemes[index] = theme
         } else {
@@ -162,9 +178,9 @@ public final class ThemeProvider {
         }
     }
 
-    /// 複数のカスタムテーマを登録
+    /// Registers several themes, replacing any that share an identifier.
     ///
-    /// - Parameter themes: 登録するテーマの配列
+    /// - Parameter themes: The themes to register.
     public func registerThemes(_ themes: [any Theme]) {
         themes.forEach { registerTheme($0) }
     }

@@ -1,7 +1,6 @@
 import SwiftUI
 
-/// カタログの詳細ビュー
-/// NavigationSplitViewの最後のカラムで、選択されたアイテムの詳細を表示
+/// The last column of the navigation split view, showing the detail of the selected item.
 struct CatalogDetailView: View {
     let category: CatalogCategory?
     let foundationItem: FoundationItem?

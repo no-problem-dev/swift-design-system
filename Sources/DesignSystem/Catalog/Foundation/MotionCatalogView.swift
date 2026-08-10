@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// モーションカタログビュー
 struct MotionCatalogView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
@@ -19,7 +18,7 @@ struct MotionCatalogView: View {
                 }
             }
 
-            // カテゴリ別デモ
+            // Demos grouped by category
             ForEach(MotionSpec.MotionCategory.allCases, id: \.self) { category in
                 categoryDemoSection(category: category)
             }

@@ -1,7 +1,6 @@
 import SwiftUI
 
-/// カタログのコンテンツビュー
-/// NavigationSplitViewの中央カラムで、選択されたカテゴリのアイテム一覧を表示
+/// The middle column of the navigation split view, listing the items in the selected category.
 struct CatalogContentView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing

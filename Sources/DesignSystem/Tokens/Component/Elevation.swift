@@ -1,52 +1,52 @@
 import SwiftUI
 
-/// Elevationレベル（高さ/影）
+/// How far a surface sits above what is behind it, expressed as a shadow.
 ///
-/// 一貫した影のスタイリングを提供し、UI 要素の階層と重要度を視覚的に表現する。
-/// レベルが高いほど要素が手前に浮き上がって見える。
+/// Consistent shadows convey the hierarchy and the importance of the elements on screen.
+/// The higher the level, the further forward the element appears.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// Card {
-///     Text("カード内容")
+///     Text("Card content")
 /// }
-/// .elevation(.level2)  // 標準的な影
+/// .elevation(.level2)  // The standard shadow
 ///
 /// RoundedRectangle(cornerRadius: 12)
 ///     .fill(Color.white)
 ///     .frame(width: 200, height: 100)
-///     .elevation(.level3)  // 中程度の影
+///     .elevation(.level3)  // A medium shadow
 /// ```
 ///
-/// ## レベルの使い分け
-/// - **Level 0**: 影なし - 埋め込み要素
-/// - **Level 1**: 軽い影 - リスト項目、軽いカード
-/// - **Level 2**: 標準的な影 - カード、パネル（推奨）
-/// - **Level 3**: 中程度の影 - 浮き上がったカード
-/// - **Level 4**: 強い影 - モーダル、ポップアップ
-/// - **Level 5**: 最大の影 - ドロワー、重要なダイアログ
+/// ## Choosing a level
+/// - **Level 0**: no shadow - inset elements
+/// - **Level 1**: a light shadow - list rows and light cards
+/// - **Level 2**: the standard shadow - cards and panels (recommended)
+/// - **Level 3**: a medium shadow - a raised card
+/// - **Level 4**: a strong shadow - modals and popovers
+/// - **Level 5**: the strongest shadow - drawers and important dialogs
 public enum Elevation {
-    /// 影なし
+    /// No shadow.
     case level0
 
-    /// 軽い影 - リスト項目、軽いカード
+    /// A light shadow, for list rows and light cards.
     case level1
 
-    /// 標準的な影 - カード、パネル
+    /// The standard shadow, for cards and panels.
     case level2
 
-    /// 中程度の影 - 浮き上がったカード
+    /// A medium shadow, for a raised card.
     case level3
 
-    /// 強い影 - モーダル、ポップアップ
+    /// A strong shadow, for modals and popovers.
     case level4
 
-    /// 最大の影 - ドロワー、重要なダイアログ
+    /// The strongest shadow, for drawers and important dialogs.
     case level5
 
     // MARK: - Shadow Properties
 
-    /// 影のぼかし半径
+    /// The blur radius of the shadow.
     public var radius: CGFloat {
         switch self {
         case .level0: return 0
@@ -58,7 +58,6 @@ public enum Elevation {
         }
     }
 
-    /// 影のオフセット
     public var offset: CGSize {
         switch self {
         case .level0: return .zero
@@ -70,7 +69,7 @@ public enum Elevation {
         }
     }
 
-    /// 影の不透明度（ライトモード）
+    /// The opacity of the shadow in light mode.
     public var opacity: Double {
         switch self {
         case .level0: return 0
@@ -82,13 +81,15 @@ public enum Elevation {
         }
     }
 
-    /// ダークモード用の不透明度調整
-    /// ダークモードでは黒い影よりも surface の明度差で奥行きを表現する。影は控えめ。
+    /// The shadow opacity adjusted for the given color scheme.
+    ///
+    /// Dark mode conveys depth through the difference in surface brightness rather than
+    /// through a black shadow, so the shadow is held back there.
     public func opacity(for colorScheme: ColorScheme) -> Double {
         colorScheme == .dark ? opacity * 0.55 : opacity
     }
 
-    /// Elevated surfaceに重ねるtintの不透明度。
+    /// The opacity of the tint laid over an elevated surface.
     public func surfaceTintOpacity(for colorScheme: ColorScheme) -> Double {
         switch self {
         case .level0:

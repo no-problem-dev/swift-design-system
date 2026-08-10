@@ -1,16 +1,18 @@
 import Foundation
 
-/// §2 Color Palette & Roles。
+/// §2 Color palette and roles.
 ///
-/// 2 段構成: primitive（生の色ラダー）→ role（意味付け）。
-/// state（hover/disabled 等）は「関数」を値として保持し、ブランドの導出規則
-/// （例: SmartHR の hover = darken 5%, disabled = alpha 0.5）を失わずに表す。
+/// The model has two levels: primitives, which are the raw color ladders, and roles, which give
+/// those colors meaning.
+/// States such as hover and disabled are stored as transforms rather than as finished colors, so a
+/// brand's own derivation rules survive: SmartHR darkens by 5% on hover and applies 0.5 alpha when
+/// disabled.
 public struct ColorSpec: Codable, Sendable, Equatable {
-    /// 生の色トークン（名前順を保つため配列）
+    /// The raw color tokens, held in an array so the brand's own ordering is preserved.
     public var primitives: [ColorToken]
-    /// 意味的ロール（primitive 名 or hex を参照）
+    /// The semantic roles, each referring to a primitive by name or giving a hex value directly.
     public var roles: [ColorRole]
-    /// 状態派生規則（hover / disabled / link-hover 等）
+    /// The rules that derive state colors such as hover, disabled, and link-hover.
     public var states: [ColorState]
 
     public init(primitives: [ColorToken], roles: [ColorRole], states: [ColorState] = []) {
@@ -19,18 +21,17 @@ public struct ColorSpec: Codable, Sendable, Equatable {
         self.states = states
     }
 
-    /// primitive を名前で引く（role 解決のヘルパ）。
+    /// Returns the primitive with the given name. Use it when resolving a role's reference.
     public func primitive(named name: String) -> ColorToken? {
         primitives.first { $0.name == name }
     }
 }
 
-/// 生の色トークン。
 public struct ColorToken: Codable, Sendable, Equatable {
     public var name: String
-    /// `#rrggbb` または `#rrggbbaa`
+    /// The color, written as #rrggbb or #rrggbbaa.
     public var hex: String
-    /// 由来メモ（例: "warm black hwb(56,17,1)"）
+    /// A note on where the color came from, such as "warm black hwb(56,17,1)".
     public var note: String?
 
     public init(name: String, hex: String, note: String? = nil) {
@@ -40,11 +41,15 @@ public struct ColorToken: Codable, Sendable, Equatable {
     }
 }
 
-/// 意味的ロール。`ref` は primitive 名（推奨）か直接 hex。
+/// A semantic color role.
+///
+/// The reference points at a primitive by name, which is preferred, or gives a hex value directly.
 public struct ColorRole: Codable, Sendable, Equatable {
-    /// 役割名（例: "MAIN", "TEXT_LINK", "BRAND"）。ブランド語彙をそのまま保持。
+    /// The name of the role, such as "MAIN", "TEXT_LINK", or "BRAND".
+    ///
+    /// The brand's own vocabulary is kept as it is rather than mapped onto a common set of names.
     public var role: String
-    /// 参照する primitive 名、または `#hex`
+    /// The name of the primitive to use, or a hex value written as #rrggbb.
     public var ref: String
     public var note: String?
 
@@ -55,7 +60,7 @@ public struct ColorRole: Codable, Sendable, Equatable {
     }
 }
 
-/// 状態派生規則。
+/// A named rule that derives a state color, such as hover or disabled, from a base color.
 public struct ColorState: Codable, Sendable, Equatable {
     public var name: String
     public var transform: ColorTransform
@@ -66,14 +71,14 @@ public struct ColorState: Codable, Sendable, Equatable {
     }
 }
 
-/// 色変換関数。ブランドの導出ロジックを宣言的に保持する。
+/// A color transform that keeps a brand's derivation logic in declarative form.
 public enum ColorTransform: Codable, Sendable, Equatable {
-    /// 暗くする（0.0–1.0）
+    /// Darkens the color by the given amount, from 0.0 to 1.0.
     case darken(Double)
-    /// 明るくする（0.0–1.0）
+    /// Lightens the color by the given amount, from 0.0 to 1.0.
     case lighten(Double)
-    /// 不透明度を掛ける（0.0–1.0）
+    /// Multiplies the opacity by the given amount, from 0.0 to 1.0.
     case alpha(Double)
-    /// 上記で表せない規則の自由記述
+    /// A free-form description of a rule the other cases cannot express.
     case custom(String)
 }

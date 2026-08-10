@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// PurpleHazeテーマ - ライトモードパレット
 struct PurpleHazeLightPalette: ColorPalette {
     // MARK: - Primary
     var primary: Color { Color(hex: "#7209B7") } // Royal Purple

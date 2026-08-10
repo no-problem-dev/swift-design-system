@@ -46,10 +46,10 @@ private struct TypographyScaleKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    /// 型ランプ（役割 → スタイルの写像）。
+    /// The type ramp, which maps a text role to a style.
     ///
-    /// `.typography(.bodyMedium)` モディファイアが内部で参照する。テーマが供給し、
-    /// 未適用時は ``DefaultTypographyScale``（既存 enum 由来）が使われるため見た目は不変。
+    /// The `.typography(.bodyMedium)` modifier reads it. A theme supplies it, and
+    /// ``DefaultTypographyScale`` is used when no theme has been applied.
     public var typographyScale: any TypographyScale {
         get { self[TypographyScaleKey.self] }
         set { self[TypographyScaleKey.self] = newValue }
@@ -63,7 +63,7 @@ private struct BorderScaleKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    /// 線幅スケール。`@Environment(\.borderScale)` で参照する。
+    /// The line widths used for borders and dividers.
     public var borderScale: any BorderScale {
         get { self[BorderScaleKey.self] }
         set { self[BorderScaleKey.self] = newValue }
@@ -77,7 +77,7 @@ private struct StateLayerKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    /// 状態レイヤー不透明度。hover/pressed/focus 等のオーバーレイ濃度。
+    /// The overlay opacities that signal hover, pressed, focus, and the other interaction states.
     public var stateLayer: any StateLayer {
         get { self[StateLayerKey.self] }
         set { self[StateLayerKey.self] = newValue }
@@ -91,7 +91,7 @@ private struct GradientTokensKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    /// 意味的グラデーション。`@Environment(\.gradients)` で参照する。
+    /// The named gradients, keyed by meaning rather than by color.
     public var gradients: any GradientTokens {
         get { self[GradientTokensKey.self] }
         set { self[GradientTokensKey.self] = newValue }
@@ -105,7 +105,7 @@ private struct ElevationScaleKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    /// 影ランプ。`.elevation(.levelN)` が内部で参照する。テーマが影の重さを差し替えられる。
+    /// The shadow ramp that `.elevation(.levelN)` reads, so a theme can set how heavy shadows are.
     public var elevationScale: any ElevationScale {
         get { self[ElevationScaleKey.self] }
         set { self[ElevationScaleKey.self] = newValue }
@@ -119,10 +119,10 @@ private struct IconSizeScaleKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    /// アイコンサイズスケール。
+    /// The sizes at which icons are drawn.
     ///
-    /// Image / Text emoji の表示サイズを token 化するためのスケール。
-    /// `.iconSize(.sm/.md/.lg/...)` モディファイアが内部で参照する。
+    /// Keeps symbol images and emoji text on the same set of sizes. The `.iconSize(.sm)`,
+    /// `.iconSize(.md)`, and related modifiers read it.
     public var iconSizeScale: any IconSizeScale {
         get { self[IconSizeScaleKey.self] }
         set { self[IconSizeScaleKey.self] = newValue }
@@ -136,16 +136,15 @@ private struct MotionKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    /// モーションタイミング設定。
+    /// The animation timings, so motion stays consistent across the app.
     ///
-    /// 一貫したアニメーションタイミングを提供する。
-    /// `.animate()` モディファイアと組み合わせて使う。
+    /// Pair it with the `.animate()` modifier rather than writing a duration at the call site.
     ///
-    /// ## 使用例
+    /// ## Example
     /// ```swift
     /// @Environment(\.motion) var motion
     ///
-    /// Button("タップ") { }
+    /// Button("Tap") { }
     ///     .scaleEffect(isPressed ? 0.98 : 1.0)
     ///     .animate(motion.tap, value: isPressed)
     /// ```

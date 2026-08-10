@@ -1,29 +1,30 @@
 import SwiftUI
 
 public extension Color {
-    /// HEX文字列からColorを作成
+    /// Creates a color from a hex string, for brand colors given in the form a designer hands over.
     ///
-    /// カスタムブランドカラーやデザイナー提供の色を HEX 形式で定義できる。
-    /// `#` の有無・3/6/8 桁の HEX 形式に対応する。
+    /// The leading `#` is optional, and 3, 6, and 8 digit forms are all accepted. Anything else,
+    /// including an empty or malformed string, produces opaque black rather than failing, so a
+    /// typo shows up on screen instead of at the call site.
     ///
-    /// - Parameter hex: HEX文字列（例: `"#FF5733"`, `"FF5733"`, `"#F57"`, `"AAFF5733"`）
+    /// - Parameter hex: The hex string, such as `"#FF5733"`, `"FF5733"`, `"#F57"`, or `"AAFF5733"`.
     ///
-    /// ## 使用例
+    /// ## Example
     /// ```swift
-    /// // 6桁HEX（最も一般的）
+    /// // Six digits, the usual form
     /// let brandColor = Color(hex: "#FF5733")
     ///
-    /// // #なしでも可
+    /// // The # can be left off
     /// let accentColor = Color(hex: "3B82F6")
     ///
-    /// // 3桁短縮形式
-    /// let redColor = Color(hex: "#F00")  // #FF0000と同じ
+    /// // Three digit shorthand
+    /// let redColor = Color(hex: "#F00")  // same as #FF0000
     ///
-    /// // 8桁HEX（アルファチャンネル付き）
-    /// let semiTransparent = Color(hex: "80FF5733")  // 50%透明度
+    /// // Eight digits, with an alpha channel
+    /// let semiTransparent = Color(hex: "80FF5733")  // 50% opacity
     /// ```
     ///
-    /// ## カスタムパレットでの使用
+    /// ## Use in a custom palette
     /// ```swift
     /// struct MyBrandPalette: ColorPalette {
     ///     var primary: Color { Color(hex: "#007AFF") }
@@ -33,10 +34,10 @@ public extension Color {
     /// }
     /// ```
     ///
-    /// ## フォーマット
-    /// - **3桁**: RGB（各チャンネル4bit）- 例: `"F00"` → `"FF0000"`
-    /// - **6桁**: RGB（各チャンネル8bit）- 例: `"FF5733"`
-    /// - **8桁**: ARGB（アルファ+RGB）- 例: `"80FF5733"`
+    /// ## Formats
+    /// - **3 digits**: RGB, 4 bits per channel. `"F00"` expands to `"FF0000"`.
+    /// - **6 digits**: RGB, 8 bits per channel, such as `"FF5733"`.
+    /// - **8 digits**: ARGB, with alpha first, such as `"80FF5733"`.
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0

@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Attachment コンポーネント（AttachmentThumbnail / AttachmentStrip）のカタログビュー
 struct AttachmentCatalogView: View {
     @Environment(\.spacingScale) private var spacing
 

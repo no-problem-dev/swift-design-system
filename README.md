@@ -2,7 +2,7 @@ English | [日本語](./README.ja.md)
 
 # DesignSystem
 
-Type-safe and extensible design system for SwiftUI
+A type-safe, themeable design system for SwiftUI apps.
 
 ![Swift](https://img.shields.io/badge/Swift-6.2-orange.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-iOS%2017.0+%20%7C%20macOS%2014.0+-blue.svg)
@@ -10,11 +10,61 @@ Type-safe and extensible design system for SwiftUI
 
 ## Features
 
-- **3-layer token system** — Clear hierarchy: Primitive → Semantic → Component
-- **Type-safe** — Protocol-based design for high extensibility
-- **7 built-in themes** — Default, Ocean, Forest, Sunset, PurpleHaze, Monochrome, HighContrast
-- **Light/Dark mode support** — Seamless mode switching across all themes
-- **Rich component library** — Button, Card, Chip, TextField, FAB, Snackbar, ProgressBar, and more
+- **Three-layer token system** — Primitive → Semantic → Component, with a clear rule about which layer a view may touch
+- **Protocol-based** — a theme supplies values by conforming, so a theme that forgets a token fails to compile
+- **Seven built-in themes** — Default, Ocean, Forest, Sunset, PurpleHaze, Monochrome, HighContrast, each with a separate light and dark palette
+- **Components on tokens** — Button, Card, Chip, TextField, FAB, Snackbar, ProgressBar and more, all restyled by a theme switch without per-call work
+- **Glass surfaces** — components adapt to `SurfaceStyle`, reinterpreting elevation as border luminance instead of shadow depth
+
+Every component has a rendered reference checked into the repo:
+[`Tests/DesignSystemTests/__Snapshots__/`](Tests/DesignSystemTests/__Snapshots__) holds
+148 images covering 22 components in both light and dark, verified by the snapshot suite
+on an iOS simulator.
+
+## Quick Start
+
+Install a theme once at the root, then read tokens from the environment anywhere below it:
+
+```swift
+@main
+struct MyApp: App {
+    @State private var themeProvider = ThemeProvider()
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView().theme(themeProvider)
+        }
+    }
+}
+
+struct ContentView: View {
+    @Environment(\.spacingScale) var spacing
+
+    var body: some View {
+        Card(elevation: .level2) {
+            VStack(alignment: .leading, spacing: spacing.md) {
+                Text("Weekly report").typography(.titleMedium)
+                Chip("Ready").chipStyle(.filled)
+            }
+        }
+        .padding(spacing.xl)
+    }
+}
+```
+
+Switching theme or mode at runtime restyles everything at once:
+
+```swift
+themeProvider.switchToTheme(id: "ocean")
+themeProvider.toggleMode()   // system → light → dark → system
+```
+
+## Documentation
+
+[**API reference and guides**](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/) —
+including [Getting Started](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/gettingstarted/),
+[Token Architecture](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/tokenarchitecture/),
+and [Custom Theme](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/customtheme/).
 
 ## Installation
 
@@ -25,83 +75,9 @@ dependencies: [
 ]
 ```
 
-## Quick Start
-
-### Applying a Theme
-
-```swift
-@main
-struct MyApp: App {
-    @State private var themeProvider = ThemeProvider()
-
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .theme(themeProvider)
-        }
-    }
-}
-```
-
-### Using Design Tokens
-
-```swift
-struct MyView: View {
-    @Environment(\.colorPalette) var colors
-    @Environment(\.spacingScale) var spacing
-
-    var body: some View {
-        VStack(spacing: spacing.lg) {
-            Text("Heading")
-                .typography(.headlineLarge)
-                .foregroundStyle(colors.primary)
-            Text("Body")
-                .typography(.bodyMedium)
-                .foregroundStyle(colors.onSurface)
-        }
-        .padding(spacing.xl)
-        .background(colors.surface)
-    }
-}
-```
-
-### Components
-
-```swift
-// Button
-Button("Save") { save() }
-    .buttonStyle(.primary)
-    .buttonSize(.large)
-
-// Card
-Card(elevation: .level2) {
-    Text("Card content").typography(.bodyMedium)
-}
-
-// Text Field
-DSTextField("Email", text: $email, placeholder: "example@email.com", leadingIcon: "envelope")
-```
-
-### Switching Themes
-
-```swift
-// Switch to a built-in theme
-themeProvider.switchToTheme(id: "ocean")
-
-// Cycle mode (system → light → dark → system)
-themeProvider.toggleMode()
-```
-
-## Documentation
-
-See the DocC documentation for detailed guides and API reference.
-
-| Guide | Description |
-|-------|-------------|
-| [Getting Started](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/gettingstarted/) | Setup and basic usage |
-| [Token Architecture](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/tokenarchitecture/) | 3-layer token system design |
-| [Custom Theme](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/customtheme/) | Creating a custom theme |
-| [API Reference](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/) | Complete public API |
+The package vends three libraries: `DesignSystem` (the SwiftUI system), `DesignSpec`
+(a brand's design specification as pure data), and `DesignCatalogKit` (cross-brand
+gallery and token diffing).
 
 ## Requirements
 
@@ -112,10 +88,3 @@ See the DocC documentation for detailed guides and API reference.
 ## License
 
 MIT License — see [LICENSE](LICENSE)
-
-## Links
-
-- [Full Documentation](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/)
-- [Report Issues](https://github.com/no-problem-dev/swift-design-system/issues)
-- [Discussions](https://github.com/no-problem-dev/swift-design-system/discussions)
-- [Release Process](RELEASE_PROCESS.md)

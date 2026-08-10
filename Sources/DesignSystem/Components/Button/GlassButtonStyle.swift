@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// 中立（無着色）の Liquid Glass ボタンスタイル。
+/// A neutral, untinted Liquid Glass button style.
 ///
-/// `.primaryGlass` の対になるセカンダリアクション用。背景を透過させつつ、
-/// 同じガラス言語でアクション群を構成したい場合に使う。
-/// ガラス面（`surfaceStyle(.glass)`）上のセカンダリボタンの標準形。
+/// Use it for the secondary action that pairs with `.primaryGlass`, when a group of actions
+/// should let the background show through and share the same glass language.
+/// It is the standard form for a secondary button on a glass surface (`surfaceStyle(.glass)`).
 public struct GlassButtonStyle: ButtonStyle {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.buttonSize) private var buttonSize
@@ -19,7 +19,7 @@ public struct GlassButtonStyle: ButtonStyle {
             .foregroundStyle(colorPalette.onSurface)
             .padding(.horizontal, buttonSize.horizontalPadding)
             .frame(height: buttonSize.height)
-            // macOS は内容幅（HIG: フルワイド塗りは watchOS のイディオム。macOS は幅を内容に合わせる）。
+            // macOS sizes to the content (in the HIG a full-width fill is a watchOS idiom; macOS fits the width to the content).
             #if os(iOS)
             .frame(maxWidth: .infinity)
             #endif
@@ -49,7 +49,7 @@ public struct GlassButtonStyle: ButtonStyle {
 }
 
 public extension ButtonStyle where Self == GlassButtonStyle {
-    /// 中立（無着色）の Liquid Glass ボタンスタイル。
+    /// A neutral, untinted Liquid Glass button style.
     static var glass: GlassButtonStyle {
         GlassButtonStyle()
     }

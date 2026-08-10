@@ -1,17 +1,17 @@
 import SwiftUI
 
-/// `SectionCard` 内の行と行のあいだに挿入する 0.5pt のヘアライン区切り。
+/// A 0.5pt hairline inserted between rows inside a `SectionCard`.
 ///
-/// `outlineVariant` カラー（outline の半透明）を使い、カードの surface 上で
-/// 控えめに行を分割する。左側に `spacing.lg` の inset を持ち、List の
-/// セパレータと同じ視覚バランスになる。
+/// It uses the `outlineVariant` color, a translucent form of `outline`, to divide rows quietly
+/// on the surface of the card. A `spacing.lg` inset on the leading side gives it the same visual
+/// balance as a List separator.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
-/// SectionCard("設定") {
-///     SectionRow { Text("項目 1") }
+/// SectionCard("Settings") {
+///     SectionRow { Text("Item 1") }
 ///     SectionRowDivider()
-///     SectionRow { Text("項目 2") }
+///     SectionRow { Text("Item 2") }
 /// }
 /// ```
 public struct SectionRowDivider: View {

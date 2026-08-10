@@ -2,13 +2,13 @@
 import SwiftUI
 import AVKit
 
-// MediaViewer のフルスクリーン詳細ビュー。
-// 参照: Kavsoft「iOS Photos App Style Transitions Using SwiftUI」(2026-03) の
-// DetailPhotosView / PanGesture を MediaViewerItem 配列版に移植。
-// 画像ページは「Multiple Image Viewer - AsyncImage」(2024-12)、
-// 動画/音声ページは「Zoom Transitions」(2024-07) の CustomVideoPlayerView に準拠。
+// The full screen detail view of MediaViewer.
+// Reference: DetailPhotosView / PanGesture from Kavsoft "iOS Photos App Style Transitions
+// Using SwiftUI" (2026-03), ported to work on an array of MediaViewerItem.
+// Image pages follow "Multiple Image Viewer - AsyncImage" (2024-12), and video and audio
+// pages follow CustomVideoPlayerView from "Zoom Transitions" (2024-07).
 
-/// ソースビューとビューア間で共有する状態
+/// State shared between the source view and the viewer.
 struct MediaViewerConfig {
     var selectedItem: MediaViewerItem?
     var sourceLocation: CGRect = .zero
@@ -100,7 +100,6 @@ struct MediaViewerDetailView: View {
         }
     }
 
-    /// 閉じるボタンオーバーレイ
     private var closeOverlay: some View {
         VStack {
             HStack {
@@ -150,7 +149,7 @@ struct MediaViewerDetailView: View {
     }
 }
 
-/// メディア種別ごとのページ内容
+/// One page of the viewer, drawn according to the kind of media it holds.
 @available(iOS 18.0, *)
 fileprivate struct MediaViewerPage: View {
     var item: MediaViewerItem
@@ -178,8 +177,9 @@ fileprivate struct MediaViewerPage: View {
                 }
                 .pinchZoom()
         case .imageData(let data, _):
-            /// すでに手元にあるので待ちが無い。**プレースホルダを挟まない** ——
-            /// 挟むと、開いた瞬間に一度灰色になってから絵が出る（取りに行っていないのに待つ絵になる）。
+            /// The bytes are already available, so there is nothing to wait for. **Do not put a
+            /// placeholder here.** With one, opening the viewer flashes grey before the picture
+            /// appears, which shows a wait for a load that never happens.
             Rectangle()
                 .foregroundStyle(.clear)
                 .overlay {
@@ -196,7 +196,7 @@ fileprivate struct MediaViewerPage: View {
     }
 }
 
-/// 動画・オーディオ再生ページ
+/// A page that plays video or audio with `AVPlayer`.
 @available(iOS 18.0, *)
 fileprivate struct MediaViewerPlayerPage: View {
     var url: URL
@@ -228,7 +228,8 @@ fileprivate struct MediaViewerVideoPlayerView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let controller = AVPlayerViewController()
         controller.player = player
-        /// ビューア文脈のため再生コントロールを表示し、レターボックスで全体を見せる
+        /// This is a viewer, so show the playback controls and letterbox the video to keep all
+        /// of it visible.
         controller.showsPlaybackControls = true
         controller.videoGravity = .resizeAspect
         return controller
@@ -284,7 +285,7 @@ fileprivate struct MediaViewerPanGesture: UIGestureRecognizerRepresentable {
     }
 }
 
-/// アニメーションを無効化したトランザクションで状態変更を適用する
+/// Applies state changes inside a transaction that has animations disabled.
 func withoutAnimation(_ result: @escaping () -> ()) {
     var transaction = Transaction()
     transaction.disablesAnimations = true

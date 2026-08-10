@@ -1,22 +1,23 @@
 import SwiftUI
 
 public extension View {
-    /// 45 度に傾いた光沢の帯がビューを横切るシャインエフェクト。
+    /// Sweeps a band of gloss, tilted 45 degrees, across the view.
     ///
-    /// `trigger` の変化ごとに 1 回走る。連続で光らせたい場合は呼び出し側で
-    /// 一定間隔で `trigger` をトグルする。
+    /// It runs once per change of the trigger value. To make it shine repeatedly, toggle that
+    /// value from the call site at a regular interval.
     ///
-    /// 出典: Kavsoft "SwiftUI Shine Effect - Custom View Modifier" (2023-11)
+    /// Source: Kavsoft "SwiftUI Shine Effect - Custom View Modifier" (2023-11)
     @ViewBuilder
     func shine(_ toggle: Bool, duration: CGFloat = 0.5, clipShape: some Shape = .rect, rightToLeft: Bool = false) -> some View {
         self
             .overlay {
                 GeometryReader {
                     let size = $0.size
-                    // 負・極小の duration を排除
+                    // Rule out negative and extremely small durations
                     let moddedDuration = max(0.3, duration)
-                    // 45° 回転 + scaleEffect(y: 8) で帯の対角が伸びるため、
-                    // 退避距離は幅だけでなく高さも足す（縦長ビューでの残留を防ぐ。出典からの修正点）
+                    // The 45° rotation and scaleEffect(y: 8) stretch the band along its diagonal,
+                    // so the off-screen distance adds the height as well as the width (this keeps
+                    // the band from lingering on tall views, and is a fix on top of the source)
                     let travel = size.width + size.height
 
                     Rectangle()

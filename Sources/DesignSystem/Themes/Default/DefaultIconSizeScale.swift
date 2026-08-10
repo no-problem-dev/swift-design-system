@@ -1,8 +1,6 @@
 import Foundation
 
-/// デフォルトのアイコンサイズスケール。
-///
-/// Material Design 3 / HIG の推奨値を参照した 7 段階。
+/// Seven icon sizes, taken from the sizes Material Design 3 and the Human Interface Guidelines recommend.
 public struct DefaultIconSizeScale: IconSizeScale {
     public init() {}
 

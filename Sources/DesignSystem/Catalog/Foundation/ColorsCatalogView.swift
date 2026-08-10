@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// カラーカタログビュー
 struct ColorsCatalogView: View {
     @Environment(ThemeProvider.self) private var themeProvider
     @Environment(\.colorPalette) private var colors

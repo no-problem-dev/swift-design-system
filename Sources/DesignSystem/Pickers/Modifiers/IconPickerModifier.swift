@@ -1,8 +1,12 @@
 import SwiftUI
 
-/// アイコンピッカーを表示するViewModifier（SF Symbols専用）
+/// Presents a searchable sheet of SF Symbols and writes the chosen symbol name back to a binding.
 ///
-/// ## 使用例
+/// Tapping a symbol sets the binding and dismisses the sheet, so the picker is a single decision
+/// rather than a place to browse. Apply it with the
+/// `iconPicker(categories:selectedIcon:isPresented:)` modifier.
+///
+/// ## Example
 /// ```swift
 /// struct MyView: View {
 ///     @State private var selectedIcon: String?
@@ -11,16 +15,16 @@ import SwiftUI
 ///     let categories = [
 ///         IconCategory(
 ///             id: "general",
-///             displayName: "一般",
+///             displayName: "General",
 ///             icons: [
-///                 IconItem(id: "book", systemName: "book.fill", displayName: "本"),
-///                 IconItem(id: "briefcase", systemName: "briefcase.fill", displayName: "ビジネス"),
+///                 IconItem(id: "book", systemName: "book.fill", displayName: "Book"),
+///                 IconItem(id: "briefcase", systemName: "briefcase.fill", displayName: "Business"),
 ///             ]
 ///         )
 ///     ]
 ///
 ///     var body: some View {
-///         Button("SF Symbolsを選択") {
+///         Button("Select a symbol") {
 ///             showIconPicker = true
 ///         }
 ///         .iconPicker(
@@ -32,8 +36,8 @@ import SwiftUI
 /// }
 /// ```
 ///
-/// ## 注意
-/// このピッカーは SF Symbols 専用。絵文字を使う場合は `.emojiPicker()` を使用すること。
+/// ## Note
+/// This picker only handles SF Symbols. Use `.emojiPicker()` for emoji.
 public struct IconPickerModifier: ViewModifier {
     let categories: [any IconCategoryProtocol]
     @Binding var selectedIcon: String?
@@ -56,13 +60,13 @@ public struct IconPickerModifier: ViewModifier {
 // MARK: - View Extension
 
 public extension View {
-    /// アイコンピッカーを表示する。
+    /// Attaches an icon picker sheet to this view.
     ///
     /// - Parameters:
-///   - categories: 表示するアイコンカテゴリのリスト
-    ///   - selectedIcon: 選択されたアイコンの値
-    ///   - isPresented: ピッカーの表示状態
-    /// - Returns: アイコンピッカーが追加されたView
+    ///   - categories: The categories to show, one section each, in the order given.
+    ///   - selectedIcon: The chosen SF Symbols name. Set to nil when the picker is cleared, and
+    ///     nil means nothing is selected yet.
+    ///   - isPresented: Whether the sheet is showing.
     func iconPicker(
         categories: [any IconCategoryProtocol],
         selectedIcon: Binding<String?>,
@@ -78,7 +82,6 @@ public extension View {
 
 // MARK: - Internal View
 
-/// アイコンピッカーの内部実装View（非公開）
 struct DSIconPickerView: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
@@ -94,12 +97,10 @@ struct DSIconPickerView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // 検索バー
                 searchBar
                     .padding(.horizontal, spacing.md)
                     .padding(.vertical, spacing.sm)
 
-                // カテゴリごとのアイコン表示
                 ScrollView {
                     VStack(alignment: .leading, spacing: spacing.lg) {
                         ForEach(Array(filteredCategories.enumerated()), id: \.offset) { index, category in

@@ -1,24 +1,25 @@
 import SwiftUI
 
-/// Snackbarの表示状態を管理するObservableオブジェクト
+/// The presentation state of a snackbar.
 ///
-/// Snackbar の表示・非表示・自動消滅タイマーなどの状態を一元管理する。
+/// Holds whether the snackbar is on screen, the message and actions it shows, and the timer that
+/// dismisses it on its own.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// @State private var snackbarState = SnackbarState()
 ///
-/// // Snackbarを表示
+/// // Show a snackbar
 /// snackbarState.show(
-///     message: "保存しました",
+///     message: "Saved",
 ///     duration: 3.0
 /// )
 ///
-/// // アクション付きで表示
+/// // Show one with an action
 /// snackbarState.show(
-///     message: "削除しました",
-///     primaryAction: SnackbarAction(title: "元に戻す") {
-///         // 元に戻す処理
+///     message: "Deleted",
+///     primaryAction: SnackbarAction(title: "Undo") {
+///         // Undo the deletion
 ///     },
 ///     duration: 5.0
 /// )
@@ -26,46 +27,41 @@ import SwiftUI
 @MainActor
 @Observable
 public final class SnackbarState {
-    /// Snackbarが表示されているかどうか
     public private(set) var isVisible: Bool = false
 
-    /// 表示するメッセージ
     public private(set) var message: String = ""
 
-    /// プライマリアクション（メインアクションボタン）
     public private(set) var primaryAction: SnackbarAction?
 
-    /// セカンダリアクション（補助アクションボタン）
     public private(set) var secondaryAction: SnackbarAction?
 
-    /// 自動消滅タイマー
     private var dismissTask: Task<Void, Never>?
 
     public init() {}
 
-    /// Snackbarを表示する
+    /// Shows the snackbar, replacing whatever it is showing and restarting the dismiss timer.
     ///
     /// - Parameters:
-    ///   - message: 表示するメッセージ
-    ///   - primaryAction: プライマリアクション（オプション）
-    ///   - secondaryAction: セカンダリアクション（オプション）
-    ///   - duration: 自動消滅までの秒数（デフォルト: 5秒）
+    ///   - message: The message to show.
+    ///   - primaryAction: The main action button.
+    ///   - secondaryAction: The supporting action button.
+    ///   - duration: The number of seconds before the snackbar dismisses itself.
     public func show(
         message: String,
         primaryAction: SnackbarAction? = nil,
         secondaryAction: SnackbarAction? = nil,
         duration: TimeInterval = 5.0
     ) {
-        // 既存のタイマーをキャンセル
+        // Cancel the existing timer
         dismissTask?.cancel()
 
-        // 状態を更新
+        // Update the state
         self.message = message
         self.primaryAction = primaryAction
         self.secondaryAction = secondaryAction
         self.isVisible = true
 
-        // 自動消滅タイマーをセット
+        // Set the auto dismiss timer
         dismissTask = Task {
             try? await Task.sleep(nanoseconds: UInt64(duration * 1_000_000_000))
             if !Task.isCancelled {
@@ -74,19 +70,19 @@ public final class SnackbarState {
         }
     }
 
-    /// Snackbarを非表示にする
+    /// Hides the snackbar and cancels the auto dismiss timer.
     public func dismiss() {
         dismissTask?.cancel()
         isVisible = false
     }
 }
 
-/// Snackbarのアクションボタン
 public struct SnackbarAction {
-    /// アクションボタンのタイトル
     public let title: String
 
-    /// アクションが実行されたときのハンドラ
+    /// The work performed when the button is tapped.
+    ///
+    /// The snackbar dismisses itself as soon as this starts, without waiting for it to finish.
     public let action: @MainActor () async -> Void
 
     public init(title: String, action: @escaping @MainActor () async -> Void) {

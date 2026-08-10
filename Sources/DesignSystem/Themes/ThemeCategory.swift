@@ -1,30 +1,24 @@
 import Foundation
 
-/// テーマのカテゴリ分類
+/// The group a theme belongs to when themes are listed by purpose.
 ///
-/// テーマを用途や目的によってグループ化する。
-///
-/// ## カテゴリ
-/// - **standard**: デフォルトの基本テーマ
-/// - **brandPersonality**: ブランドの個性を表現する多彩なテーマ（Ocean, Forest, Sunsetなど）
-/// - **accessibility**: WCAG準拠の高コントラストテーマ
-/// - **custom**: アプリ固有のカスタムテーマ
+/// ## Categories
+/// - **standard**: The basic light and dark theme.
+/// - **brandPersonality**: Themes that carry a brand personality, such as Ocean, Forest, and Sunset.
+/// - **accessibility**: High contrast themes that meet WCAG.
+/// - **custom**: Themes an app defines for itself.
 public enum ThemeCategory: String, Sendable, CaseIterable, Identifiable {
-    /// 標準テーマ（デフォルト）
     case standard = "標準"
 
-    /// カスタムテーマ（ユーザー定義）
     case custom = "カスタム"
 
-    /// ブランドパーソナリティテーマ
     case brandPersonality = "ブランドパーソナリティ"
 
-    /// アクセシビリティテーマ
     case accessibility = "アクセシビリティ"
 
     public var id: String { rawValue }
 
-    /// カテゴリの説明
+    /// A sentence describing the category, for display below its name.
     public var description: String {
         switch self {
         case .standard:
@@ -38,7 +32,7 @@ public enum ThemeCategory: String, Sendable, CaseIterable, Identifiable {
         }
     }
 
-    /// カテゴリのアイコン名
+    /// The name of the SF Symbol that stands for the category.
     public var icon: String {
         switch self {
         case .standard:

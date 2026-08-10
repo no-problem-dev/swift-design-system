@@ -1,11 +1,10 @@
 import Foundation
 
-/// 角丸スケールプロトコル
+/// The corner radii a theme supplies.
 ///
-/// 一貫した角丸（border-radius）を提供するためのスケールシステム。
-/// カード、ボタン、入力フィールドなどの角丸を統一できる。
+/// Keeps the corners of cards, buttons, and input fields consistent with one another.
 ///
-/// ## 使用例
+/// ## Example
 /// ```swift
 /// @Environment(\.radiusScale) var radius
 ///
@@ -13,54 +12,56 @@ import Foundation
 ///     .fill(Color.blue)
 ///     .frame(width: 100, height: 100)
 ///
-/// // または
-/// Text("ボタン")
+/// // Or
+/// Text("Button")
 ///     .padding()
 ///     .background(Color.blue)
 ///     .cornerRadius(radius.lg)
 /// ```
 ///
-/// ## スケール一覧
-/// - `none`: 0pt - 角丸なし（四角）
-/// - `xs`: 2pt - 最小の角丸
-/// - `sm`: 4pt - 小さい角丸
-/// - `md`: 8pt - 中程度の角丸（カードなどに推奨）
-/// - `lg`: 12pt - 大きい角丸
-/// - `xl`: 16pt - とても大きい角丸
-/// - `xxl`: 20pt - 非常に大きい角丸
-/// - `card`: 24pt - 主役サーフェス（コンポーザー、ヒーローカードなど）
-/// - `full`: 9999pt - 完全な円形（ボタン、アバターなど）
+/// ## The scale
+/// - `none`: 0pt - square corners
+/// - `xs`: 2pt - the smallest rounding
+/// - `sm`: 4pt - a small rounding
+/// - `md`: 8pt - a medium rounding (recommended for cards)
+/// - `lg`: 12pt - a large rounding
+/// - `xl`: 16pt - a very large rounding
+/// - `xxl`: 20pt - an extra large rounding
+/// - `card`: 24pt - a leading surface (a composer, a hero card)
+/// - `full`: 9999pt - fully rounded (buttons, avatars)
 public protocol RadiusScale: Sendable {
-    /// 角丸なし（0pt）
+    /// Square corners (0pt).
     var none: CGFloat { get }
 
-    /// 最小の角丸（2pt）
+    /// The smallest rounding (2pt).
     var xs: CGFloat { get }
 
-    /// 小さい角丸（4pt）
+    /// A small rounding (4pt).
     var sm: CGFloat { get }
 
-    /// 中程度の角丸（8pt）- カードなどに推奨
+    /// A medium rounding (8pt), recommended for cards.
     var md: CGFloat { get }
 
-    /// 大きい角丸（12pt）
+    /// A large rounding (12pt).
     var lg: CGFloat { get }
 
-    /// とても大きい角丸（16pt）
+    /// A very large rounding (16pt).
     var xl: CGFloat { get }
 
-    /// 非常に大きい角丸（20pt）
+    /// An extra large rounding (20pt).
     var xxl: CGFloat { get }
 
-    /// 主役サーフェスの角丸（24pt）- コンポーザー、ヒーローカードなど
-    /// 画面の主役となる大きな面に使う。xxl(20) より一段強い丸み。
+    /// The rounding for a leading surface (24pt), such as a composer or a hero card.
+    ///
+    /// Use it on the large surface a screen is built around. One step rounder than `xxl`
+    /// at 20pt.
     var card: CGFloat { get }
 
-    /// 完全な円形（9999pt）- ボタン、アバターなど
+    /// Fully rounded (9999pt), for buttons and avatars.
     var full: CGFloat { get }
 }
 
 public extension RadiusScale {
-    /// 既存テーマの後方互換のためのデフォルト（24pt）。
+    /// The radius used when a theme does not supply its own (24pt).
     var card: CGFloat { 24 }
 }
