@@ -35,8 +35,16 @@ jobs:
         run: |
           TAG="${GITHUB_REF_NAME}"
           VERSION="${TAG#v}"
+          # 版番号を正規表現に埋めるので 2 つ手当てする。
+          #
+          # 1. ドットをエスケープする。素のままだと `.` がワイルドカードになる
+          # 2. 末尾に境界を置く。**前方一致のままだと 1.0.1 が 1.0.17 に当たる。**
+          #    しかも awk は上から順に拾うので、降順の CHANGELOG では
+          #    1.0.17 の節を開いて 1.0.2 の見出しで閉じ、そのあと 1.0.1 でまた開く。
+          #    結果、1.0.1 のリリースノートに 1.0.17 の内容が混ざって公開されていた
+          ESC=$(printf '%s' "$VERSION" | sed 's/\./\\./g')
           if [ -f CHANGELOG.md ]; then
-            awk "/^## \[?${VERSION}/{flag=1; next} /^## \[?[0-9]/{flag=0} flag" CHANGELOG.md > /tmp/notes.md
+            awk "/^## \\[?${ESC}\\]?([^0-9.]|\$)/{flag=1; next} /^## \\[?[0-9]/{flag=0} flag" CHANGELOG.md > /tmp/notes.md
           fi
           if [ -s /tmp/notes.md ]; then
             gh release create "$TAG" --title "$TAG" --notes-file /tmp/notes.md

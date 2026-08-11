@@ -169,10 +169,31 @@ REST="${CURRENT#*.}"
 MINOR="${REST%%.*}"
 PATCH="${CURRENT##*.}"
 
+# CHANGELOG の [Unreleased] に宣言された「挙動の破壊」を読む。
+#
+# **シンボル差分は挙動の破壊を見ない。** 今まで値を返していた関数が throw するように
+# なっても、型は 1 文字も変わらないので removed=0 added=0 になる。しかし利用者のコードは
+# 実行時に壊れるので、SemVer 上これは破壊的変更（SemVer 8 項は「後方互換でない変更」であって
+# 「シグネチャの変更」ではない）。
+#
+# 実例: structured-data で YAML のタグ・alias を「黙って捨てる」から「throw する」に変えた回。
+# シンボル差分は minor と算出したが、`!!str 42` を渡していた利用者は全員壊れる。
+#
+# そこで CHANGELOG に宣言の口を 1 つだけ開ける。**上げることしかできない。**
+# 下げられないので、§0.4.3 が潰した「儀式的な major」は復活しない
+# （依存のピンを上げただけの回は、この印を書かない限り patch のまま）。
+UNRELEASED_BREAKING=false
+if [ -f "$REPO/CHANGELOG.md" ]; then
+  if awk '/^## \[?[Uu]nreleased\]?/{f=1;next} /^## \[?[0-9]/{f=0} f' "$REPO/CHANGELOG.md" \
+     | grep -qiE '^\s*(###\s*Removed|.*\bBREAKING\b)'; then
+    UNRELEASED_BREAKING=true
+  fi
+fi
+
 # 0.x は minor が破壊的軸（SemVer 4 項: 0.y.z の互換性は保証されない）。
 # 1.0.0 未満で major を繰り上げると「安定版を出した」という別の意味になってしまうため、
 # 破壊的変更は minor、非破壊は patch に写す。oss-doctor の dep-generation-gap と同じ規則。
-if [ "$REMOVED" -gt 0 ] || [ -n "$PUBLIC_DEP_BREAK" ]; then
+if [ "$REMOVED" -gt 0 ] || [ -n "$PUBLIC_DEP_BREAK" ] || [ "$UNRELEASED_BREAKING" = true ]; then
   BREAKING=true
 else
   BREAKING=false
@@ -182,6 +203,8 @@ if [ -n "$PUBLIC_DEP_BREAK" ]; then
   REASON="public dependency の世代変化:$PUBLIC_DEP_BREAK"
 elif [ "$REMOVED" -gt 0 ]; then
   REASON="public シンボルの削除・変更 ${REMOVED} 件"
+elif [ "$UNRELEASED_BREAKING" = true ]; then
+  REASON="CHANGELOG が挙動の破壊を宣言（シグネチャ差分には映らない）"
 elif [ "$ADDED" -gt 0 ]; then
   REASON="public シンボルの追加 ${ADDED} 件"
 else
