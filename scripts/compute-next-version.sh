@@ -65,11 +65,19 @@ latest_semver_tag() {
 
 # 自前の public API 表面を「USR + 宣言文字列」の集合として書き出す。
 # 宣言文字列も含めるのは、USR が同じままシグネチャだけ変わる破壊的変更を捉えるため。
+#
+# 読むのは今回の dump が書いた出力ディレクトリだけ。.build 全体を舐めると、DocC や
+# oss-doctor が以前に残した extracted-symbols/ の古い *.symbols.json まで cat され、
+# 「昔の宣言」と「今の宣言」の和集合が HEAD 側として出てくる。古い行が消えないので
+# removed=0 になり、シグネチャ変更を捉えるという上の目的がそこで無効化される。
 dump_api() {
-  local dir="$1" out="$2"
-  ( cd "$dir" && swift package dump-symbol-graph \
-      --minimum-access-level public --skip-synthesized-members >/dev/null 2>&1 ) || true
-  find "$dir/.build" -name '*.symbols.json' -exec cat {} + 2>/dev/null \
+  local dir="$1" out="$2" graph_dir
+  : > "$out"
+  graph_dir="$( cd "$dir" && swift package dump-symbol-graph \
+      --minimum-access-level public --skip-synthesized-members 2>/dev/null \
+      | sed -n 's/^Files written to //p' | tail -1 || true )"
+  [ -n "$graph_dir" ] && [ -d "$graph_dir" ] || return 0
+  find "$graph_dir" -name '*.symbols.json' -exec cat {} + 2>/dev/null \
     | jq -r '.symbols[]? | select(.accessLevel=="public" or .accessLevel=="open")
              | select(.identifier.precise|contains("SYNTHESIZED")|not)
              | "\(.identifier.precise)\t\([.declarationFragments[]?.spelling]|join(""))"' \
@@ -98,9 +106,14 @@ git worktree add --detach "$WORK/baseline" "$BASE_REF" >/dev/null 2>&1
 dump_api "$WORK/baseline" "$WORK/baseline.api"
 dump_api "$REPO" "$WORK/head.api"
 
-# baseline 側が空なら測定に失敗している。patch と誤判定すると破壊的変更を素通しするので止める。
+# どちらかが空なら測定に失敗している。baseline が空だと patch、HEAD が空だと全消し=major と
+# 誤判定するので、どちらも黙って通さない。
 if [ ! -s "$WORK/baseline.api" ]; then
   echo "baseline の symbol graph を取得できなかった（ビルド失敗の可能性）" >&2
+  exit 1
+fi
+if [ ! -s "$WORK/head.api" ]; then
+  echo "HEAD の symbol graph を取得できなかった（ビルド失敗の可能性）" >&2
   exit 1
 fi
 

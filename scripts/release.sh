@@ -53,11 +53,31 @@ if git rev-parse -q --verify "$VERSION" >/dev/null 2>&1 || git rev-parse -q --ve
   exit 1
 fi
 
-BASE="${VERSION%%.*}.0.0"
+# install 行に書く依存要件。**0.x と 1.x 以降で書き方が違う。**
+#
+# SPM の `from:` は up-to-next-major、つまり `from: "0.3.0"` は `>=0.3.0, <1.0.0` を意味する。
+# ところが 0.x では破壊的変更の軸は minor なので、この範囲は 0.4.0 の破壊を含んでしまう。
+# 0.x に `from:` を使うと「壊れる版まで自動で取りに行く」指定になる。
+# 0.x は upToNextMinor、1.x 以降は from（major を基準点に）で書く。
+MAJOR="${VERSION%%.*}"
+if [[ "$MAJOR" == "0" ]]; then
+  REST="${VERSION#*.}"
+  BASE="0.${REST%%.*}.0"
+  REQ_KIND="upToNextMinor"
+else
+  BASE="${MAJOR}.0.0"
+  REQ_KIND="from"
+fi
 TODAY=$(date -u +%Y-%m-%d)
 
+# 空の値で上書きするくらいなら、何も出さずに止まる。
+# 実際に BASE と TODAY が空のまま走った回があり、README に `from: ""`（SPM が
+# 解決できない）と `## [0.3.0] - `（日付なし）を書き込んで出荷した。
+# しかも下の置換は `[^"]*` になるまで**自分が書いた空文字を修復できなかった**。
+[[ -n "$BASE" && -n "$TODAY" ]] || { echo "BASE か TODAY が空。中止する" >&2; exit 1; }
+
 if $DRY_RUN; then
-  echo "[dry-run] $NAME を $VERSION として出す（install の基準点は $BASE）"
+  echo "[dry-run] $NAME を $VERSION として出す（install は $REQ_KIND: \"$BASE\"）"
   exit 0
 fi
 
@@ -66,12 +86,18 @@ VERSION="$VERSION" TODAY="$TODAY" perl -0pi -e '
   s{^\#\#\s*\[?(?:Unreleased|unreleased|未リリース)\]?.*$}{## [Unreleased]\n\n## [$v] - $d}m;
 ' CHANGELOG.md
 
-# README の install 行は人間に書かせない。major の基準点だけを機械が同期する。
+# README の install 行は人間に書かせない。基準点だけを機械が同期する。
+#
+# `[^"]+` ではなく `[^"]*` にしてある。+ だと空文字に一致しないので、
+# 一度 `from: ""` を書いてしまうと**二度と直せない**（実際にそうなった）。
+# from: と upToNextMinor(from:) のどちらの形も拾って、正しい方へ書き換える。
 for f in README.md README.ja.md README_EN.md; do
   [[ -f "$f" ]] || continue
-  NAME="$NAME" BASE="$BASE" perl -0pi -e '
-    my ($repo, $base) = ($ENV{NAME}, $ENV{BASE});
-    s{(\.package\(\s*url:\s*"[^"]*\Q$repo\E(?:\.git)?"[^)]*?from:\s*")[^"]+(")}{$1$base$2}g;
+  NAME="$NAME" BASE="$BASE" REQ_KIND="$REQ_KIND" perl -0pi -e '
+    my ($repo, $base, $kind) = ($ENV{NAME}, $ENV{BASE}, $ENV{REQ_KIND});
+    my $req = $kind eq "upToNextMinor" ? qq{.upToNextMinor(from: "$base")} : qq{from: "$base"};
+    s{(\.package\(\s*url:\s*"[^"]*\Q$repo\E(?:\.git)?"\s*,\s*)
+      (?:from:\s*"[^"]*"|\.upToNext(?:Minor|Major)\(\s*from:\s*"[^"]*"\s*\))}{$1$req}gx;
   ' "$f"
 done
 
