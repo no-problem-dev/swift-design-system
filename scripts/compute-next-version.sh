@@ -106,19 +106,59 @@ git worktree add --detach "$WORK/baseline" "$BASE_REF" >/dev/null 2>&1
 dump_api "$WORK/baseline" "$WORK/baseline.api"
 dump_api "$REPO" "$WORK/head.api"
 
-# どちらかが空なら測定に失敗している。baseline が空だと patch、HEAD が空だと全消し=major と
-# 誤判定するので、どちらも黙って通さない。
-if [ ! -s "$WORK/baseline.api" ]; then
-  echo "baseline の symbol graph を取得できなかった（ビルド失敗の可能性）" >&2
-  exit 1
+# CHANGELOG の [Unreleased] に宣言された「挙動の破壊」を読む。
+#
+# **シンボル差分は挙動の破壊を見ない。** 今まで値を返していた関数が throw するように
+# なっても、型は 1 文字も変わらないので removed=0 added=0 になる。しかし利用者のコードは
+# 実行時に壊れるので、SemVer 上これは破壊的変更（SemVer 8 項は「後方互換でない変更」であって
+# 「シグネチャの変更」ではない）。
+#
+# 実例: structured-data で YAML のタグ・alias を「黙って捨てる」から「throw する」に変えた回。
+# シンボル差分は minor と算出したが、`!!str 42` を渡していた利用者は全員壊れる。
+#
+# そこで CHANGELOG に宣言の口を 1 つだけ開ける。**上げることしかできない。**
+# 下げられないので、§0.4.3 が潰した「儀式的な major」は復活しない
+# （依存のピンを上げただけの回は、この印を書かない限り patch のまま）。
+UNRELEASED_BREAKING=false
+if [ -f "$REPO/CHANGELOG.md" ]; then
+  if awk '/^## \[?[Uu]nreleased\]?/{f=1;next} /^## \[?[0-9]/{f=0} f' "$REPO/CHANGELOG.md" \
+     | grep -qiE '^\s*(###\s*Removed|.*\bBREAKING\b)'; then
+    UNRELEASED_BREAKING=true
+  fi
 fi
+
+if [ ! -s "$WORK/baseline.api" ]; then
+  # 前のタグがもうビルドできないことがある。依存が下位互換を壊したまま出た場合で、
+  # 実際に起きた: api-client 3.0.3 が再エクスポートを patch で落とし、
+  # swift-authentication 5.2.0 が公開済みのまま解決不能になった。
+  #
+  # このとき差分は取れない。**取れないことを patch と読むのが一番危ない**ので、
+  # CHANGELOG が破壊を宣言している場合に限って major として通し、
+  # していなければ止める。人間が宣言していないものを機械が推測することはしない。
+  if [ "$UNRELEASED_BREAKING" = true ]; then
+    echo "警告: 前タグ $BASE_REF がビルドできないので API 差分を取れない。" >&2
+    echo "      CHANGELOG が破壊を宣言しているので破壊的として扱う。" >&2
+    REMOVED=0; ADDED=0; PUBLIC_DEP_BREAK=""
+    BASELINE_UNBUILDABLE=true
+  else
+    echo "baseline の symbol graph を取得できなかった（前タグ $BASE_REF がビルドできない）" >&2
+    echo "差分が取れないので版を計算できない。破壊的なら CHANGELOG の [Unreleased] に" >&2
+    echo "\`### Removed\` か BREAKING を書くこと（DOCUMENTATION_STANDARD §0.4.4）" >&2
+    exit 1
+  fi
+fi
+# HEAD が空だと「全部消えた」= major と誤判定するので、こちらは通さない。
 if [ ! -s "$WORK/head.api" ]; then
   echo "HEAD の symbol graph を取得できなかった（ビルド失敗の可能性）" >&2
   exit 1
 fi
 
-REMOVED=$(comm -23 "$WORK/baseline.api" "$WORK/head.api" | wc -l | tr -d ' ')
-ADDED=$(comm -13 "$WORK/baseline.api" "$WORK/head.api" | wc -l | tr -d ' ')
+# baseline が取れなかった場合は、上の分岐が既に値を決めている。ここで測り直すと
+# 空ファイルとの比較になって removed=0 added=<全件> になり、宣言を握り潰す。
+if [ "${BASELINE_UNBUILDABLE:-false}" != true ]; then
+  REMOVED=$(comm -23 "$WORK/baseline.api" "$WORK/head.api" | wc -l | tr -d ' ')
+  ADDED=$(comm -13 "$WORK/baseline.api" "$WORK/head.api" | wc -l | tr -d ' ')
+fi
 
 # --- public dependency の世代変化を見る（シンボル差分に映らない破壊的変更） ---
 
@@ -168,27 +208,6 @@ MAJOR="${CURRENT%%.*}"
 REST="${CURRENT#*.}"
 MINOR="${REST%%.*}"
 PATCH="${CURRENT##*.}"
-
-# CHANGELOG の [Unreleased] に宣言された「挙動の破壊」を読む。
-#
-# **シンボル差分は挙動の破壊を見ない。** 今まで値を返していた関数が throw するように
-# なっても、型は 1 文字も変わらないので removed=0 added=0 になる。しかし利用者のコードは
-# 実行時に壊れるので、SemVer 上これは破壊的変更（SemVer 8 項は「後方互換でない変更」であって
-# 「シグネチャの変更」ではない）。
-#
-# 実例: structured-data で YAML のタグ・alias を「黙って捨てる」から「throw する」に変えた回。
-# シンボル差分は minor と算出したが、`!!str 42` を渡していた利用者は全員壊れる。
-#
-# そこで CHANGELOG に宣言の口を 1 つだけ開ける。**上げることしかできない。**
-# 下げられないので、§0.4.3 が潰した「儀式的な major」は復活しない
-# （依存のピンを上げただけの回は、この印を書かない限り patch のまま）。
-UNRELEASED_BREAKING=false
-if [ -f "$REPO/CHANGELOG.md" ]; then
-  if awk '/^## \[?[Uu]nreleased\]?/{f=1;next} /^## \[?[0-9]/{f=0} f' "$REPO/CHANGELOG.md" \
-     | grep -qiE '^\s*(###\s*Removed|.*\bBREAKING\b)'; then
-    UNRELEASED_BREAKING=true
-  fi
-fi
 
 # 0.x は minor が破壊的軸（SemVer 4 項: 0.y.z の互換性は保証されない）。
 # 1.0.0 未満で major を繰り上げると「安定版を出した」という別の意味になってしまうため、
