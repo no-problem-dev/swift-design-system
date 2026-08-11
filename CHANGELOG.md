@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   only inside `.theme(_:)`, so asking the provider directly always returned light — the two
   disagreed.
 
+- **`shine(_:duration:clipShape:rightToLeft:)` now documents what `clipShape` really does.** The
+  parameter reads as if it only masks the gloss, but the view is clipped to that shape and the
+  shape also replaces the view's hit-test region. A caller that put a tap gesture on a card had to
+  restate `contentShape` afterwards to get the card's own corners back. Behaviour is unchanged;
+  the documentation now describes it.
+
 ### Removed
 
 - **`Typography.font` and `Typography.font(design:)`.** They only returned a fixed-pt
@@ -35,6 +41,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   stopped growing. Text now goes through `.typography(_:)` alone.
 
 ### Changed
+
+- **swift-visual-testing is now pinned to 3.0.0, and every dark reference image has been
+  re-recorded.** Up to 2.1.0 the recorder hard-coded a light `UITraitCollection` on every capture,
+  so a dark snapshot was drawn with a dark SwiftUI `\.colorScheme` over a light UIKit ground. What
+  SwiftUI painted itself was right; the ground under it — every pixel the components do not cover,
+  which here is the padding around each one — was not. Of the 76 committed dark references, 53 had
+  a mean pixel brighter than [200, 200, 200] and several were pure white. `FloatingActionButton/
+  small.dark` measured [252, 253, 255] and now measures [2, 3, 5]. **The old dark images were not a
+  baseline being changed; they were the defect.** All 75 that the fix moves are re-recorded, on an
+  iPhone 17 simulator running iOS 26.5.
+
+  Recording under 2.1.0 and under 3.0.0 and comparing bytes shows the change is confined to that
+  axis: **every light reference the two recorders produce is byte-identical**, and all 75 dark ones
+  differ. No tolerance was touched; `precision` / `perceptualPrecision` stay at 0.99 / 0.98.
+
+- **46 more references — 33 light and 13 dark — had stopped matching what the package draws, and
+  the tolerance was hiding it.** They stopped matching when `disabledOpacity`, `BorderScale`, and
+  `iconSizeScale` were wired into the drawing above and only the six `IconButton` images were
+  re-recorded. Both recorder versions produce the same new bytes for all 46, so the pin bump is not
+  their cause; they are re-recorded here because they are wrong, not because 3.0.0 moved them.
+
+  **Only 2 of the 46 ever failed.** The other 44 changed the drawing by 2–3 units of mean pixel,
+  and `perceptualPrecision: 0.98` accepted every one of them — so for as long as this lasted, a
+  green snapshot run was reporting agreement it had not established. The clearest case is
+  `Button/primaryDisabled`, where the disabled fill was being drawn at 0.36 instead of the token's
+  value because the opacity was applied twice; the image that was supposed to pin that down passed
+  anyway. A tolerance loose enough to absorb a doubled opacity is loose enough to absorb a
+  regression, and the two images that did fail
+  (`Button/primaryDisabled.light`, `SectionRow/labelsAlignAcrossRows.light`) crossed the line only
+  because their surfaces cover more of the frame, not because their change was different in kind.
 
 - **`ThemeProvider.colorPalette` is now a method.** `colorPalette(for:)` takes a `ColorScheme` and
   resolves `.system` against that appearance. The resolution rule itself is exposed as
