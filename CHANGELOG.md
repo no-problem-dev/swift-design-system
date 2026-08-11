@@ -1017,3 +1017,5 @@ signature; the major number marks the split from 1.x, which is no longer develop
 <!-- Auto-generated on 2025-11-16T23:22:19Z by release workflow -->
 
 <!-- Auto-generated on 2025-12-21T03:25:36Z by release workflow -->
+
+<!-- Auto-generated on 2026-01-06T00:32:50Z by release workflow -->
