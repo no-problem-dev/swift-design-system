@@ -61,9 +61,9 @@ public struct SegmentedControl<Selection: Hashable, Content: View>: View {
 }
 
 #Preview {
-    @Previewable @State var selection = "週"
+    @Previewable @State var selection = "Week"
 
-    SegmentedControl(selection: $selection, options: ["週", "月"]) { option in
+    SegmentedControl(selection: $selection, options: ["Week", "Month"]) { option in
         Text(option)
     }
     .padding()

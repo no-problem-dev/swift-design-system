@@ -309,7 +309,7 @@ public extension Card {
                     Text("Glass Card")
                     // A nested card drops to a tint surface on its own
                     Card(elevation: .level1) {
-                        Text("Nested Card（自動降格）")
+                        Text("Nested Card (auto-demoted)")
                     }
                 }
             }

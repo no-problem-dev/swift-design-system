@@ -101,10 +101,10 @@ public struct GlassSegmentedControl<Selection: Hashable, Content: View>: View {
 }
 
 #Preview {
-    @Previewable @State var selection = "単一"
+    @Previewable @State var selection = "Single"
 
     VStack(spacing: 24) {
-        GlassSegmentedControl(selection: $selection, options: ["単一", "ページング", "チャット"]) { option in
+        GlassSegmentedControl(selection: $selection, options: ["Single", "Paged", "Chat"]) { option in
             Text(option)
         }
     }

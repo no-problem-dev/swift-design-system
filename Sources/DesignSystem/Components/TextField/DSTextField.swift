@@ -228,7 +228,7 @@ struct DSTextFieldPreview: View {
     var body: some View {
         VStack(spacing: spacing.xl) {
             DSTextField(
-                "メールアドレス",
+                "Email",
                 text: .constant(""),
                 placeholder: "example@email.com",
                 style: .outlined,
@@ -236,20 +236,20 @@ struct DSTextFieldPreview: View {
             )
 
             DSTextField(
-                "パスワード",
+                "Password",
                 text: .constant(""),
-                placeholder: "パスワードを入力",
+                placeholder: "Enter a password",
                 style: .filled,
-                supportingText: "8文字以上で入力してください",
+                supportingText: "Use 8 characters or more",
                 leadingIcon: "lock"
             )
 
             DSTextField(
-                "ユーザー名",
+                "Username",
                 text: .constant("invalid"),
-                placeholder: "ユーザー名",
+                placeholder: "Username",
                 style: .outlined,
-                error: "このユーザー名は既に使用されています"
+                error: "That username is already taken"
             )
         }
         .padding()

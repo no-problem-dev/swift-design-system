@@ -62,12 +62,12 @@ public struct EmptyState: View {
     VStack(spacing: 32) {
         EmptyState(
             systemImage: "link",
-            title: "出典はありません",
-            description: "Web 調査を行ったセッションでは、参照した URL がここに並びます。"
+            title: "No Sources",
+            description: "URLs referenced during a web research session appear here."
         )
         EmptyState(
             systemImage: "photo.on.rectangle.angled",
-            title: "メディアはありません"
+            title: "No Media"
         )
     }
     .padding()

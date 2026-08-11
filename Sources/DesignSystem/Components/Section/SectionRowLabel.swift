@@ -85,14 +85,14 @@ public struct SectionRowLabel: View {
 
     ScrollView {
         VStack(spacing: spacing.xl) {
-            SectionCard("アカウント", footer: "アイコンの有無でラベルの左端は動かない") {
-                SectionRow { SectionRowLabel("プロフィール", systemImage: "person.crop.circle") }
+            SectionCard("Account", footer: "Labels keep the same left edge with or without an icon") {
+                SectionRow { SectionRowLabel("Profile", systemImage: "person.crop.circle") }
                 SectionRowDivider()
-                SectionRow { SectionRowLabel("パスワード", systemImage: "lock") }
+                SectionRow { SectionRowLabel("Password", systemImage: "lock") }
                 SectionRowDivider()
-                SectionRow { SectionRowLabel("連携サービス", systemImage: "rectangle.3.group") }
+                SectionRow { SectionRowLabel("Connected Services", systemImage: "rectangle.3.group") }
                 SectionRowDivider()
-                SectionRow { SectionRowLabel("メール", subtitle: "user@example.com") }
+                SectionRow { SectionRowLabel("Email", subtitle: "user@example.com") }
             }
         }
         .padding(spacing.lg)

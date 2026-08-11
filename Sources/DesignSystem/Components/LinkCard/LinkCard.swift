@@ -142,11 +142,11 @@ public extension LinkCard where Accessory == EmptyView {
         ) {}
 
         LinkCard(
-            title: "検証済みの出典",
+            title: "Verified Source",
             url: URL(string: "https://swift.org/blog/")!,
             action: {}
         ) {
-            Chip("取得済み", systemImage: "checkmark")
+            Chip("Fetched", systemImage: "checkmark")
                 .chipStyle(.filled)
                 .chipSize(.small)
                 .foregroundColor(.green)

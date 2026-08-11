@@ -127,18 +127,18 @@ public extension TimelineRow where Marker == StatusIndicator {
         VStack(spacing: 0) {
             TimelineRow(status: .success, isFirst: true) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Web を検索").font(.subheadline)
-                    Text("query: SwiftUI 状態管理").font(.caption).foregroundStyle(.secondary)
+                    Text("Search the web").font(.subheadline)
+                    Text("query: SwiftUI state management").font(.caption).foregroundStyle(.secondary)
                 }
             }
             TimelineRow(status: .success) {
-                Text("3 件のページを取得").font(.subheadline)
+                Text("Fetched 3 pages").font(.subheadline)
             }
             TimelineRow(status: .running) {
-                Text("要約を生成中…").font(.subheadline)
+                Text("Summarizing…").font(.subheadline)
             }
             TimelineRow(status: .pending, isLast: true) {
-                Text("回答をまとめる").font(.subheadline)
+                Text("Compose the answer").font(.subheadline)
             }
         }
         .padding()
@@ -151,12 +151,12 @@ public extension TimelineRow where Marker == StatusIndicator {
         TimelineRow(isFirst: true) {
             IconBadge(systemName: "magnifyingglass", size: .small)
         } content: {
-            Text("調査エージェント").font(.subheadline)
+            Text("Research Agent").font(.subheadline)
         }
         TimelineRow(isLast: true) {
             IconBadge(systemName: "paintbrush", size: .small)
         } content: {
-            Text("ビジュアライザー").font(.subheadline)
+            Text("Visualizer").font(.subheadline)
         }
     }
     .padding()

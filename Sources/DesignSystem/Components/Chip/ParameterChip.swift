@@ -71,8 +71,8 @@ public struct ParameterChip: View {
 #Preview {
     HStack {
         ParameterChip("A2UI", systemImage: "sparkles", prominent: true)
-        ParameterChip("単一")
-        ParameterChip("エージェント 3", systemImage: "person.3.fill")
+        ParameterChip("Single")
+        ParameterChip("3 Agents", systemImage: "person.3.fill")
     }
     .padding()
     .theme(ThemeProvider())

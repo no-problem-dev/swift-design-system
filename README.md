@@ -2,7 +2,7 @@ English | [日本語](./README.ja.md)
 
 # DesignSystem
 
-A type-safe, themeable design system for SwiftUI apps.
+A complete set of SwiftUI components that already agree on color, spacing and type, so an app looks consistent without building that layer, and one theme switch restyles all of it.
 
 ![Swift](https://img.shields.io/badge/Swift-6.2-orange.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-iOS%2017.0+%20%7C%20macOS%2014.0+-blue.svg)

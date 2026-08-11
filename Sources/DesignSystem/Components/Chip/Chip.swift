@@ -205,7 +205,7 @@ private struct ChipButtonStyle: ButtonStyle {
             .chipStyle(.filled)
             .foregroundColor(.blue)
 
-        Chip("完了", systemImage: "checkmark.circle.fill")
+        Chip("Done", systemImage: "checkmark.circle.fill")
             .chipStyle(.filled)
             .foregroundColor(.green)
 
@@ -237,17 +237,17 @@ private struct ChipButtonStyle: ButtonStyle {
 
 #Preview("Action Chips") {
     VStack(spacing: 16) {
-        Chip("再生", systemImage: "play.fill", action: {
+        Chip("Play", systemImage: "play.fill", action: {
             print("Play tapped")
         })
         .chipStyle(.outlined)
 
-        Chip("共有", systemImage: "square.and.arrow.up", action: {
+        Chip("Share", systemImage: "square.and.arrow.up", action: {
             print("Share tapped")
         })
         .chipStyle(.outlined)
 
-        Chip("保存", systemImage: "square.and.arrow.down", action: {
+        Chip("Save", systemImage: "square.and.arrow.down", action: {
             print("Save tapped")
         })
         .chipStyle(.filled)
@@ -262,10 +262,10 @@ private struct ChipButtonStyle: ButtonStyle {
 
         var body: some View {
             VStack(spacing: 16) {
-                Chip("フィルター", systemImage: "line.3.horizontal.decrease", isSelected: $isSelected1)
+                Chip("Filter", systemImage: "line.3.horizontal.decrease", isSelected: $isSelected1)
                     .chipStyle(.outlined)
 
-                Chip("お気に入り", systemImage: "star.fill", isSelected: $isSelected2)
+                Chip("Favorites", systemImage: "star.fill", isSelected: $isSelected2)
                     .chipStyle(.outlined)
             }
             .padding()

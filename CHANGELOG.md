@@ -53,6 +53,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - If you read `provider.colorPalette`, use `provider.colorPalette(for: colorScheme)`.
   Inside a view, reading `@Environment(\.colorPalette)` is the intended path
 
+## [3.0.0] - 2026-08-06
+
+**This breaks the public API.** `MediaViewerItem.id` changed from `URL` to `String`, and
+`MediaViewerItem.url` changed from `URL` to `URL?`.
+
+### Added
+
+- **`MediaViewer` can show bytes you already hold.** It accepted only URLs, so "not in hand yet"
+  was baked in as a premise, and an app with a layer that fetches from an authenticated API and
+  caches the result — where resolved bytes are what reaches the view — could not use the viewer at
+  all. A viewer's job is presentation, not fetching. `MediaViewerItem.imageData(Data, id:)` takes
+  the buffer directly, and because there is no wait, no placeholder is interposed.
+
+### Changed
+
+- **Identity is the pair of case and `id`, and the byte buffer takes no part in it.** Using the
+  buffer for equality or hashing would mean comparing several megabytes on every page change. This
+  is why `id` widened from `URL` to `String`, and why `url` became optional — an item created from
+  bytes has no URL.
+
+### What you need to do
+
+- If you compared `item.id` as a `URL`, compare the `String` instead
+- If you read `item.url`, unwrap it. It is `nil` for items created with `.imageData(_:id:)`
+
 ## [2.4.0] - 2026-08-02
 
 **Apps using `DefaultTheme` will see their light mode appearance change.**
@@ -204,6 +229,73 @@ back even when fixed at the call site. The cause is in the library, so the libra
   stays on `UIImagePickerController` and `NSCameraUsageDescription`.
   Note that `videoPicker` still uses `UIImagePickerController`, so apps handling video still need
   `NSPhotoLibraryUsageDescription`.
+
+## [2.1.0] - 2026-07-23
+
+### Added
+
+- **`DSTextField` takes an external `FocusState` binding through `focus:`.** Callers had no way to
+  move focus programmatically — returning from a scanner into a name field, for example — which
+  was a standing reason to drop back to a plain `TextField`. The new binding is optional and
+  coexists with the internal `isFocused` that drives border and label color. It defaults to nil,
+  so existing calls are unchanged.
+
+## [2.0.1] - 2026-07-19
+
+### Fixed
+
+- **`HighContrastTheme` now reaches the WCAG AAA ratio it claimed.** It was described as AAA
+  compliant while several pairs sat under the 7.0 threshold. In light, `tertiary` (6.49), `error`
+  (6.57) and `warning` (5.54) were short, and the fills were darkened. `warning` alone could not
+  reach AAA with its default `.black` foreground, so `onWarning` was overridden to the dark fill
+  and white text the other semantic colors use. In dark, `onError`, `onSuccess` and `onInfo` were
+  never overridden, so the default `.white` sat on bright fills and was unreadable (3.19 / 1.43 /
+  2.17); each was overridden to a dark color. `error` at `#FF5252` has a relative luminance of
+  0.279 and caps at 6.58 even against pure black, so the fill itself was lightened to `#FF8A80`.
+  Every pair now falls between 7.12 and 14.88.
+
+### Added
+
+- Tests measuring the semantic colors against the background as well, for themes that place them
+  there directly, and a regression test that catches an `on` color reverting to the default white.
+- Coverage for `ByteSize`, `SnackbarState`, the component size enums and `StatusKind`, none of
+  which had any.
+
+### Changed
+
+- **Replaced tautological tests with real value checks.** About 35% of the existing tests were
+  `XCTAssertNotNil` or self-referential, and would still have passed with the implementation
+  replaced by a constant. `ColorPalette` now checks real values and the light/dark branch,
+  `Elevation` and `Typography` pin concrete values for every level and case, and `ThemeProvider`
+  and `ThemeRegistry` check the id set and palette resolution instead of counting entries — which
+  also covered `.system` mode and in-place updates for the first time. `TokenDiff`'s unreached
+  `num()` branches and `DesignSpec`'s Codable round-trip for enums with associated values are
+  covered too.
+- Snapshot coverage went from 7 to 19 components, 128 reference images, restricted to components
+  whose rendering does not depend on time.
+
+## [2.0.0] - 2026-07-19
+
+**The 2.x series starts here.** The commits in this range remove no public API and change no
+signature; the major number marks the split from 1.x, which is no longer developed.
+
+### Changed
+
+- Doc comments and DocC were rewritten throughout, and the README became a two-file English and
+  Japanese pair (`README.md` and `README.ja.md`).
+- DocC builds as one combined document across all libraries, with an expanded `DesignSystem`
+  landing page and new `.docc` catalogs for `DesignCatalogKit` and `DesignSpec`.
+- `TokenArchitecture`'s `Chip` example was corrected to the real modifier-chain API, and
+  `.foregroundColor` was replaced with `.foregroundStyle` throughout the documentation.
+
+### Added
+
+- Real-value assertions for HEX parsing. `ColorHexTests` asserted only non-nil; it now resolves
+  through `Color.resolve` and compares sRGB components for 3-digit, 6-digit and 8-digit ARGB
+  input, and for invalid input.
+- Light and dark snapshot references for Button, Card, Chip, FAB, Snackbar, ProgressBar and
+  EmptyState.
+- Doc comments on `StaggeredConfig`'s public properties, which had none.
 
 ## [1.7.0] - 2026-06-14
 

@@ -126,21 +126,21 @@ public struct SectionCard<Content: View>: View {
 
     ScrollView {
         VStack(spacing: spacing.xl) {
-            SectionCard("通知", footer: "通知センターの設定はシステム設定から") {
+            SectionCard("Notifications", footer: "Notification Center is configured in System Settings") {
                 SectionRow {
-                    Text("朝のリマインド")
+                    Text("Morning Reminder")
                     Spacer(minLength: 0)
                     Text("ON").foregroundStyle(.secondary)
                 }
                 SectionRowDivider()
                 SectionRow {
-                    SectionNavigationLabel("通知の詳細設定", systemImage: "gear")
+                    SectionNavigationLabel("Notification Options", systemImage: "gear")
                 }
             }
 
-            SectionCard("アカウント") {
+            SectionCard("Account") {
                 SectionRow {
-                    Text("メール")
+                    Text("Email")
                     Spacer(minLength: 0)
                     Text("user@example.com").foregroundStyle(.secondary)
                 }
@@ -156,10 +156,10 @@ public struct SectionCard<Content: View>: View {
 
     ScrollView {
         VStack(spacing: spacing.xl) {
-            SectionCard(title: "基本情報") {
+            SectionCard(title: "Basic Info") {
                 VStack(alignment: .leading, spacing: spacing.md) {
-                    Text("名前: 山田太郎").typography(.bodyMedium)
-                    Text("メール: yamada@example.com").typography(.bodyMedium)
+                    Text("Name: Jane Appleseed").typography(.bodyMedium)
+                    Text("Email: jane@example.com").typography(.bodyMedium)
                 }
             }
         }
