@@ -106,6 +106,19 @@ public protocol Motion: Sendable {
     /// - Response: 0.5s
     /// - Damping: 0.5 (larger bounce)
     var bounce: Animation { get }
+
+    /// The appearance animation for content that streams in piece by piece.
+    ///
+    /// Suits a screen that assembles itself as its parts arrive, such as a streaming LLM
+    /// response. One step more relaxed than `slower` at 375ms.
+    /// - Duration: 450ms
+    /// - Easing: Smooth spring
+    var stream: Animation { get }
+}
+
+public extension Motion {
+    /// The animation used when a theme does not supply its own.
+    var stream: Animation { .smooth(duration: 0.45) }
 }
 
 // MARK: - Default Implementation

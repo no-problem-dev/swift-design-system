@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Motion.stream` is back. 4.0.0 removed it as a token nothing read, but the search that decided
+  that only covered this package: swift-a2ui reads it at `Rendering.swift:291`, and for exactly the
+  case its documentation describes — replaying the insertion transition as an LLM response streams
+  in, so the surface assembles in a cascade rather than popping in. This is the third symbol in two
+  days that "unused" meant "unused *here*"; the others were `View.shine`, `LoopingScrollView`,
+  `TitleTextRenderer` and `StaggeredView`, all live in KyoichiAI. A protocol extension supplies the
+  default, so no conformer has to change.
+
+
 ## [4.0.0] - 2026-08-11
 
 **This breaks the public API.** `Typography.font` / `Typography.font(design:)` are removed, and
