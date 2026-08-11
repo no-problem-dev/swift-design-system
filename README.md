@@ -71,7 +71,7 @@ and [Custom Theme](https://no-problem-dev.github.io/swift-design-system/document
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/no-problem-dev/swift-design-system.git", from: "3.0.0")
+    .package(url: "https://github.com/no-problem-dev/swift-design-system.git", from: "4.0.0")
 ]
 ```
 

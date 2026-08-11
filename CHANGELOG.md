@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-08-11
+
 **This breaks the public API.** `Typography.font` / `Typography.font(design:)` are removed, and
 `ThemeProvider.colorPalette` changed from a property to a method.
 
