@@ -9,6 +9,7 @@ public struct PrimaryTonalButtonStyle: ButtonStyle {
     @Environment(\.buttonSize) private var buttonSize
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.motion) private var motion
+    @Environment(\.borderScale) private var borderScale
 
     public init() {}
 
@@ -24,13 +25,12 @@ public struct PrimaryTonalButtonStyle: ButtonStyle {
                     .fill(colorPalette.primaryContainer)
                     .overlay {
                         RoundedRectangle(cornerRadius: 100)
-                            .stroke(colorPalette.primary.opacity(0.18), lineWidth: 1)
+                            .stroke(colorPalette.primary.opacity(0.18), lineWidth: borderScale.regular)
                     }
-                    .opacity(isEnabled ? 1.0 : 0.6)
             }
             .elevation(.level1)
             .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
-            .opacity(isEnabled ? 1.0 : 0.6)
+            .opacity(isEnabled ? 1 : ControlTokens.disabledOpacity)
             .animate(motion.tap, value: configuration.isPressed)
     }
 }

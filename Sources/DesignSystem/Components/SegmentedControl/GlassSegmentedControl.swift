@@ -9,6 +9,7 @@ public struct GlassSegmentedControl<Selection: Hashable, Content: View>: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.spacingScale) private var spacingScale
     @Environment(\.motion) private var motion
+    @Environment(\.borderScale) private var borderScale
     @Namespace private var indicatorNamespace
 
     private let selection: Binding<Selection>
@@ -36,7 +37,7 @@ public struct GlassSegmentedControl<Selection: Hashable, Content: View>: View {
         .padding(spacingScale.xs)
         .background(colorPalette.surfaceVariant.opacity(0.6), in: Capsule())
         .overlay {
-            Capsule().stroke(colorPalette.outlineVariant, lineWidth: 1)
+            Capsule().stroke(colorPalette.outlineVariant, lineWidth: borderScale.regular)
         }
         .contentShape(Capsule())
         .onGeometryChange(for: CGFloat.self) {

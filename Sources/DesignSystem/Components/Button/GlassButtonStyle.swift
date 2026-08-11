@@ -10,6 +10,7 @@ public struct GlassButtonStyle: ButtonStyle {
     @Environment(\.buttonSize) private var buttonSize
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.motion) private var motion
+    @Environment(\.borderScale) private var borderScale
 
     public init() {}
 
@@ -28,7 +29,7 @@ public struct GlassButtonStyle: ButtonStyle {
             }
             .elevation(.level2)
             .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
-            .opacity(isEnabled ? 1.0 : 0.6)
+            .opacity(isEnabled ? 1 : ControlTokens.disabledOpacity)
             .animate(motion.tap, value: configuration.isPressed)
     }
 
@@ -42,7 +43,7 @@ public struct GlassButtonStyle: ButtonStyle {
             Capsule()
                 .fill(.ultraThinMaterial)
                 .overlay {
-                    Capsule().strokeBorder(colorPalette.outlineVariant, lineWidth: 1)
+                    Capsule().strokeBorder(colorPalette.outlineVariant, lineWidth: borderScale.regular)
                 }
         }
     }

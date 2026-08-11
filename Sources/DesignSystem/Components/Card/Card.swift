@@ -55,6 +55,7 @@ public struct Card<Content: View>: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.radiusScale) private var radiusScale
+    @Environment(\.borderScale) private var borderScale
     @Environment(\.spacingScale) private var spacingScale
     @Environment(\.surfaceStyle) private var surfaceStyle
     @Environment(\.cardNestingLevel) private var nestingLevel
@@ -133,7 +134,7 @@ public struct Card<Content: View>: View {
                 }
                 .overlay {
                     RoundedRectangle(cornerRadius: cornerRadius ?? radiusScale.lg)
-                        .stroke(colorPalette.outlineVariant, lineWidth: 1)
+                        .stroke(colorPalette.outlineVariant, lineWidth: borderScale.regular)
                 }
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius ?? radiusScale.lg))
                 .elevation(elevation)
@@ -148,7 +149,7 @@ public struct Card<Content: View>: View {
                     // Edge light: a gradient that runs along the border as if lit from the
                     // top leading corner. A higher elevation raises the brightness, which is
                     // how a deeper shadow is expressed on glass.
-                    shape.strokeBorder(glassBorderGradient, lineWidth: 1)
+                    shape.strokeBorder(glassBorderGradient, lineWidth: borderScale.regular)
                 }
                 .clipShape(shape)
                 .elevation(elevation)
@@ -162,7 +163,7 @@ public struct Card<Content: View>: View {
                     shape.fill(colorPalette.onSurface.opacity(colorScheme == .dark ? 0.06 : 0.04))
                 }
                 .overlay {
-                    shape.strokeBorder(colorPalette.outlineVariant.opacity(0.6), lineWidth: 1)
+                    shape.strokeBorder(colorPalette.outlineVariant.opacity(0.6), lineWidth: borderScale.regular)
                 }
                 .clipShape(shape)
         }

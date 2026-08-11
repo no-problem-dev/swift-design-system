@@ -7,9 +7,16 @@ public extension View {
     /// size follows its own scale, independent of the line height and letter spacing of text.
     /// It applies to both SF Symbols and emoji.
     ///
-    /// Under Swift 6 strict concurrency, the size is applied by chaining the standard SwiftUI
-    /// modifiers rather than going through a `ViewModifier`, so it can also be applied to an image
-    /// inside a Sendable closure such as `PhotosPicker`. This is the same reason as `typography()`.
+    /// The size comes from the ``IconSizeScale`` in the environment, so a theme can move every
+    /// icon in the app at once. With no theme applied, ``DefaultIconSizeScale`` keeps the
+    /// built-in sizes.
+    ///
+    /// Resolving the scale requires an environment lookup, so the content is wrapped in the
+    /// lightweight view `IconSizedView`. A `ViewModifier` is not used because its
+    /// `body(content:)` becomes `@MainActor` isolated, which raises a "non-Sendable result" error
+    /// when called from a Sendable closure such as `PhotosPicker`. Building a view is itself
+    /// nonisolated, so it is safe inside a Sendable closure. This is the same shape as
+    /// `typography()`.
     ///
     /// ```swift
     /// Image(systemName: "checkmark")
@@ -18,20 +25,18 @@ public extension View {
     /// Text(emoji).iconSize(.lg)   // 32pt, for category display
     /// ```
     func iconSize(_ size: IconSizeToken) -> some View {
-        // Size resolution is inlined here to keep this a pure computation
-        // (deliberately the same shape as typography(), which avoids inheriting @MainActor).
-        let scale = DefaultIconSizeScale()
-        let pt: CGFloat
-        switch size {
-        case .xxs: pt = scale.xxs
-        case .xs: pt = scale.xs
-        case .sm: pt = scale.sm
-        case .md: pt = scale.md
-        case .lg: pt = scale.lg
-        case .xl: pt = scale.xl
-        case .xxl: pt = scale.xxl
-        }
-        return self.font(.system(size: pt))
+        IconSizedView(token: size, content: self)
+    }
+}
+
+/// Resolves an icon size token against the scale in the environment and applies it to the content.
+private struct IconSizedView<Content: View>: View {
+    let token: IconSizeToken
+    let content: Content
+    @Environment(\.iconSizeScale) private var scale
+
+    var body: some View {
+        content.font(.system(size: scale.size(for: token)))
     }
 }
 

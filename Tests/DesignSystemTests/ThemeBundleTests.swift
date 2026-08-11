@@ -65,7 +65,6 @@ final class ThemeBundleTests: XCTestCase {
         XCTAssertEqual(radius.lg, 12)
         XCTAssertEqual(radius.xl, 16)
         XCTAssertEqual(radius.xxl, 20)
-        XCTAssertEqual(radius.card, 24)
         // full はピル形状用のセンチネル。有限値にすると角丸が効かなくなる
         XCTAssertEqual(radius.full, .infinity)
     }

@@ -8,6 +8,7 @@ public struct SegmentedControl<Selection: Hashable, Content: View>: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.radiusScale) private var radiusScale
     @Environment(\.spacingScale) private var spacingScale
+    @Environment(\.borderScale) private var borderScale
 
     private let selection: Binding<Selection>
     private let options: [Selection]
@@ -47,7 +48,7 @@ public struct SegmentedControl<Selection: Hashable, Content: View>: View {
         .background(colorPalette.surfaceVariant, in: RoundedRectangle(cornerRadius: radiusScale.lg))
         .overlay {
             RoundedRectangle(cornerRadius: radiusScale.lg)
-                .stroke(colorPalette.outlineVariant, lineWidth: 1)
+                .stroke(colorPalette.outlineVariant, lineWidth: borderScale.regular)
         }
     }
 

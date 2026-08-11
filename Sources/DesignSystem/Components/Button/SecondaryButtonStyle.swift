@@ -45,11 +45,10 @@ public struct SecondaryButtonStyle: ButtonStyle {
             .background(
                 RoundedRectangle(cornerRadius: 100)
                     .fill(colorPalette.secondaryContainer)
-                    .opacity(isEnabled ? 1.0 : 0.6)
             )
             .elevation(.level1)
             .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
-            .opacity(isEnabled ? 1.0 : 0.6)
+            .opacity(isEnabled ? 1 : ControlTokens.disabledOpacity)
             .animate(motion.tap, value: configuration.isPressed)
     }
 }

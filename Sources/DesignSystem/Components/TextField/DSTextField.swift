@@ -53,6 +53,7 @@ public struct DSTextField: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.spacingScale) private var spacing
     @Environment(\.radiusScale) private var radiusScale
+    @Environment(\.borderScale) private var borderScale
     @FocusState private var isFocused: Bool
 
     private let title: String
@@ -206,7 +207,7 @@ public struct DSTextField: View {
     }
 
     private var borderWidth: CGFloat {
-        isFocused ? 2 : 1
+        isFocused ? borderScale.thick : borderScale.regular
     }
 
     private var cornerRadius: CGFloat {

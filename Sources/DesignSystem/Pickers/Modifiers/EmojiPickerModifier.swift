@@ -218,6 +218,7 @@ struct DSEmojiPickerView: View {
 private struct EmojiPickerButton: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.radiusScale) private var radius
+    @Environment(\.borderScale) private var borderScale
 
     let emoji: EmojiItem
     let isSelected: Bool
@@ -240,7 +241,7 @@ private struct EmojiPickerButton: View {
                     RoundedRectangle(cornerRadius: radius.sm)
                         .stroke(
                             isSelected ? colors.primary : Color.clear,
-                            lineWidth: 2
+                            lineWidth: borderScale.thick
                         )
                 )
         }

@@ -81,8 +81,6 @@ reference below. Build the docs for an iOS destination to see them.
 - ``TypographyScale``
 - ``Motion``
 - ``BorderScale``
-- ``GradientTokens``
-- ``StateLayer``
 - ``IconSizeScale``
 - ``IconSizeToken``
 
@@ -112,8 +110,6 @@ reference below. Build the docs for an iOS destination to see them.
 - ``DefaultIconSizeScale``
 - ``DefaultBorderScale``
 - ``DefaultElevationScale``
-- ``DefaultGradientTokens``
-- ``DefaultStateLayer``
 - ``DefaultTypographyScale``
 
 ### Buttons

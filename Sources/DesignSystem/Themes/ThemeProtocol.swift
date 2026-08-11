@@ -94,17 +94,6 @@ public protocol Theme: Sendable, Identifiable, Equatable {
     /// The default implementation returns ``DefaultBorderScale``.
     var borderScale: any BorderScale { get }
 
-    /// The overlay opacities the theme uses for interaction states.
-    ///
-    /// The default implementation returns ``DefaultStateLayer``.
-    var stateLayer: any StateLayer { get }
-
-    /// The gradients the theme uses for semantic roles.
-    ///
-    /// The default implementation returns ``DefaultGradientTokens``. Override this to give a
-    /// brand its own gradients.
-    var gradients: any GradientTokens { get }
-
     /// The shadow ramp the theme uses.
     ///
     /// The default implementation returns ``DefaultElevationScale``.
@@ -144,14 +133,6 @@ public extension Theme {
 
     var borderScale: any BorderScale {
         DefaultBorderScale()
-    }
-
-    var stateLayer: any StateLayer {
-        DefaultStateLayer()
-    }
-
-    var gradients: any GradientTokens {
-        DefaultGradientTokens()
     }
 
     var elevationScale: any ElevationScale {

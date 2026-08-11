@@ -33,6 +33,7 @@ public extension View {
 
 struct FrostedSurfaceModifier: ViewModifier {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.borderScale) private var borderScale
     let cornerRadius: CGFloat
     let tint: Color?
 
@@ -55,7 +56,7 @@ struct FrostedSurfaceModifier: ViewModifier {
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ),
-                    lineWidth: 1
+                    lineWidth: borderScale.regular
                 )
             }
     }
@@ -63,6 +64,7 @@ struct FrostedSurfaceModifier: ViewModifier {
 
 struct GlassSurfaceModifier: ViewModifier {
     @Environment(\.colorPalette) private var colorPalette
+    @Environment(\.borderScale) private var borderScale
     let cornerRadius: CGFloat
     let tint: Color?
     let interactive: Bool
@@ -75,7 +77,7 @@ struct GlassSurfaceModifier: ViewModifier {
                 .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                 .overlay {
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .stroke(colorPalette.outlineVariant, lineWidth: 1)
+                        .stroke(colorPalette.outlineVariant, lineWidth: borderScale.regular)
                 }
         }
     }

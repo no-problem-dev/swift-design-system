@@ -53,13 +53,12 @@ Text("Hello")
 |---|---|---|
 | ``ColorPalette`` | `\.colorPalette` | Roles such as `primary`, `surface`, and `error`, each paired with an `on-` role for content drawn on top |
 | ``SpacingScale`` | `\.spacingScale` | Ten steps, `none` through `xxxxl` |
-| ``RadiusScale`` | `\.radiusScale` | Nine steps, `none` through `full` |
+| ``RadiusScale`` | `\.radiusScale` | Eight steps, `none` through `full` |
 | ``TypographyScale`` | `\.typographyScale` | Text roles that scale with Dynamic Type |
 | ``Motion`` | `\.motion` | Animation durations and curves |
 | ``IconSizeScale`` | `\.iconSizeScale` | Icon dimensions matched to the type scale |
 | ``BorderScale`` | `\.borderScale` | Stroke widths |
 | ``ElevationScale`` | `\.elevationScale` | Shadow parameters per elevation level |
-| ``StateLayer`` | `\.stateLayer` | Overlay opacities for hover, press, and focus |
 
 The `on-` pairing in ``ColorPalette`` is the part most easily lost: picking a text color by
 eye works in the mode you happened to be looking at and breaks in the other one. Pairing

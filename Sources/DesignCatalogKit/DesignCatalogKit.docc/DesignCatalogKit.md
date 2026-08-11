@@ -17,7 +17,6 @@ screenshot no longer explains itself.
 ```swift
 let entry = CatalogEntry(
     id: "acme-form-control",
-    brandId: "acme",
     brandName: "Acme",
     archetype: "FormControl",
     title: "Acme form control",

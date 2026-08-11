@@ -18,7 +18,6 @@ public struct LoopingScrollView<Data: RandomAccessCollection, Content: View>: Vi
     @ViewBuilder public var content: (_ item: Data.Element, _ isRepeated: Bool) -> Content
 
     @State private var scrollPosition: ScrollPosition = .init()
-    @State private var containerWidth: CGFloat = 0
     @State private var currentOffset: CGFloat = 0
     @State private var repeatingCount: Int = 0
 
@@ -64,12 +63,10 @@ public struct LoopingScrollView<Data: RandomAccessCollection, Content: View>: Vi
         // Work out how many repeats the container width needs
         .onScrollGeometryChange(for: CGFloat.self) {
             $0.containerSize.width
-        } action: { _, newValue in
-            let containerWidth = newValue
+        } action: { _, containerWidth in
             let safeValue: Int = 1
             let neededCount = (containerWidth / (itemWidth + spacing)).rounded()
             self.repeatingCount = Int(neededCount) + safeValue
-            self.containerWidth = containerWidth
         }
         .onScrollGeometryChange(for: CGFloat.self) {
             $0.contentOffset.x + $0.contentInsets.leading

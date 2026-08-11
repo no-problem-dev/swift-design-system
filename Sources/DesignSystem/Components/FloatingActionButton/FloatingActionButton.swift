@@ -77,7 +77,7 @@ public struct FloatingActionButton: View {
             content
         }
         .buttonStyle(.plain)
-        .opacity(isEnabled ? 1 : 0.6)
+        .opacity(isEnabled ? 1 : ControlTokens.disabledOpacity)
     }
 
     private var content: some View {

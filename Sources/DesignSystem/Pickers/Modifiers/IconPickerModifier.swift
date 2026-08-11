@@ -218,6 +218,7 @@ struct DSIconPickerView: View {
 private struct IconPickerButton: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.radiusScale) private var radius
+    @Environment(\.borderScale) private var borderScale
 
     let icon: IconItem
     let isSelected: Bool
@@ -241,7 +242,7 @@ private struct IconPickerButton: View {
                     RoundedRectangle(cornerRadius: radius.sm)
                         .stroke(
                             isSelected ? colors.primary : Color.clear,
-                            lineWidth: 2
+                            lineWidth: borderScale.thick
                         )
                 )
         }

@@ -46,8 +46,6 @@ private struct ThemeEnvironmentView<Content: View>: View {
             .environment(\.spacingScale, provider.currentTheme.spacingScale)
             .environment(\.radiusScale, provider.currentTheme.radiusScale)
             .environment(\.borderScale, provider.currentTheme.borderScale)
-            .environment(\.stateLayer, provider.currentTheme.stateLayer)
-            .environment(\.gradients, provider.currentTheme.gradients)
             .environment(\.elevationScale, provider.currentTheme.elevationScale)
             .environment(\.iconSizeScale, provider.currentTheme.iconSizeScale)
             .environment(\.motion, provider.currentTheme.motion)

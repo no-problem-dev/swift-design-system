@@ -70,6 +70,7 @@ public extension View {
 
 struct DSColorPickerView: View {
     @Environment(\.colorPalette) private var colors
+    @Environment(\.borderScale) private var borderScale
     @Environment(\.spacingScale) private var spacing
     @Environment(\.radiusScale) private var radius
     @Environment(\.dismiss) private var dismiss
@@ -122,7 +123,7 @@ struct DSColorPickerView: View {
                 .frame(width: 60, height: 60)
                 .overlay(
                     Circle()
-                        .stroke(colors.outline.opacity(0.2), lineWidth: 1)
+                        .stroke(colors.outline.opacity(0.2), lineWidth: borderScale.regular)
                 )
 
             VStack(alignment: .leading, spacing: spacing.xs) {
@@ -164,6 +165,7 @@ struct DSColorPickerView: View {
 
 private struct ColorCircleButton: View {
     @Environment(\.colorPalette) private var colors
+    @Environment(\.borderScale) private var borderScale
     @Environment(\.spacingScale) private var spacing
 
     let colorItem: ColorItem
@@ -187,7 +189,7 @@ private struct ColorCircleButton: View {
                     )
                     .overlay(
                         Circle()
-                            .stroke(colors.outline.opacity(0.2), lineWidth: 1)
+                            .stroke(colors.outline.opacity(0.2), lineWidth: borderScale.regular)
                     )
 
                 Text(colorItem.name)

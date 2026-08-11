@@ -37,8 +37,6 @@ public struct DesignAnnotation: Sendable, Equatable {
 /// SmartHR's form control sits beside another brand's form control.
 public struct CatalogEntry: Identifiable {
     public let id: String
-    /// The brand identifier, such as "smarthr".
-    public let brandId: String
     public let brandName: String
     /// The axis entries are compared on, such as "FormControl", "FocusIndicator", or "ProductCard".
     public let archetype: String
@@ -53,7 +51,6 @@ public struct CatalogEntry: Identifiable {
     @MainActor
     public init<Content: View>(
         id: String,
-        brandId: String,
         brandName: String,
         archetype: String,
         title: String,
@@ -62,7 +59,6 @@ public struct CatalogEntry: Identifiable {
         @ViewBuilder content: @MainActor () -> Content
     ) {
         self.id = id
-        self.brandId = brandId
         self.brandName = brandName
         self.archetype = archetype
         self.title = title

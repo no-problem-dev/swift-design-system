@@ -50,3 +50,20 @@ public protocol IconSizeScale: Sendable {
     /// The largest icon (64pt), for display use.
     var xxl: CGFloat { get }
 }
+
+public extension IconSizeScale {
+    /// The size this scale gives for a token.
+    ///
+    /// The `.iconSize(_:)` modifier reads it, which is how a theme's scale reaches an icon.
+    func size(for token: IconSizeToken) -> CGFloat {
+        switch token {
+        case .xxs: xxs
+        case .xs: xs
+        case .sm: sm
+        case .md: md
+        case .lg: lg
+        case .xl: xl
+        case .xxl: xxl
+        }
+    }
+}

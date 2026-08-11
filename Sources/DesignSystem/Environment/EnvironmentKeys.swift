@@ -70,34 +70,6 @@ extension EnvironmentValues {
     }
 }
 
-// MARK: - StateLayer
-
-private struct StateLayerKey: EnvironmentKey {
-    static let defaultValue: any StateLayer = DefaultStateLayer()
-}
-
-extension EnvironmentValues {
-    /// The overlay opacities that signal hover, pressed, focus, and the other interaction states.
-    public var stateLayer: any StateLayer {
-        get { self[StateLayerKey.self] }
-        set { self[StateLayerKey.self] = newValue }
-    }
-}
-
-// MARK: - GradientTokens
-
-private struct GradientTokensKey: EnvironmentKey {
-    static let defaultValue: any GradientTokens = DefaultGradientTokens()
-}
-
-extension EnvironmentValues {
-    /// The named gradients, keyed by meaning rather than by color.
-    public var gradients: any GradientTokens {
-        get { self[GradientTokensKey.self] }
-        set { self[GradientTokensKey.self] = newValue }
-    }
-}
-
 // MARK: - ElevationScale
 
 private struct ElevationScaleKey: EnvironmentKey {

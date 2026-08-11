@@ -18,7 +18,6 @@ import SwiftUI
 /// ```
 public struct ProgressBar: View {
     @Environment(\.colorPalette) private var colorPalette
-    @Environment(\.radiusScale) private var radiusScale
 
     private let value: Double
     private let height: CGFloat

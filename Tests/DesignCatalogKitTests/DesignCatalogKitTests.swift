@@ -135,7 +135,7 @@ final class DesignCatalogKitTests: XCTestCase {
     /// `.infinity` の full は "∞"、有限の巨大値は指数表記せず桁を並べる
     func testRadiusFullFormatsInfinityAndHugeFiniteValue() throws {
         let rows = TokenDiff.radius(DefaultRadiusScale(), EdgeCaseRadiusScale())
-        XCTAssertEqual(rows.count, 9)
+        XCTAssertEqual(rows.count, 8)
 
         let full = try row(rows, "full")
         XCTAssertEqual(full.a, "∞", "DefaultRadiusScale.full は .infinity")
@@ -151,17 +151,12 @@ final class DesignCatalogKitTests: XCTestCase {
         XCTAssertEqual(xs.a, "2", "整数は小数点を付けない")
         XCTAssertEqual(xs.b, "2.5", "小数は 1 桁")
         XCTAssertTrue(xs.differs)
-
-        let card = try row(rows, "card")
-        XCTAssertEqual(card.a, "24")
-        XCTAssertEqual(card.b, "24")
-        XCTAssertFalse(card.differs)
     }
 
     /// 差分ゼロの組み合わせでは differing() が空になる
     func testDifferingIsEmptyWhenAllValuesMatch() {
         let rows = TokenDiff.radius(DefaultRadiusScale(), DefaultRadiusScale())
-        XCTAssertEqual(rows.count, 9)
+        XCTAssertEqual(rows.count, 8)
         XCTAssertTrue(TokenDiff.differing(rows).isEmpty)
         // 全行が値を持ち、full は ∞ 同士で一致している
         XCTAssertEqual(rows.first { $0.label == "full" }?.a, "∞")
@@ -231,7 +226,7 @@ final class DesignCatalogKitTests: XCTestCase {
     @MainActor
     private func entry(id: String, archetype: String, brand: String) -> CatalogEntry {
         CatalogEntry(
-            id: id, brandId: brand, brandName: brand, archetype: archetype, title: archetype,
+            id: id, brandName: brand, archetype: archetype, title: archetype,
             annotation: DesignAnnotation(purpose: "p", whyItWorks: "w"),
             theme: ThemeA()
         ) { Text("x") }

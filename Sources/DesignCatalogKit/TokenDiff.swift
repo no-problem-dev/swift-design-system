@@ -58,7 +58,7 @@ public enum TokenDiff {
         let items: [(String, CGFloat, CGFloat)] = [
             ("none", a.none, b.none), ("xs", a.xs, b.xs), ("sm", a.sm, b.sm),
             ("md", a.md, b.md), ("lg", a.lg, b.lg), ("xl", a.xl, b.xl),
-            ("xxl", a.xxl, b.xxl), ("card", a.card, b.card), ("full", a.full, b.full),
+            ("xxl", a.xxl, b.xxl), ("full", a.full, b.full),
         ]
         return items.map { Row(label: $0.0, a: num($0.1), b: num($0.2)) }
     }
