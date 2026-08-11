@@ -1,802 +1,840 @@
-# 変更履歴
+# Changelog
 
-このプロジェクトの全ての重要な変更はこのファイルに記録されます。
+All notable changes to this project are recorded in this file.
 
-フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に基づいており、
-このプロジェクトは [セマンティックバージョニング](https://semver.org/lang/ja/spec/v2.0.0.html) に準拠しています。
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [未リリース]
+## [Unreleased]
 
-**公開 API を壊しています。** `Typography.font` / `Typography.font(design:)` を削除し、
-`ThemeProvider.colorPalette` をプロパティからメソッドへ変えました。
+**This breaks the public API.** `Typography.font` / `Typography.font(design:)` are removed, and
+`ThemeProvider.colorPalette` changed from a property to a method.
 
-### 修正
+### Fixed
 
-- **`IconButton` の `.outlined` が線を描くようになった。** 背景色の分岐しか持っておらず、
-  `.standard` と 1 画素も違わない絵を出していた。名前だけあって輪郭が無い状態。
-  輪郭は `ColorPalette.outline` を `BorderScale.regular`（1pt）で描く。輪郭を持つ他の部品
-  （`OutlinedChipStyle` / `GlassButtonStyle`）と同じトークンの組み合わせに揃えた。
+- **`IconButton`'s `.outlined` now draws a border.** It only branched on background color, so it
+  produced an image not one pixel different from `.standard`. The name was there but the outline
+  was not. The outline is `ColorPalette.outline` drawn at `BorderScale.regular` (1pt), matching the
+  token combination used by the other outlined parts (`OutlinedChipStyle` / `GlassButtonStyle`).
 
-- **`ByteSize.formatted` が型と同じ 1,024 進で数えるようになった。** ファクトリも単位換算も
-  1,024 進なのに `ByteCountFormatter` だけ 1,000 進（`.file`）で数えていたため、
-  `ByteSize.megabytes(100)` が `"104.9 MB"` と表示されていた。`.binary` にして `"100 MB"` になる。
+- **`ByteSize.formatted` now counts in base 1,024, the same as the type.** The factories and the
+  unit conversions were base 1,024, but only `ByteCountFormatter` counted in base 1,000 (`.file`),
+  so `ByteSize.megabytes(100)` displayed as `"104.9 MB"`. With `.binary` it reads `"100 MB"`.
 
-- **`ThemeProvider` のパレット解決が端末の外観に従うようになった。** `themeMode` が `.system` の
-  間は、端末が暗くてもライトのパレットを返していた。解決は `.theme(_:)` の中にしか無く、
-  プロバイダに直接聞くと必ずライトが返る、という食い違いだった。
+- **`ThemeProvider` palette resolution now follows the device appearance.** While `themeMode` was
+  `.system`, it returned the light palette even when the device was dark. The resolution existed
+  only inside `.theme(_:)`, so asking the provider directly always returned light — the two
+  disagreed.
 
-### 削除
+### Removed
 
-- **`Typography.font` と `Typography.font(design:)`。** 固定 pt の `.system(size:)` を返すだけで
-  Dynamic Type に追随しない。追随するのは `.typography(_:)` モディファイア（環境の
-  `TypographyScale` で解決してから `@ScaledMetric` を通す）だけで、`font` は同じものに見えて
-  文字が伸びなくなる罠だった。文字を出す経路は `.typography(_:)` に一本化。
+- **`Typography.font` and `Typography.font(design:)`.** They only returned a fixed-pt
+  `.system(size:)` and did not follow Dynamic Type. The only thing that follows it is the
+  `.typography(_:)` modifier (which resolves through the environment's `TypographyScale` and then
+  passes through `@ScaledMetric`), so `font` looked like the same thing but was a trap where text
+  stopped growing. Text now goes through `.typography(_:)` alone.
 
-### 変更
+### Changed
 
-- **`ThemeProvider.colorPalette` はメソッドになった。** `colorPalette(for:)` が `ColorScheme` を
-  受け取り、`.system` をその外観に対して解決する。解決規則そのものは `resolvedMode(for:)` として
-  公開した。`.theme(_:)` は環境の `colorScheme` を渡してこれを呼ぶので、解決の置き場所が 1 つになる。
+- **`ThemeProvider.colorPalette` is now a method.** `colorPalette(for:)` takes a `ColorScheme` and
+  resolves `.system` against that appearance. The resolution rule itself is exposed as
+  `resolvedMode(for:)`. `.theme(_:)` passes the environment's `colorScheme` and calls it, so
+  resolution lives in one place.
 
-- **同梱している UI 文言を英語にした。** ピッカー（アイコン / 絵文字 / カラー / 画像 / 動画）、
-  動画プレイヤー、権限アラート、`VideoPickerError.errorDescription`、`StatusIndicator` と
-  `StepIndicator` のアクセシビリティラベル、`ThemeCategory` と各テーマの説明文。
-  カタログとプレビューは配布物ではないため対象外。
+- **The UI strings shipped with the package are now in English.** The pickers (icon / emoji / color
+  / image / video), the video player, the permission alerts,
+  `VideoPickerError.errorDescription`, the accessibility labels of `StatusIndicator` and
+  `StepIndicator`, and the descriptions of `ThemeCategory` and each theme.
+  The catalog and previews are not shipped, so they are out of scope.
 
-### 使う側でやること
+### What you need to do
 
-- `Typography.font` を使っていたら `.typography(_:)` に置き換える
-- `provider.colorPalette` を読んでいたら `provider.colorPalette(for: colorScheme)` にする。
-  ビューの中なら `@Environment(\.colorPalette)` を読むのが本来の経路
+- If you used `Typography.font`, replace it with `.typography(_:)`
+- If you read `provider.colorPalette`, use `provider.colorPalette(for: colorScheme)`.
+  Inside a view, reading `@Environment(\.colorPalette)` is the intended path
 
 ## [2.4.0] - 2026-08-02
 
-**`DefaultTheme` を使っているアプリは、ライトモードの見た目が変わります。**
-自前の `ColorPalette` を実装しているアプリは影響を受けません。
+**Apps using `DefaultTheme` will see their light mode appearance change.**
+Apps that implement their own `ColorPalette` are unaffected.
 
-### 変更
+### Changed
 
-- **ライトの面の段差を色で作るようにした。** 地とカード面がほぼ同じ明度（1.045:1）で、
-  カードの輪郭が実質シャドウだけになっていた。影は光の当たり方の表現なので、暗い場所・
-  スクリーンショット・コントラストを上げた設定のどれでも消える。そこに輪郭を預けると、
-  条件によってカードが背景に溶ける。
+- **Light-mode surface steps are now made with color.** The background and the card surface were
+  nearly the same lightness (1.045:1), leaving a card's outline effectively to its shadow alone.
+  A shadow expresses how light falls, so it disappears in a dark place, in a screenshot, or with
+  contrast turned up. Leaving the outline to it means cards dissolve into the background under
+  those conditions.
 
-  | トークン | これまで | これから |
+  | Token | Before | After |
   |---|---|---|
   | `background` | `.white` | `gray100` |
   | `surface` | `gray50` | `.white` |
   | `surfaceVariant` | `gray100` | `gray200` |
 
-  **地を沈めて面を白へ置いた。** 逆（地が白・カードが灰）にすると、手前にあるものほど
-  暗いという上下関係の逆転が起きる。Apple のグループ化リストも地が灰で面が白。
+  **The background was sunk and the surface moved to white.** The reverse (white background, gray
+  card) inverts the depth relationship, making the nearer thing the darker one. Apple's grouped
+  lists also use a gray background with white surfaces.
 
-  | | 面 / 地 |
+  | | Surface / background |
   |---|---|
-  | これまで | 1.045 |
-  | **これから** | **1.101** |
-  | 参考: Apple iOS ライト | 1.116 |
-  | 参考: 本パッケージのダーク | 1.209 |
+  | Before | 1.045 |
+  | **After** | **1.101** |
+  | Reference: Apple iOS light | 1.116 |
+  | Reference: this package's dark | 1.209 |
 
-  ダークは変えていない（元から 1.209 で足りている）。新しい色は足しておらず、
-  既存のプリミティブの組み替えだけ。
+  Dark is unchanged (1.209 was already enough). No new colors were added — only existing
+  primitives were rearranged.
 
-### 見た目が変わるもの
+### What changes visually
 
-`surfaceVariant` を下地に使っている部品は、白の上ではっきり見えるようになる。
-スナップショットで差分が出たのは次の 6 種（いずれもライトのみ）:
+Parts that use `surfaceVariant` as their base now read clearly against white.
+Six showed snapshot diffs (all light mode only):
 
-- `Snackbar` の板
-- `DSTextField` の `.filled` の塗り
-- `ProgressBar` の未達部分のトラック
-- `SegmentedControl` のトラック
-- `EmptyState` のアイコンの円
-- `AttachmentThumbnail` のタイル
+- The `Snackbar` panel
+- The fill of `DSTextField`'s `.filled`
+- The unfilled part of `ProgressBar`'s track
+- `SegmentedControl`'s track
+- The icon circle in `EmptyState`
+- `AttachmentThumbnail`'s tile
 
-いずれも「これまで薄すぎて形が見えていなかったものが見えるようになった」変更で、
-配置や寸法は動いていない。
+In every case the change is "something too faint to make out has become visible"; placement and
+dimensions did not move.
 
-### 使う側でやること
+### What you need to do
 
-- **`DefaultTheme` を使っているアプリ**: 依存を上げた時点でライトの見た目が変わる。
-  スナップショットを持っているなら差分が出るので、撮り直す前に 1 度目で見ること
-- **自前の `ColorPalette` を持っているアプリ**: 影響なし。ただし同じ欠陥を自前パレットで
-  やっていないかは見ておくとよい。地と面の比が 1.10 を下回っていたら、輪郭が影頼りになっている
-- `SurfaceStepContrastTests` が面の段差の下限（1.10）を見ている。パレットを差し替えるときの
-  目安に使える
+- **Apps using `DefaultTheme`**: light mode appearance changes the moment you raise the dependency.
+  If you keep snapshots you will get diffs, so look at them once before re-recording
+- **Apps with their own `ColorPalette`**: unaffected. Still worth checking whether your own palette
+  has the same flaw. If the background-to-surface ratio is below 1.10, the outline is relying on
+  the shadow
+- `SurfaceStepContrastTests` checks the lower bound of the surface step (1.10). Useful as a
+  yardstick when swapping palettes
 
-### 見送り
+### Deferred
 
-- ダークのパレットは触っていない。地と面が 1.209、面と `surfaceVariant` が 1.424 あり、
-  実機で撮って確認しても十分に分離している
+- The dark palette was left alone. Background to surface is 1.209 and surface to `surfaceVariant`
+  is 1.424; checked by capturing on a device, they separate well enough
 
 ## [2.3.0] - 2026-08-01
 
-行のレイアウトとテキストの寸法を、画面側で手当てしなくても揃うようにした回。
-今まで「アイコンの位置が行ごとに数 pt ずれる」「iPad で本文が横に伸びきる」
-「文字サイズを上げても本文が拡大しない」は、いずれも呼び出し側で直しても再発する
-性質の欠陥だった。原因がライブラリ側にあるので、ライブラリ側で塞ぐ。
+The release that makes row layout and text dimensions line up without the screen having to patch
+them. Until now, "the icon shifts a few pt from row to row", "body text stretches all the way
+across on iPad", and "raising the text size does not enlarge body text" were all defects that came
+back even when fixed at the call site. The cause is in the library, so the library closes them.
 
-### 追加
+### Added
 
-- **`SectionRowLabel`** — `SectionRow` の先頭に置く、アイコン列付きのラベル。
-  アイコンの無い行でも列のぶんを空けるため、アイコンのある行と無い行でラベルの
-  左端が縦に揃う。副題も持てる（`SectionRowLabel("メール", subtitle: "user@example.com")`）。
-  列の幅は `IconSizeScale.lg`（32pt）で、`LinkCard` の先頭 `IconBadge(.small)` と同じ。
-  行の余白と合わせるとラベルの左端が 56pt になり、設定アプリの行と同じ位置に来る。
-- **`.readableWidth()`** — 本文の幅を読みやすい上限で頭打ちにして中央に置く。
-  SwiftUI には UIKit の `readableContentGuide` に相当する API が無く、画面ごとに
-  `.frame(maxWidth:)` を手で書くと値がばらつくため、決め方をここに 1 本化した。
-  上限は Dynamic Type 既定で 672pt、文字サイズに応じて 560〜896pt のあいだで伸縮する
-  （`readableContentGuide` の実測に合わせた）。効くのは横も縦も `.regular` のときだけで、
-  iPhone 縦や iPad の細い分割では何もしない。そこで頭打ちにしても余白が増えるだけになる。
-- `Typography.relativeTextStyle` — 役割ごとの Dynamic Type の追随先。
-  iOS のテキストスタイルは大きいものほど拡大率が小さいため、大きい役割を大きい
-  スタイルに相対させることで、文字を最大まで上げても display だけが画面を埋めない。
+- **`SectionRowLabel`** — a label with an icon column, placed at the head of a `SectionRow`.
+  It reserves the column even on rows without an icon, so labels line up on the left across rows
+  with and without icons. It can carry a subtitle
+  (`SectionRowLabel("Email", subtitle: "user@example.com")`).
+  The column width is `IconSizeScale.lg` (32pt), the same as the leading `IconBadge(.small)` in
+  `LinkCard`. Combined with the row's padding, the label's left edge lands at 56pt — the same
+  position as the rows in the Settings app.
+- **`.readableWidth()`** — caps body width at a readable maximum and centers it.
+  SwiftUI has no API equivalent to UIKit's `readableContentGuide`, and writing
+  `.frame(maxWidth:)` by hand per screen makes the values drift, so the decision is centralized
+  here. The cap is 672pt at the default Dynamic Type size, flexing between 560 and 896pt with the
+  text size (matched to measurements of `readableContentGuide`). It applies only when both the
+  horizontal and vertical size classes are `.regular`; on iPhone portrait or narrow iPad splits it
+  does nothing, since capping there would only add margin.
+- `Typography.relativeTextStyle` — the Dynamic Type style each role scales relative to.
+  Larger iOS text styles scale by a smaller factor, so relating larger roles to larger styles keeps
+  display alone from filling the screen when text is raised to the maximum.
 
-### 変更
+### Changed
 
-- **`SectionRow` が行の骨格を持つようになった。** 今までは HStack に余白を付けるだけで、
-  行の最小高も先頭アイコン列の幅も規定していなかった。アイコンの寸法（`IconSizeScale`）と
-  テキストの寸法（`TypographyScale`）が別々に決まるため、記号の字幅の違いがそのまま
-  ラベルの左端のずれになっていた。
-  - 行の最小高が最小タップ領域（44pt）を下回らなくなった。本文 1 行だけの行は
-    これまで約 41pt で、Apple の下限を割っていた
-  - 先頭アイコン列の幅が固定された。`SectionRow { Label(...) }` と書いた**既存のコードも
-    そのまま**列が効く（行が自分の中身に `LabelStyle` を配る形にしたため、API は変えていない）
-  - 骨格は `@ScaledMetric` で Dynamic Type に追随する。列も行高も文字と一緒に伸びる
-- **`.typography(_:)` が Dynamic Type に追随するようになった。** 今までは解決したサイズを
-  そのまま `Font.system(size:)` に渡していたため、アクセシビリティ設定で文字サイズを
-  上げても本文が拡大しなかった。倍率は `.system` と `.named`（ブランド書体）に共通で掛かる。
-  行間・字間も拡大後のサイズから引き直すので、文字だけ大きくなって行が詰まることはない。
-- `SectionNavigationLabel` が内部で `SectionRowLabel` を使うようになった。
-  `systemImage` を省いた場合もアイコン列を空けるため、同じセクション内の
-  アイコン付きの行と左端が揃う。`subtitle:` を受け取れるようになった。
+- **`SectionRow` now owns the row's skeleton.** It used to only add padding to an HStack, defining
+  neither the minimum row height nor the width of the leading icon column. Icon dimensions
+  (`IconSizeScale`) and text dimensions (`TypographyScale`) are decided separately, so differences
+  in glyph width became shifts in the label's left edge.
+  - The row's minimum height no longer falls below the minimum tap target (44pt). Rows with a
+    single line of body text were about 41pt, under Apple's floor
+  - The leading icon column now has a fixed width. **Existing code** written as
+    `SectionRow { Label(...) }` gets the column too (the row distributes a `LabelStyle` to its own
+    content, so the API did not change)
+  - The skeleton follows Dynamic Type via `@ScaledMetric`. Both the column and the row height grow
+    along with the text
+- **`.typography(_:)` now follows Dynamic Type.** It used to pass the resolved size straight to
+  `Font.system(size:)`, so raising the text size in accessibility settings did not enlarge body
+  text. The scale factor applies to both `.system` and `.named` (brand typefaces). Line height and
+  letter spacing are recomputed from the scaled size, so text does not grow while the lines stay
+  cramped.
+- `SectionNavigationLabel` now uses `SectionRowLabel` internally.
+  It reserves the icon column even when `systemImage` is omitted, so it lines up on the left with
+  icon-bearing rows in the same section. It can now take `subtitle:`.
 
-### 見送り
+### Deferred
 
-- **ガラス（`glassSurface` / `frostedSurface` / `.glass` ボタン）の `if #available(iOS 26.0)`
-  分岐はそのまま残す。** 下限が iOS 17 のまま依存しているアプリがあり、分岐を外すと壊れる。
-  下限が 26 のアプリでは実行時に必ずガラス経路を通るので、現状のままで正しい。
+- **The `if #available(iOS 26.0)` branches for glass (`glassSurface` / `frostedSurface` / the
+  `.glass` button) stay.** Apps still depend on this with a deployment target of iOS 17, and
+  removing the branches would break them. On apps targeting 26 the glass path is always taken at
+  runtime, so it is correct as is.
 
-### 使う側でやること
+### What you need to do
 
-- **必須の対応は無い。** 既存の呼び出しはすべてそのまま通る
-- `SectionRow` を使っている画面は行の高さが最大 3pt ほど伸びる。密度を詰めていた
-  レイアウトは一度見ておくとよい
-- アイコンのある行と無い行を同じセクションに混ぜている画面は、
-  `Text(...)` / `Label(...)` を `SectionRowLabel(...)` に置き換えると左端が揃う
-- 文字サイズを上げたときのレイアウトは、これまで固定サイズだったぶん未検証になっている。
-  `.dynamicTypeSize(.accessibility3)` あたりで一度見ておくとよい
-- iPad 対応の画面では、本文を包む階層に `.readableWidth()` を付けると
-  1 行が長くなりすぎない
+- **Nothing is required.** Every existing call site still compiles
+- Screens using `SectionRow` grow up to about 3pt taller per row. Worth a look if you had packed
+  the layout tightly
+- On screens that mix rows with and without icons in one section, replacing `Text(...)` /
+  `Label(...)` with `SectionRowLabel(...)` lines up the left edge
+- Layout at larger text sizes is untested, since the sizes used to be fixed. Worth checking once
+  around `.dynamicTypeSize(.accessibility3)`
+- On iPad-capable screens, adding `.readableWidth()` to the level that wraps body text keeps lines
+  from getting too long
 
 ## [2.2.0] - 2026-07-27
 
-### 追加
-- `imagePicker` に `resize: ImageResizeRule?`（`.square(N)` = center-crop した正方形 /
-  `.longestEdge(N)` = 長辺を N に収める）を追加。処理順は リサイズ → JPEG 化 →
-  （`maxSize` があれば）品質。表示に使わない画素を運ぶのが一番無駄なので、品質より先に寸法を落とす。
-  既定 nil で従来挙動を維持（非破壊）。
-- `UIImage.resized(by:)` を公開。描き直す前に EXIF の向きを解決するため、戻り値は必ず `.up` /
-  scale 1 になる。縦で撮った写真が横になることがない。どちらの規則も元より大きくはしない。
+### Added
+- Added `resize: ImageResizeRule?` to `imagePicker` (`.square(N)` = a center-cropped square /
+  `.longestEdge(N)` = fit the longest edge to N). The order is resize → JPEG encode →
+  quality (if `maxSize` is set). Carrying pixels you will not display is the biggest waste, so
+  dimensions are cut before quality. Defaults to nil, preserving the previous behavior
+  (non-breaking).
+- Made `UIImage.resized(by:)` public. It resolves EXIF orientation before redrawing, so the return
+  value is always `.up` at scale 1. A photo taken in portrait never comes back landscape. Neither
+  rule ever enlarges beyond the original.
 
-### 変更
-- **写真ライブラリの選択を `PHPickerViewController` へ置き換え**（`imagePicker` のみ）。
-  選択がアプリの外で完結しライブラリ全体に触れないため、写真の権限が要らなくなった。
-  Info.plist の `NSPhotoLibraryUsageDescription` と、ライブラリ側の権限リクエスト・
-  拒否時アラートを削除。カメラは撮影の許可が正当に要るので `UIImagePickerController` と
-  `NSCameraUsageDescription` のまま。
-  なお `videoPicker` は従来どおり `UIImagePickerController` を使うため、動画を扱うアプリでは
-  引き続き `NSPhotoLibraryUsageDescription` が必要。
+### Changed
+- **Replaced photo library selection with `PHPickerViewController`** (`imagePicker` only).
+  Selection completes outside the app and never touches the whole library, so the photo permission
+  is no longer needed. `NSPhotoLibraryUsageDescription` in Info.plist and the library's permission
+  request and denial alert were removed. The camera legitimately needs capture permission, so it
+  stays on `UIImagePickerController` and `NSCameraUsageDescription`.
+  Note that `videoPicker` still uses `UIImagePickerController`, so apps handling video still need
+  `NSPhotoLibraryUsageDescription`.
 
 ## [1.7.0] - 2026-06-14
 
-### 追加
-- `imagePicker` に `source: ImagePickerSource`（`.automatic` / `.camera` / `.photoLibrary`）を追加。
-  `.camera` 指定で chooser を出さずカメラを直接提示できる（カメラ専用ボタン用）。既定 `.automatic`
-  で従来挙動を維持（非破壊）。
+### Added
+- Added `source: ImagePickerSource` (`.automatic` / `.camera` / `.photoLibrary`) to `imagePicker`.
+  Specifying `.camera` presents the camera directly without the chooser (for camera-only buttons).
+  Defaults to `.automatic`, preserving the previous behavior (non-breaking).
 
 ## [1.6.0] - 2026-06-14
 
-### 追加
-- **添付 UI atom**: `AttachmentThumbnail`（画像/ファイルのサムネ + ✕ 削除）と
-  `AttachmentStrip`（横スクロールの純レイアウトコンテナ、ViewBuilder のみ受ける logic-less）。
-  ドメイン型・IO・state を持たず、削除は callback。Catalog に Attachment を追加。
+### Added
+- **Attachment UI atoms**: `AttachmentThumbnail` (an image/file thumbnail + a ✕ delete control) and
+  `AttachmentStrip` (a horizontally scrolling, purely layout container that takes only a
+  ViewBuilder — logic-less). They hold no domain types, no IO, and no state; deletion is a
+  callback. Added Attachment to the Catalog.
 
 ## [1.3.2] - 2026-06-07
 
-### 追加
-- **StatusIndicatorコンポーネント** - 非同期の作業状態を 1 グリフで表すインジケーター
-  - `StatusKind` (pending / running / success / failure / canceled) をセマンティックカラーへ写像
-  - `StatusKind.color(in:)` で周辺要素（バッジ等）の色をインジケーターと揃えられる
-  - 実行中はシステム `ProgressView`、各状態に accessibilityLabel 自動付与
-- **StepIndicatorコンポーネント** - N ステップの現在位置を表すドット列
-  - 現在 = primary、通過 = 薄い primary、未来 = outlineVariant
-  - `currentIndex: nil` = 全ステップ終了。アクセシビリティラベル「ステップ N / M」を自動生成
-- **TimelineRowコンポーネント** - 時系列フィード（アクティビティログ）の 1 行
-  - 左にマーカー + 縦コネクタ線、右に任意コンテンツ。`VStack(spacing: 0)` で連続タイムライン
-  - マーカーは `StatusIndicator`（status: 指定）または任意ビュー（marker: クロージャ）
-- **LinkCardコンポーネント** - URL 参照（出典・関連リンク）のカード
-  - タイトル + ドメイン + 任意アクセサリ（Chip 等）。action 付きはタップ可能
-  - メタデータ取得は呼び出し側の責務（LinkPresentation 非依存）
-- **EmptyStateコンポーネント** - 空リスト・空検索結果の明示ステート
-  - アイコン + 見出し + 任意の説明文。accessibilityElement(children: .combine)
-- カタログアプリに上記 5 コンポーネントのセクションを追加
+### Added
+- **StatusIndicator component** - an indicator that expresses async work state in a single glyph
+  - Maps `StatusKind` (pending / running / success / failure / canceled) to semantic colors
+  - `StatusKind.color(in:)` lets surrounding elements (badges, etc.) match the indicator's color
+  - Uses the system `ProgressView` while running; adds an accessibilityLabel automatically for
+    each state
+- **StepIndicator component** - a row of dots showing the current position across N steps
+  - Current = primary, passed = faded primary, upcoming = outlineVariant
+  - `currentIndex: nil` = all steps finished. Auto-generates the accessibility label "Step N / M"
+- **TimelineRow component** - one row of a chronological feed (activity log)
+  - A marker plus a vertical connector on the left, arbitrary content on the right.
+    `VStack(spacing: 0)` for a continuous timeline
+  - The marker is a `StatusIndicator` (via `status:`) or any view (via the `marker:` closure)
+- **LinkCard component** - a card for a URL reference (a source or a related link)
+  - Title + domain + optional accessory (a Chip, etc.). Tappable when given an action
+  - Fetching metadata is the caller's responsibility (no dependency on LinkPresentation)
+- **EmptyState component** - an explicit state for empty lists and empty search results
+  - Icon + heading + optional description. accessibilityElement(children: .combine)
+- Added catalog app sections for the five components above
 
 ## [1.0.24] - 2026-04-14
 
-### 追加
-- **Sectionコンポーネント群** - 設定画面・ハブ画面用の surface カード (ADR-014)
-  - `SectionCard(_ header:, footer:)` - 小さな uppercase ヘッダー + 角丸 surface + footer 説明文
-  - `SectionRow` - 統一 padding の HStack 行。`contentShape(Rectangle())` で余白部分もタップ可能
-  - `SectionRowDivider` - `outlineVariant` カラーの 0.5pt ヘアライン区切り
-  - `SectionNavigationLabel` - chevron 付き NavigationLink 用ラベル
-  - 4 コンポーネントとも DS トークン（spacing / radius / typography / colorPalette）のみで構成
-  - iOS 26 Liquid Glass 相当の surface material 表現に対応
+### Added
+- **Section components** - surface cards for settings and hub screens (ADR-014)
+  - `SectionCard(_ header:, footer:)` - a small uppercase header + a rounded surface + a footer
+    description
+  - `SectionRow` - an HStack row with uniform padding. `contentShape(Rectangle())` makes the
+    padding tappable too
+  - `SectionRowDivider` - a 0.5pt hairline divider in the `outlineVariant` color
+  - `SectionNavigationLabel` - a label for NavigationLink with a chevron
+  - All four are built only from DS tokens (spacing / radius / typography / colorPalette)
+  - Supports surface material expression equivalent to iOS 26 Liquid Glass
 
-### 変更
-- **SectionCard** - 既存の `SectionCard(title:, elevation:)` 初期化子は互換維持のため残存。
-  新規利用は `SectionCard(_ header:, footer:)` の Surface Section スタイルを推奨
-- `Sources/DesignSystem/Layout/Patterns/SectionCard.swift` を `Sources/DesignSystem/Components/Section/SectionCard.swift` に統合移動（タイプ重複回避）
+### Changed
+- **SectionCard** - the existing `SectionCard(title:, elevation:)` initializer remains for
+  compatibility. New code should use the Surface Section style of
+  `SectionCard(_ header:, footer:)`
+- Merged `Sources/DesignSystem/Layout/Patterns/SectionCard.swift` into
+  `Sources/DesignSystem/Components/Section/SectionCard.swift` (to avoid a duplicate type)
 
 ## [1.0.22] - 2026-01-06
 
-### 追加
-- **IconBadgeコンポーネント** - 円形背景にSF Symbolアイコンを表示するバッジ (#36)
-  - 4つのサイズ: small (24pt), medium (32pt), large (48pt), extraLarge (64pt)
-  - カスタマイズ可能な前景色と背景色
-  - ステータス表示、機能ハイライト、カテゴリアイコンに最適
-  - カタログアプリに「IconBadge」セクション追加
+### Added
+- **IconBadge component** - a badge showing an SF Symbol on a circular background (#36)
+  - 4 sizes: small (24pt), medium (32pt), large (48pt), extraLarge (64pt)
+  - Customizable foreground and background colors
+  - Ideal for status display, feature highlights, and category icons
+  - Added an "IconBadge" section to the catalog app
 
-- **ProgressBarコンポーネント** - 水平プログレスインジケータ (#36)
-  - スプリングアニメーション付きの進捗表示
-  - カスタマイズ可能な高さと色
-  - 不確定状態（indeterminate）のサポート
-  - ローディング進捗、完了状況、目標トラッキングに最適
-  - カタログアプリに「ProgressBar」セクション追加
+- **ProgressBar component** - a horizontal progress indicator (#36)
+  - Progress display with a spring animation
+  - Customizable height and color
+  - Support for the indeterminate state
+  - Ideal for loading progress, completion status, and goal tracking
+  - Added a "ProgressBar" section to the catalog app
 
-- **StatDisplayコンポーネント** - メトリクス表示コンポーネント (#36)
-  - ラベル、値、オプションの単位を表示
-  - 縦・横レイアウトの選択
-  - トレンドインジケータ（上/下矢印）のサポート
-  - ダッシュボード統計、メトリクスカード、KPI表示に最適
-  - カタログアプリに「StatDisplay」セクション追加
+- **StatDisplay component** - a metrics display component (#36)
+  - Shows a label, a value, and an optional unit
+  - Choice of vertical or horizontal layout
+  - Support for a trend indicator (up/down arrow)
+  - Ideal for dashboard stats, metric cards, and KPI displays
+  - Added a "StatDisplay" section to the catalog app
 
-### 変更
-- **カタログアプリの大規模リファクタリング**
-  - 共通コンポーネントの導入: CatalogPageContainer, CatalogOverview, VariantShowcase, CodeExample
-  - 22のカタログ詳細ビューを統一された構造に移行
-  - ナビゲーション構造の統一: Foundation, Components, Patternsが同じリストビューパターンを使用
-  - CatalogItemRowContentによる行表示の共通化
+### Changed
+- **Large-scale refactoring of the catalog app**
+  - Introduced shared components: CatalogPageContainer, CatalogOverview, VariantShowcase,
+    CodeExample
+  - Migrated 22 catalog detail views to a unified structure
+  - Unified the navigation structure: Foundation, Components, and Patterns now use the same list
+    view pattern
+  - Shared row rendering via CatalogItemRowContent
 
-- **デザイントークンへの完全移行**
-  - ハードコードされたスペーシング値（1, 2, 4, 6）をspacing tokens（xxs, xs, sm, md）に置換
-  - ハードコードされた角丸値（4, 6, 8, 12）をradius tokens（xs, sm, md, lg）に置換
-  - ハードコードされた色（Color.green, Color.red等）をsemantic colors（colors.success, colors.error等）に置換
-  - ハードコードされたフォントをtypography tokensに置換
-  - ハードコードされたアニメーションをmotion tokensに置換
+- **Complete migration to design tokens**
+  - Replaced hardcoded spacing values (1, 2, 4, 6) with spacing tokens (xxs, xs, sm, md)
+  - Replaced hardcoded corner radius values (4, 6, 8, 12) with radius tokens (xs, sm, md, lg)
+  - Replaced hardcoded colors (Color.green, Color.red, etc.) with semantic colors
+    (colors.success, colors.error, etc.)
+  - Replaced hardcoded fonts with typography tokens
+  - Replaced hardcoded animations with motion tokens
 
-- **Cardコンポーネントの簡素化** (#36)
-  - @ViewBuilderを使用したシンプルな実装に変更
-  - 冗長な内部状態管理を削除
+- **Simplified the Card component** (#36)
+  - Changed to a simple implementation using @ViewBuilder
+  - Removed redundant internal state management
 
-### 削除
-- **CatalogItem.swift** - 冗長な中間レイヤーを削除
-- **PatternType.swift** - 未使用のため削除
-- `CatalogCategory.items`プロパティ - CatalogCategoryの直接プロパティに統合
-- `CatalogRouter.destination(for:item:)`の`item`パラメータ - 未使用のため削除
+### Removed
+- **CatalogItem.swift** - removed a redundant intermediate layer
+- **PatternType.swift** - removed as unused
+- The `CatalogCategory.items` property - merged into a direct property of CatalogCategory
+- The `item` parameter of `CatalogRouter.destination(for:item:)` - removed as unused
 
 ## [1.0.21] - 2025-12-21
 
-### 追加
-- **VideoPickerコンポーネント** - カメラまたは動画ライブラリから動画を選択するモディファイア (#34)
-  - `.videoPicker()` ViewModifierによるシンプルなAPI
-  - カメラ撮影と動画ライブラリ選択の統合UI
-  - 包括的な権限管理（カメラ、マイク、フォトライブラリ）
-  - 高画質撮影設定（1920x1080、typeHigh）
-  - iPadでのフルスクリーンカメラ表示対応
-  - ファイルサイズ制限（`maxSize: ByteSize`）
-  - 録画時間制限（`maxDuration: TimeInterval`）
-  - エラーハンドリング（`onError`コールバック）
-  - カタログアプリに「VideoPicker」セクション追加
+### Added
+- **VideoPicker component** - a modifier for picking a video from the camera or the video library
+  (#34)
+  - A simple API via the `.videoPicker()` ViewModifier
+  - Unified UI for camera capture and video library selection
+  - Comprehensive permission handling (camera, microphone, photo library)
+  - High-quality capture settings (1920x1080, typeHigh)
+  - Full-screen camera presentation on iPad
+  - File size limit (`maxSize: ByteSize`)
+  - Recording duration limit (`maxDuration: TimeInterval`)
+  - Error handling (`onError` callback)
+  - Added a "VideoPicker" section to the catalog app
 
-- **VideoPlayerViewコンポーネント** - 動画再生プレイヤー (#34)
-  - `Data`または`URL`から動画を再生
-  - AVPlayerViewControllerによるネイティブフルスクリーン対応
-  - メタデータ表示（長さ、解像度、ファイルサイズ）
-  - アクションChipによる操作UI（再生/一時停止、共有、保存）
-  - カメラロールへの保存機能（権限管理、Snackbarフィードバック）
-  - オーディオセッション自動設定
-  - 一時ファイルの自動クリーンアップ
-  - カタログアプリに「VideoPlayer」セクション追加
+- **VideoPlayerView component** - a video playback player (#34)
+  - Plays video from `Data` or a `URL`
+  - Native full-screen support via AVPlayerViewController
+  - Metadata display (duration, resolution, file size)
+  - Action UI via action Chips (play/pause, share, save)
+  - Save to the camera roll (permission handling, Snackbar feedback)
+  - Automatic audio session configuration
+  - Automatic cleanup of temporary files
+  - Added a "VideoPlayer" section to the catalog app
 
-- **ByteSize型** - ファイルサイズを扱う型安全なユーティリティ (#34)
-  - `Int.kb`, `Int.mb`, `Int.gb` 拡張による直感的なサイズ指定
-  - 人間可読なフォーマット出力（`formatted`プロパティ）
-  - 比較演算子サポート
+- **ByteSize type** - a type-safe utility for handling file sizes (#34)
+  - Intuitive size specification via the `Int.kb`, `Int.mb`, `Int.gb` extensions
+  - Human-readable formatted output (the `formatted` property)
+  - Comparison operator support
 
-- **Action Chip** - タップアクション付きChipバリアント (#34)
-  - `Chip(label, systemImage:, action:)` イニシャライザ
-  - 削除可能Chipとの明確な区別
+- **Action Chip** - a Chip variant with a tap action (#34)
+  - The `Chip(label, systemImage:, action:)` initializer
+  - Clearly distinct from a deletable Chip
 
-### 変更
-- **ImagePickerのAPI改善** (#34)
-  - `maxSizeInBytes: Int`を`maxSize: ByteSize`に変更（破壊的変更）
-  - より直感的なファイルサイズ指定（例: `50.mb`）
+### Changed
+- **ImagePicker API improvement** (#34)
+  - Changed `maxSizeInBytes: Int` to `maxSize: ByteSize` (breaking change)
+  - More intuitive file size specification (e.g. `50.mb`)
 
-### 修正
-- **iPadでの動画撮影品質改善** (#34)
-  - `videoQuality = .typeHigh`と`videoExportPreset = AVAssetExportPreset1920x1080`を設定
-  - フルスクリーンカメラ表示に変更（シート表示から変更）
+### Fixed
+- **Improved video capture quality on iPad** (#34)
+  - Set `videoQuality = .typeHigh` and
+    `videoExportPreset = AVAssetExportPreset1920x1080`
+  - Switched to full-screen camera presentation (changed from sheet presentation)
 
-- **動画保存時のクラッシュ修正** (#34)
-  - MainActorアイソレーション問題を解決（`@Sendable`クロージャ使用）
-  - ファイル存在チェックを追加
-  - 保存中の一時ファイル削除を防止
+- **Fixed a crash when saving video** (#34)
+  - Resolved a MainActor isolation problem (using a `@Sendable` closure)
+  - Added a file existence check
+  - Prevented deletion of the temporary file while saving
 
 ## [1.0.20] - 2025-11-17
 
-### 追加
-- **IconPicker、EmojiPicker、ColorPickerコンポーネント** - 選択UI用の3種類のピッカーモディファイア (#32)
-  - **IconPicker (SF Symbols専用)**
-    - `.iconPicker()` ViewModifierによるシンプルなAPI
-    - `Image(systemName:)`による正しいSF Symbols表示
-    - カテゴリベースの組織化（IconCategory/IconItem）
-    - ハーフモーダル表示（`.medium`, `.large`デテント）
-    - 検索機能とカテゴリフィルタリング
-    - 選択状態の視覚的フィードバック
-  - **EmojiPicker (絵文字専用)**
-    - `.emojiPicker()` ViewModifierによるシンプルなAPI
-    - 大きめのフォントサイズ（32pt）で絵文字を表示
-    - カテゴリベースの組織化（EmojiCategory/EmojiItem）
-    - ハーフモーダル表示（`.medium`, `.large`デテント）
-    - 検索機能とカテゴリフィルタリング
-    - 顔・感情、動物・自然、食べ物、活動などのカテゴリ
-  - **ColorPicker (プリセットカラー)**
-    - `.colorPicker()` ViewModifierによるシンプルなAPI
-    - プリセットカラーシステム（ColorPreset）
-    - `.tagFriendly`: タグやカテゴリに適した10色
-    - `.allPrimitives`: プリミティブカラー全体
-    - ハーフモーダル表示（`.medium`, `.large`デテント）
-    - 検索機能とカテゴリフィルタリング
-  - 全ピッカー共通の特徴
-    - ViewModifierパターンによる一貫したAPI
-    - ハーフモーダルシート（`.presentationDetents`使用）
-    - カテゴリ別タブナビゲーション
-    - 検索フィールドによるフィルタリング
-    - 選択/キャンセルボタン配置
-    - デザインシステムトークンとの完全統合
-  - カタログアプリに3つの新しいセクション追加
-    - ColorPickerCatalogView: カラーピッカーのデモと使用例
-    - EmojiPickerCatalogView: 絵文字ピッカーのデモと使用例
-    - IconPickerCatalogView: アイコンピッカーのデモと使用例
+### Added
+- **IconPicker, EmojiPicker, and ColorPicker components** - three picker modifiers for selection UI
+  (#32)
+  - **IconPicker (SF Symbols only)**
+    - A simple API via the `.iconPicker()` ViewModifier
+    - Correct SF Symbols rendering via `Image(systemName:)`
+    - Category-based organization (IconCategory/IconItem)
+    - Half-modal presentation (`.medium` and `.large` detents)
+    - Search and category filtering
+    - Visual feedback for the selected state
+  - **EmojiPicker (emoji only)**
+    - A simple API via the `.emojiPicker()` ViewModifier
+    - Displays emoji at a larger font size (32pt)
+    - Category-based organization (EmojiCategory/EmojiItem)
+    - Half-modal presentation (`.medium` and `.large` detents)
+    - Search and category filtering
+    - Categories such as smileys & emotion, animals & nature, food, and activities
+  - **ColorPicker (preset colors)**
+    - A simple API via the `.colorPicker()` ViewModifier
+    - A preset color system (ColorPreset)
+    - `.tagFriendly`: 10 colors suited to tags and categories
+    - `.allPrimitives`: the whole primitive color set
+    - Half-modal presentation (`.medium` and `.large` detents)
+    - Search and category filtering
+  - Common to all pickers
+    - A consistent API via the ViewModifier pattern
+    - Half-modal sheets (using `.presentationDetents`)
+    - Tab navigation by category
+    - Filtering via a search field
+    - Select/Cancel button placement
+    - Full integration with design system tokens
+  - Added three new sections to the catalog app
+    - ColorPickerCatalogView: demo and usage examples for the color picker
+    - EmojiPickerCatalogView: demo and usage examples for the emoji picker
+    - IconPickerCatalogView: demo and usage examples for the icon picker
 
 ## [1.0.19] - 2025-11-17
 
-### 追加
-- **ImagePickerコンポーネント** - カメラと写真ライブラリから画像を選択するモディファイア (#28)
-  - `.imagePicker()` ViewModifierによるシンプルなAPI
-  - カメラ撮影と写真ライブラリ選択の統合UI
-  - 包括的な権限管理（カメラとフォトライブラリ）
-  - `.addOnly`権限レベルによる最小権限アクセス
-  - カメラ利用可能性チェック（iPad等非搭載デバイス対応）
-  - 画像圧縮戦略（`maxSizeInBytes`パラメータ）
-    - 再帰的品質調整による目標サイズへの最適化
-    - 既に上限以下の場合は圧縮をスキップ
-  - エラーハンドリング（`onCompressionError`コールバック）
-  - `.restricted`状態の明示的処理（MDM/ペアレンタルコントロール）
-  - JPEG形式での画像データ返却
-  - カタログアプリに「ImagePicker」セクション追加
+### Added
+- **ImagePicker component** - a modifier for picking an image from the camera or the photo library
+  (#28)
+  - A simple API via the `.imagePicker()` ViewModifier
+  - Unified UI for camera capture and photo library selection
+  - Comprehensive permission handling (camera and photo library)
+  - Least-privilege access via the `.addOnly` permission level
+  - Camera availability check (for devices without one, such as some iPads)
+  - Image compression strategy (the `maxSizeInBytes` parameter)
+    - Optimizes toward the target size by recursive quality adjustment
+    - Skips compression when already under the limit
+  - Error handling (the `onCompressionError` callback)
+  - Explicit handling of the `.restricted` state (MDM / parental controls)
+  - Returns image data in JPEG format
+  - Added an "ImagePicker" section to the catalog app
 
-- **Snackbarコンポーネント** - Material Design準拠の一時的通知UI (#26)
-  - 画面下部から表示される一時的な通知UI
-  - `SnackbarState`による`@Observable`ベースの状態管理
-  - 自動消滅機能（デフォルト5秒、カスタマイズ可能）
-  - 最大2つのアクションボタンサポート（プライマリ、セカンダリ）
-  - スプリングアニメーション付き表示/非表示トランジション
-  - アクセシビリティサポート（accessibilityLabel対応）
-  - デザインシステムトークンとの完全統合（カラー、スペーシング、角丸）
-  - カタログアプリに「Snackbar」セクション追加
+- **Snackbar component** - transient notification UI following Material Design (#26)
+  - Transient notification UI presented from the bottom of the screen
+  - `@Observable`-based state management via `SnackbarState`
+  - Auto-dismiss (5 seconds by default, customizable)
+  - Support for up to two action buttons (primary, secondary)
+  - Show/hide transitions with a spring animation
+  - Accessibility support (accessibilityLabel)
+  - Full integration with design system tokens (color, spacing, corner radius)
+  - Added a "Snackbar" section to the catalog app
 
 ## [1.0.18] - 2025-11-16
 
-### 追加
-- **Snackbarコンポーネント** - Material Design準拠の一時的通知UI (#26)
-  - 画面下部から表示される一時的な通知UI
-  - `SnackbarState`による`@Observable`ベースの状態管理
-  - 自動消滅機能（デフォルト5秒、カスタマイズ可能）
-  - 最大2つのアクションボタンサポート（プライマリ、セカンダリ）
-  - スプリングアニメーション付き表示/非表示トランジション
-  - アクセシビリティサポート（accessibilityLabel対応）
-  - デザインシステムトークンとの完全統合（カラー、スペーシング、角丸）
-  - カタログアプリに「Snackbar」セクション追加
+### Added
+- **Snackbar component** - transient notification UI following Material Design (#26)
+  - Transient notification UI presented from the bottom of the screen
+  - `@Observable`-based state management via `SnackbarState`
+  - Auto-dismiss (5 seconds by default, customizable)
+  - Support for up to two action buttons (primary, secondary)
+  - Show/hide transitions with a spring animation
+  - Accessibility support (accessibilityLabel)
+  - Full integration with design system tokens (color, spacing, corner radius)
+  - Added a "Snackbar" section to the catalog app
 
 ## [1.0.17] - 2025-11-09
 
-### 追加
-- **タイポグラフィトークンシステムの実装** (#23)
-  - `Typography.Font.Design`プロトコルによる柔軟なフォント管理
-  - 日本語フォント切り替え機能
-    - `JapaneseRoundedFontDesign`: SF Rounded（丸ゴシック）スタイル
-    - `JapaneseSerifFontDesign`: 游明朝体（セリフ）スタイル
-  - `FontDesignProvider`による動的フォント切り替え
-  - カタログアプリに「タイポグラフィ」セクション追加
-  - フォントスタイルプレビューとフォントデザイン切り替えUI実装
+### Added
+- **Implemented the typography token system** (#23)
+  - Flexible font management via the `Typography.Font.Design` protocol
+  - Japanese font switching
+    - `JapaneseRoundedFontDesign`: an SF Rounded (rounded gothic) style
+    - `JapaneseSerifFontDesign`: a Yu Mincho (serif) style
+  - Dynamic font switching via `FontDesignProvider`
+  - Added a "Typography" section to the catalog app
+  - Implemented font style previews and font design switching UI
 
-- **iPad Split View対応の実装** (#24)
-  - 包括的なリファクタリングによる適応的レイアウト
-  - `AdaptiveLayoutProvider`による画面サイズ認識
-  - `LayoutContext`による動的レイアウト調整
-  - カタログアプリの全ビューをiPad Split View対応に改善
-  - Compact/Regular幅に応じたスペーシングとレイアウトの最適化
+- **Implemented iPad Split View support** (#24)
+  - Adaptive layout via comprehensive refactoring
+  - Screen size awareness via `AdaptiveLayoutProvider`
+  - Dynamic layout adjustment via `LayoutContext`
+  - Updated every catalog app view for iPad Split View
+  - Optimized spacing and layout for compact and regular widths
 
 ## [1.0.16] - 2025-11-09
 
-### 追加
-- **Motionシステム** - 統一されたアニメーションタイミングシステム (#20)
-  - 10種類の最適化されたアニメーションタイミング
-  - マイクロインタラクション: `quick` (70ms), `tap` (110ms)
-  - 状態変化: `toggle`, `fadeIn`, `fadeOut` (150ms)
-  - トランジション: `slide` (240ms), `slow` (300ms), `slower` (375ms)
-  - スプリング: `spring`, `bounce`
-  - Material Design 3、IBM Carbon、Apple HIGの業界標準に準拠
-  - `.animate()` modifierによる簡単適用
-  - 自動Reduce Motion対応（WCAG 2.1 SC 2.3.3準拠）
-  - Sendable準拠で並行処理安全
+### Added
+- **Motion system** - a unified animation timing system (#20)
+  - 10 optimized animation timings
+  - Micro-interactions: `quick` (70ms), `tap` (110ms)
+  - State changes: `toggle`, `fadeIn`, `fadeOut` (150ms)
+  - Transitions: `slide` (240ms), `slow` (300ms), `slower` (375ms)
+  - Springs: `spring`, `bounce`
+  - Follows the industry standards of Material Design 3, IBM Carbon, and Apple HIG
+  - Easy application via the `.animate()` modifier
+  - Automatic Reduce Motion support (per WCAG 2.1 SC 2.3.3)
+  - Sendable-conforming and concurrency-safe
 
-- **Motionカタログビュー** - 包括的なアニメーションカタログ (#20)
-  - 概要セクション: システム説明と主な機能
-  - インタラクティブデモ: 4カテゴリ別の体験可能なアニメーション
-  - 仕様表: 全10モーションの詳細スペック
-  - 使用例: 3パターンのコード例
-  - アクセシビリティ説明: Reduce Motion自動対応
-  - ベストプラクティス: 推奨パターンとアンチパターン
-  - MotionDemoCard: AspectGridパターンでレスポンシブデザイン
+- **Motion catalog view** - a comprehensive animation catalog (#20)
+  - Overview section: system description and key features
+  - Interactive demos: animations you can try, in 4 categories
+  - Spec table: detailed specs for all 10 motions
+  - Usage: 3 code examples
+  - Accessibility notes: automatic Reduce Motion support
+  - Best practices: recommended patterns and anti-patterns
+  - MotionDemoCard: responsive design with the AspectGrid pattern
 
-### 変更
-- **カタログUIの改善** (#21)
-  - セクション間スペーシングを24pt → 32ptに増加（2025年デザインシステムベストプラクティス準拠）
-  - カード風セクションデザインの導入（微妙なエレベーション効果）
-  - フルブリードセクション（画面端まで）には角丸なし（iOS標準パターン）
-  - 情報セクションには角丸あり（浮いているカード風）
-  - Material Design 3、Fluent 2、Carbon Design Systemの2025年ベストプラクティスを調査・適用
+### Changed
+- **Catalog UI improvements** (#21)
+  - Increased spacing between sections from 24pt to 32pt (per 2025 design system best practices)
+  - Introduced card-style section design (a subtle elevation effect)
+  - No corner radius for full-bleed sections (edge to edge), matching the iOS standard pattern
+  - Corner radius for informational sections (a floating card look)
+  - Researched and applied the 2025 best practices of Material Design 3, Fluent 2, and Carbon
+    Design System
 
-- **既存コンポーネントのMotionシステム移行** (#20)
-  - Button styles (Primary, Secondary, Tertiary) → Motionトークン使用
-  - Chip styles (Filled, Outlined, LiquidGlass) → Motionトークン使用
-  - ThemeGalleryView → Motionトークン使用
+- **Migrated existing components to the Motion system** (#20)
+  - Button styles (Primary, Secondary, Tertiary) → use motion tokens
+  - Chip styles (Filled, Outlined, LiquidGlass) → use motion tokens
+  - ThemeGalleryView → uses motion tokens
 
-- **カスタムテーマのダークモード対応** (#21)
-  - `SimpleBlueTheme`と`SimpleRedTheme`に完全なダークモード対応を追加
-  - `ThemeMode`の全ケース（`.system`, `.light`, `.dark`）を適切に処理
-  - ダークモードでは明るい色調に調整してコントラストを確保
+- **Dark mode support for custom themes** (#21)
+  - Added full dark mode support to `SimpleBlueTheme` and `SimpleRedTheme`
+  - Handles every `ThemeMode` case (`.system`, `.light`, `.dark`) properly
+  - Adjusted to lighter tones in dark mode to secure contrast
 
-### 修正
-- **GitHub ActionsのXcode環境更新** (#19)
+### Fixed
+- **Updated the Xcode environment in GitHub Actions** (#19)
   - macOS 15 → macOS 26 (arm64)
   - Xcode 16.1 → Xcode 26.0.1
-  - iOS 26 SDKサポート（`.glassEffect()` API使用のため）
-  - DocCデプロイメントのコンパイルエラーを解消
+  - iOS 26 SDK support (needed for the `.glassEffect()` API)
+  - Resolved compile errors in the DocC deployment
 
-### ドキュメント
-- **カスタムテーマドキュメントの大幅改善** (#21)
-  - `SimpleBlueTheme`と`SimpleRedTheme`に詳細なDocCコメント追加
-  - README.mdの「カスタムテーマの作成」セクション刷新
-    - ステップ1: ColorPaletteの実装（全27色の完全な例）
-    - ステップ2: Themeプロトコルの実装
-    - ステップ3: ThemeProviderへの登録（3パターン）
-    - ステップ4: テーマの切り替え実装例
-  - エントリーポイントへのドキュメント追加
+### Documentation
+- **Major improvements to the custom theme documentation** (#21)
+  - Added detailed DocC comments to `SimpleBlueTheme` and `SimpleRedTheme`
+  - Overhauled the "Creating custom themes" section of README.md
+    - Step 1: implementing ColorPalette (a complete example with all 27 colors)
+    - Step 2: implementing the Theme protocol
+    - Step 3: registering with ThemeProvider (3 patterns)
+    - Step 4: an example of theme switching
+  - Added documentation to the entry point
 
 ## [1.0.15] - 2025-11-09
 
-### 追加
-- **Chipコンポーネント** - Material Design 3とLiquid Glassデザイン言語に準拠 (#15)
-  - プロトコルベースのChipStyleシステム (ButtonStyleと同様)
-  - サイズバリアント: Small (24pt), Medium (32pt)
-  - 4つの初期化パターン: 静的、アイコン付き、削除可能、選択可能
-  - インタラクティブ状態: pressed, selected
-  - 完全なアクセシビリティサポート
-  - 3つのスタイルバリアント:
-    - **Filled**: 10-20%不透明度背景（ステータス/カテゴリラベル用）
-    - **Outlined**: 1.5ptボーダー（フィルターとセカンダリカテゴリ用）
-    - **Liquid Glass**: iOS 26+ネイティブ `.glassEffect()` API（インタラクティブサポート付き）
-  - Swift 6並行性対応（全スタイルが`Sendable`に準拠、`@MainActor`メソッド）
-  - トークンシステムとの統合（3層トークンアーキテクチャを活用）
+### Added
+- **Chip component** - following Material Design 3 and the Liquid Glass design language (#15)
+  - A protocol-based ChipStyle system (like ButtonStyle)
+  - Size variants: Small (24pt), Medium (32pt)
+  - 4 initialization patterns: static, with icon, deletable, selectable
+  - Interactive states: pressed, selected
+  - Full accessibility support
+  - 3 style variants:
+    - **Filled**: a 10-20% opacity background (for status and category labels)
+    - **Outlined**: a 1.5pt border (for filters and secondary categories)
+    - **Liquid Glass**: the native iOS 26+ `.glassEffect()` API (with interactive support)
+  - Swift 6 concurrency ready (all styles conform to `Sendable`, with `@MainActor` methods)
+  - Integrated with the token system (built on the 3-layer token architecture)
 
-- **AspectGridレイアウトパターン** - アスペクト比固定グリッドレイアウト (#16)
-  - **GridSpacingトークン**: xs, sm, md, lg, xlの5段階の間隔設定
-  - **適応サイジング**: 画面サイズに応じた自動調整 (minItemWidth, maxItemWidth)
-  - **一般的なユースケース対応**: 商品一覧、写真ギャラリー、動画サムネイル
-  - **サポートされるアスペクト比**:
-    - 1:1 - 商品サムネイル、プロフィール画像、アイコン
-    - 3:4 - 写真、ポートレート
-    - 16:9 - 動画サムネイル、ワイドコンテンツ
-  - LazyVGridベースの効率的なレンダリング
-  - GridItem.adaptiveによる自動カラム調整
-  - 完全なドキュメントコメントとコード例
+- **AspectGrid layout pattern** - a grid layout with a fixed aspect ratio (#16)
+  - **GridSpacing tokens**: 5 spacing steps — xs, sm, md, lg, xl
+  - **Adaptive sizing**: automatic adjustment to the screen size (minItemWidth, maxItemWidth)
+  - **Common use cases**: product lists, photo galleries, video thumbnails
+  - **Supported aspect ratios**:
+    - 1:1 - product thumbnails, profile images, icons
+    - 3:4 - photos, portraits
+    - 16:9 - video thumbnails, wide content
+  - Efficient rendering based on LazyVGrid
+  - Automatic column adjustment via GridItem.adaptive
+  - Complete documentation comments and code examples
 
-- **カスタムテーマカテゴリ** - テーマ分類の拡張 (#17)
-  - 新しい`.custom`カテゴリを追加
-    - 名前: "カスタム"
-    - 説明: "アプリ固有のカスタムテーマ"
-    - アイコン: `wand.and.stars` ✨
-  - テーマギャラリーでビルトインとカスタムを明確に区別
-  - サンプルカスタムテーマの実装例（SimpleBlueTheme, SimpleRedTheme）
+- **Custom theme category** - an extension to theme classification (#17)
+  - Added a new `.custom` category
+    - Name: "Custom"
+    - Description: "App-specific custom themes"
+    - Icon: `wand.and.stars` ✨
+  - Clearly separates built-in and custom themes in the theme gallery
+  - Sample custom theme implementations (SimpleBlueTheme, SimpleRedTheme)
 
-### 修正
-- **テーマ動的切り替えの改善** (#17)
-  - `ThemeEnvironmentView`のリアクティブ更新を修正
-    - 問題: カラーパレットが静的に評価され、テーマ切り替え時に更新されなかった
-    - 解決: `resolvedColorPalette`計算プロパティを追加し、`@Observable`の変更検知を活用
-  - `ThemeGalleryView`の動的テーマ表示を改善
-    - 問題: `ThemeRegistry.themesByCategory`（ビルトインのみ）を使用していた
-    - 解決: `themeProvider.availableThemes`を使用してビルトイン + カスタムテーマを動的に表示
-  - リアクティブシステム: `@Observable`と計算プロパティによる自動更新
-  - 拡張性: カスタムテーマを簡単に追加できる設計
-  - 初期テーマ指定: `initialTheme`パラメータで起動時のテーマを制御可能
+### Fixed
+- **Improved dynamic theme switching** (#17)
+  - Fixed reactive updates in `ThemeEnvironmentView`
+    - Problem: the color palette was evaluated statically and did not update when the theme changed
+    - Solution: added a `resolvedColorPalette` computed property, making use of `@Observable`
+      change tracking
+  - Improved dynamic theme display in `ThemeGalleryView`
+    - Problem: it used `ThemeRegistry.themesByCategory` (built-in themes only)
+    - Solution: uses `themeProvider.availableThemes` to show built-in plus custom themes
+      dynamically
+  - Reactive system: automatic updates via `@Observable` and computed properties
+  - Extensibility: a design that makes adding custom themes easy
+  - Initial theme selection: the `initialTheme` parameter controls the theme at launch
 
 ## [1.0.14] - 2025-11-08
 
-### 修正
-- **PR自動作成の確実化（最終版）** - タイムスタンプコメント追加
-  - CHANGELOG.mdの末尾に自動生成タイムスタンプコメントを追加
-  - 比較リンクが既に正しい値でも必ず変更が発生
-  - 確実にコミットが作成され、PR作成が成功する
+### Fixed
+- **Making automatic PR creation reliable (final)** - added a timestamp comment
+  - Appends an auto-generated timestamp comment to the end of CHANGELOG.md
+  - Guarantees a change even when the comparison links already hold the right values
+  - A commit is reliably created, so PR creation succeeds
 
 ## [1.0.13] - 2025-11-08
 
-### 修正
-- **リリースノート生成の改善** - インストール例のバージョンを動的に設定
-  - ハードコードされた "1.0.0" を実際のリリースバージョンに変更
-  - より正確で分かりやすいインストール手順を提供
-- **PR自動作成の確実化** - CHANGELOG比較リンク更新ロジックを追加
-  - リリース後に必ず比較リンクを最新バージョンに更新
-  - 「未リリース」セクションが既に存在する場合でも確実にコミットが作成される
-  - 次のリリース用ドラフトPRが確実に作成されるように改善
+### Fixed
+- **Improved release note generation** - the version in the install example is now set dynamically
+  - Changed the hardcoded "1.0.0" to the actual release version
+  - Provides more accurate, clearer install instructions
+- **Making automatic PR creation reliable** - added logic to update the CHANGELOG comparison links
+  - Always updates the comparison links to the latest version after a release
+  - A commit is reliably created even when an "Unreleased" section already exists
+  - Ensures the draft PR for the next release is created
 
 ## [1.0.12] - 2025-11-08
 
-### 修正
-- **リリースワークフローの統合** - GitHub Release作成をauto-release-on-merge.ymlに統合
-  - タグ作成と同時にGitHub Releaseが作成されるように改善
-  - release.ymlワークフローを削除（機能を統合）
-  - PAT（Personal Access Token）の設定が不要に
-  - すべてがGITHUB_TOKENで完結する完全自動化を実現
+### Fixed
+- **Consolidated the release workflow** - merged GitHub Release creation into
+  auto-release-on-merge.yml
+  - The GitHub Release is now created at the same time as the tag
+  - Removed the release.yml workflow (its function was merged in)
+  - No Personal Access Token (PAT) configuration required
+  - Fully automated, with everything done through GITHUB_TOKEN
 
-### ドキュメント
-- **RELEASE_PROCESS.mdを大幅に簡素化** - 本質的な情報のみに絞り込み
-  - 冗長なセクションを削除
-  - リリース手順を6ステップに簡素化
-  - トラブルシューティングを必要最小限に整理
+### Documentation
+- **Greatly simplified RELEASE_PROCESS.md** - narrowed to the essentials
+  - Removed redundant sections
+  - Simplified the release procedure to 6 steps
+  - Trimmed troubleshooting to the minimum necessary
 
 ## [1.0.11] - 2025-11-08
 
-### 変更
-- **リリースワークフローの完全改訂** - よりシンプルで直感的なフローに変更
-  - リリースブランチ（`release/vX.Y.Z`）からmainへのPRマージがリリースのトリガーに
-  - タグは自動的に作成されるため、手動でのタグ作成が不要に
-  - 次のリリースブランチとドラフトPRも自動作成
-  - ワークフロー: `auto-release-on-merge.yml`を新規追加、`prepare-next-release.yml`を削除
+### Changed
+- **Complete revision of the release workflow** - a simpler, more intuitive flow
+  - Merging a PR from a release branch (`release/vX.Y.Z`) into main now triggers a release
+  - Tags are created automatically, so no manual tagging
+  - The next release branch and its draft PR are also created automatically
+  - Workflows: added `auto-release-on-merge.yml`, removed `prepare-next-release.yml`
 
-### ドキュメント
-- **RELEASE_PROCESS.mdを新しいワークフローに完全対応**
-  - 新しい開発フローの全体像を追加
-  - 詳細な手順を6ステップに整理
-  - 自動化の仕組みセクションを刷新（`auto-release-on-merge.yml`の詳細な説明）
-  - トラブルシューティングを新しいワークフローに対応
+### Documentation
+- **Fully updated RELEASE_PROCESS.md for the new workflow**
+  - Added an overview of the new development flow
+  - Organized the detailed procedure into 6 steps
+  - Overhauled the automation section (a detailed explanation of `auto-release-on-merge.yml`)
+  - Updated troubleshooting for the new workflow
 
 ## [1.0.10] - 2025-11-08
 
-### ドキュメント
-- **リリースプロセスガイドの包括的な更新**
-  - リリース思想とコンセプトを詳細に記載（ハイブリッドアプローチの理由、セマンティックバージョニング、Keep a Changelog）
-  - 詳細な手順とワークフロー全体像を追加
-  - CHANGELOG.mdの書き方のベストプラクティス（良い例/悪い例の比較）
-  - 自動化の仕組みを技術的に解説（release.yml、prepare-next-release.yml）
-  - トラブルシューティングガイドを充実
-  - README.mdに開発者向け情報セクションを追加
-  - 旧docsディレクトリを削除（内容は統合済み）
+### Documentation
+- **Comprehensive update to the release process guide**
+  - Documented the release philosophy and concepts in detail (why the hybrid approach, semantic
+    versioning, Keep a Changelog)
+  - Added a detailed procedure and an overview of the whole workflow
+  - Best practices for writing CHANGELOG.md (good vs. bad examples)
+  - A technical explanation of the automation (release.yml, prepare-next-release.yml)
+  - Expanded the troubleshooting guide
+  - Added a developer information section to README.md
+  - Removed the old docs directory (its content has been merged in)
 
 ## [1.0.9] - 2025-11-08
 
-### 追加
-- **比較リンク自動更新** - prepare-next-releaseワークフローの改善
-  - タグからバージョンを自動抽出
-  - [未リリース]の比較リンクを最新バージョンに自動更新
-  - リリース後の手動リンク更新作業が不要に
+### Added
+- **Automatic comparison link updates** - an improvement to the prepare-next-release workflow
+  - Extracts the version from the tag automatically
+  - Updates the [Unreleased] comparison link to the latest version automatically
+  - No manual link updating after a release
 
 ## [1.0.8] - 2025-11-08
 
-### 修正
-- **prepare-next-releaseワークフロー検証** - ドラフトPR自動作成の動作確認
-  - 「未リリース」セクションが存在しない場合のPR作成フローを検証
+### Fixed
+- **Verification of the prepare-next-release workflow** - confirmed automatic draft PR creation
+  - Verified the PR creation flow when no "Unreleased" section exists
 
 ## [1.0.7] - 2025-11-08
 
-### 変更
-- **リリースワークフローの改善** - GitHub Releaseに定型文とメタ情報を追加
-  - リリースタイトル、インストール方法、リンクを自動生成
-  - より分かりやすいリリースノート形式に変更
+### Changed
+- **Release workflow improvement** - added boilerplate and metadata to the GitHub Release
+  - Generates the release title, install instructions, and links automatically
+  - Changed to a clearer release note format
 
-### 修正
-- **prepare-next-releaseワークフロー** - ドラフトPR自動作成を実装
-  - タグプッシュトリガーに変更（release:publishedイベントは動作しないため）
-  - ドラフトPRの自動作成まで完全自動化
+### Fixed
+- **prepare-next-release workflow** - implemented automatic draft PR creation
+  - Switched to a tag push trigger (the release:published event does not fire)
+  - Fully automated through to draft PR creation
 
 ## [1.0.6] - 2025-11-08
 
-### 追加
-- ドキュメントの改善とリリースフロー検証
+### Added
+- Documentation improvements and release flow verification
 
 ## [1.0.5] - 2025-11-08
 
-### 追加
-- **自動化ワークフロー** - リリース後の準備を自動化
-  - `.github/workflows/prepare-next-release.yml` を追加
-  - GitHub Release公開後に自動的に次のリリース準備PRをドラフト作成
-  - CHANGELOG.mdの「未リリース」セクションを自動挿入
-  - Keep a Changelogのベストプラクティスに基づく実装
+### Added
+- **Automation workflow** - automates post-release preparation
+  - Added `.github/workflows/prepare-next-release.yml`
+  - Automatically drafts the next release preparation PR after a GitHub Release is published
+  - Inserts the "Unreleased" section into CHANGELOG.md automatically
+  - Implemented per Keep a Changelog best practices
 
 ## [1.0.4] - 2025-11-08
 
-### 変更
-- **リリースプロセスの改善** - ハイブリッドアプローチを採用
-  - CHANGELOG.mdは人間が手動で管理（Keep a Changelog形式を維持）
-  - GitHub Releasesはタグから自動生成
-  - ベストプラクティスに基づく正しい設計に変更
+### Changed
+- **Release process improvement** - adopted a hybrid approach
+  - CHANGELOG.md is maintained by hand (keeping the Keep a Changelog format)
+  - GitHub Releases are generated from tags
+  - Changed to a correct design based on best practices
 
-### 削除
-- 誤った自動化ワークフロー `prepare-next-version.yml` を削除
-- 不要なスクリプト `prepare_next_version.sh` を削除
-- 古いドキュメント `RELEASE_AUTOMATION.md` を削除
+### Removed
+- Removed the incorrect automation workflow `prepare-next-version.yml`
+- Removed the unnecessary script `prepare_next_version.sh`
+- Removed the outdated document `RELEASE_AUTOMATION.md`
 
-### 追加
-- 新しいリリースワークフロー `.github/workflows/release.yml`
-  - タグプッシュ時にCHANGELOG.mdから該当バージョンを抽出
-  - GitHub Releaseを自動作成
-- 包括的なリリースプロセスガイド `docs/RELEASE_PROCESS.md`
+### Added
+- A new release workflow, `.github/workflows/release.yml`
+  - Extracts the matching version from CHANGELOG.md on tag push
+  - Creates the GitHub Release automatically
+- A comprehensive release process guide, `docs/RELEASE_PROCESS.md`
 
 ## [1.0.3] - 2025-11-08
 
-### ドキュメント
-- README.md のインストール方法を `upToNextMajor` に変更し、セマンティックバージョニングのベストプラクティスに準拠
+### Documentation
+- Changed the install instructions in README.md to `upToNextMajor`, following semantic versioning
+  best practice
 
 ## [1.0.2] - 2025-11-08
 
-### 追加
-- **マルチテーマシステム** - 7種類のビルトインテーマを追加
-  - Default - Material Design 3準拠のデフォルトテーマ
-  - Ocean - 海の青をベースとした落ち着いたテーマ
-  - Forest - 森の緑をベースとした自然なテーマ
-  - Sunset - 夕焼けのオレンジをベースとした温かいテーマ
-  - Purple Haze - 鮮やかな紫をベースとしたクリエイティブなテーマ
-  - Monochrome - グレースケールのミニマルなテーマ
-  - High Contrast - WCAG AAA準拠の高コントラストテーマ
-- **テーマアーキテクチャ**
-  - `Theme` protocol - Protocol指向設計による拡張性の高いテーマシステム
-  - `ThemeMode` - システム追従/ライト固定/ダーク固定の3モード対応
-  - `ThemeCategory` - テーマの論理的分類（Standard, Brand Personality, Accessibility）
-  - `ThemeRegistry` - 全テーマの一元管理
-  - 各テーマにLight/Darkパレット実装（計14パレット）
-- **カタログアプリUI**
-  - `ThemeGalleryView` - カテゴリ別テーマ一覧表示
-  - `ThemeDetailView` - テーマ詳細とインタラクティブプレビュー
-  - `ThemeCardView` - テーマ選択カード
-  - `ThemeColorPreview` - 全27色のカラーパレット表示
-  - `AppearanceModeSection` - 外観モード切り替えUI
-- **DesignSystemCatalogApp** - Xcodeプロジェクトとしてのカタログアプリケーション
+### Added
+- **Multi-theme system** - added 7 built-in themes
+  - Default - the default theme, following Material Design 3
+  - Ocean - a calm theme based on ocean blue
+  - Forest - a natural theme based on forest green
+  - Sunset - a warm theme based on sunset orange
+  - Purple Haze - a creative theme based on vivid purple
+  - Monochrome - a minimal grayscale theme
+  - High Contrast - a high-contrast theme meeting WCAG AAA
+- **Theme architecture**
+  - The `Theme` protocol - an extensible theme system through protocol-oriented design
+  - `ThemeMode` - 3 modes: follow the system, always light, always dark
+  - `ThemeCategory` - logical classification of themes (Standard, Brand Personality, Accessibility)
+  - `ThemeRegistry` - central management of all themes
+  - Light/dark palettes implemented for every theme (14 palettes in total)
+- **Catalog app UI**
+  - `ThemeGalleryView` - a theme list by category
+  - `ThemeDetailView` - theme details with an interactive preview
+  - `ThemeCardView` - a theme selection card
+  - `ThemeColorPreview` - shows the full 27-color palette
+  - `AppearanceModeSection` - appearance mode switching UI
+- **DesignSystemCatalogApp** - the catalog application as an Xcode project
 
-### 変更
-- **ThemeProvider の完全リライト**（破壊的変更）
-  - `@Observable` マクロに移行
-  - 初期化パラメータの変更:
-    - 旧: `ThemeProvider(colorScheme:lightPalette:darkPalette:)`
-    - 新: `ThemeProvider(initialTheme:initialMode:additionalThemes:)`
-  - Environment注入方法の変更:
-    - 旧: `.environment(\.themeProvider, provider)`
-    - 新: `.environment(provider)`
-  - デフォルトモードを `.system` に変更（システム設定に追従）
-- **ThemeModifier の改善**
-  - `ThemeMode.system` のColorScheme解決ロジック実装
-  - `@Environment(\.colorScheme)` と連携して適切なパレットを選択
-- **DesignSystemCatalogView の改善**
-  - 冗長なヘッダーセクションを削除
-  - ナビゲーションタイトルを「デザインシステムカタログ」に変更
-  - 情報セクションにリポジトリとドキュメントへのリンク追加
-  - バージョン・デザインシステム説明を削除（メンテナンス負荷軽減）
+### Changed
+- **Complete rewrite of ThemeProvider** (breaking change)
+  - Migrated to the `@Observable` macro
+  - Changed the initialization parameters:
+    - Old: `ThemeProvider(colorScheme:lightPalette:darkPalette:)`
+    - New: `ThemeProvider(initialTheme:initialMode:additionalThemes:)`
+  - Changed how it is injected into the environment:
+    - Old: `.environment(\.themeProvider, provider)`
+    - New: `.environment(provider)`
+  - Changed the default mode to `.system` (follows the system setting)
+- **ThemeModifier improvements**
+  - Implemented ColorScheme resolution for `ThemeMode.system`
+  - Works with `@Environment(\.colorScheme)` to pick the right palette
+- **DesignSystemCatalogView improvements**
+  - Removed the redundant header section
+  - Changed the navigation title to "Design System Catalog"
+  - Added links to the repository and the documentation in the information section
+  - Removed the version and design system description (to reduce maintenance load)
 
-### 修正
-- **カタログビューのハードコード色をテーマシステムに統一**
-  - PatternsCatalogView/ComponentsCatalogView のヘッダーアイコン色を `colorPalette.primary` に統一
-  - FeatureRow コンポーネントをテーマ対応（`color` パラメータを削除）
-  - RadiusDemoView/SpacingDemoView の視覚デモをテーマカラーに対応
-  - ButtonCatalogView の説明文と背景色をColorPaletteトークンに統一
-  - ColorSwatchView の `.primary`/`.secondary`/`.tertiary` を `colorPalette` トークンに統一
-  - すべてのカタログビューでSwiftUIネイティブセマンティックカラーを排除し、Material Design 3準拠に統一
+### Fixed
+- **Unified hardcoded colors in the catalog views onto the theme system**
+  - Unified the header icon color in PatternsCatalogView/ComponentsCatalogView to
+    `colorPalette.primary`
+  - Made the FeatureRow component theme-aware (removed the `color` parameter)
+  - Made the visual demos in RadiusDemoView/SpacingDemoView theme-color aware
+  - Unified the description text and background color in ButtonCatalogView onto ColorPalette tokens
+  - Unified `.primary`/`.secondary`/`.tertiary` in ColorSwatchView onto `colorPalette` tokens
+  - Eliminated SwiftUI native semantic colors across all catalog views, unifying on
+    Material Design 3
 
-### 削除
-- `ThemeProviderKey` - @Observableに移行したため不要
-- カスタムEnvironmentKeyによるThemeProvider注入パターン
+### Removed
+- `ThemeProviderKey` - unnecessary after the move to @Observable
+- The pattern of injecting ThemeProvider through a custom EnvironmentKey
 
-### ドキュメント
-- README.md にマルチテーマシステムの包括的なドキュメント追加
-  - 7テーマの特徴と用途を説明する表
-  - テーマ切り替えとモード選択の使用例
-  - カスタムテーマ作成ガイド
-- 全テーマファイルに詳細なドキュメントコメント追加
-- ThemeProtocol/ThemeRegistry/ThemeMode/ThemeCategory に実践的なコード例追加
+### Documentation
+- Added comprehensive documentation of the multi-theme system to README.md
+  - A table describing the character and use of the 7 themes
+  - Usage examples for theme switching and mode selection
+  - A custom theme creation guide
+- Added detailed documentation comments to every theme file
+- Added practical code examples to ThemeProtocol/ThemeRegistry/ThemeMode/ThemeCategory
 
 ## [1.0.1] - 2025-01-08
 
-### 修正
-- Swift 6のStrictConcurrency機能がデフォルトで有効になっているため、明示的な設定を削除
-- Package.swiftの不要なswiftSettings設定を削除してビルドエラーを解消
+### Fixed
+- Removed the explicit setting, since Swift 6 enables StrictConcurrency by default
+- Removed the unnecessary swiftSettings configuration from Package.swift, resolving a build error
 
 ## [1.0.0] - 2025-01-08
 
-### 追加
-- 3層デザイントークンシステム（Primitive, Semantic, Component）
-- プロトコルベースのカラーパレット（`ColorPalette`）
-  - Light/Darkテーマのデフォルト実装
-  - Primary, Secondary, Tertiary カラースキーム
-  - Semantic state colors（Error, Warning, Success, Info）
-- スペーシングスケール（`SpacingScale`）
-  - Tシャツサイズ命名規則（xs, sm, md, lg, xl, etc.）
-  - none (0pt) から xxxxl (96pt) までの11段階
-- 角丸スケール（`RadiusScale`）
-  - xs (2pt) から xxl (24pt) までの7段階
-  - full（完全な円形）サポート
-- タイポグラフィシステム（`Typography`）
-  - Display, Headline, Title, Body, Label の5カテゴリ
-  - 14種類の定義済みテキストスタイル
-  - `.typography()` モディファイアによる簡単適用
-- ThemeProvider による動的テーマ切り替え
-  - Light/Dark/カスタムテーマ対応
-  - `@Observable` によるリアクティブな更新
-  - システムテーマ追従機能
-- ボタンコンポーネント
-  - PrimaryButtonStyle - 主要アクション用
-  - SecondaryButtonStyle - 補助アクション用
-  - TertiaryButtonStyle - 控えめなアクション用
-  - TextButtonStyle - テキストのみのボタン
-  - ButtonSize（Large, Medium, Small）によるサイズ統一
-- カードコンポーネント
-  - Card - 汎用カードコンテナ
-  - Elevation レベル（Level0-3）による影の管理
-- IconButton - アイコンベースのボタン
-- FloatingActionButton (FAB) - 主要アクションボタン
-- DSTextField - デザインシステム統合テキストフィールド
-  - エラー状態、フォーカス状態対応
-  - プレースホルダー、キーボードタイプ設定
-  - セキュアテキスト入力サポート
-- レイアウトパターン
-  - SectionCard - タイトル付きカードセクション
-- View Modifiers
-  - `.theme(_:)` - ThemeProvider 適用
-  - `.buttonSize(_:)` - ボタンサイズ指定
-  - `.typography(_:)` - タイポグラフィ適用
-- カスタムテーマ作成サポート
-  - 独自のカラーパレット実装
-  - カスタムスペーシング・角丸スケール
-- HEX文字列からの Color 初期化（`Color(hex:)`）
-  - 3桁、6桁、8桁（アルファ付き）対応
-- 完全なドキュメントコメント
-  - 全パブリックAPIに実践的なコード例
-  - ユーザー視点の使用ガイド
+### Added
+- A 3-layer design token system (Primitive, Semantic, Component)
+- A protocol-based color palette (`ColorPalette`)
+  - Default implementations for light and dark themes
+  - Primary, Secondary, and Tertiary color schemes
+  - Semantic state colors (Error, Warning, Success, Info)
+- A spacing scale (`SpacingScale`)
+  - T-shirt size naming (xs, sm, md, lg, xl, etc.)
+  - 11 steps from none (0pt) to xxxxl (96pt)
+- A corner radius scale (`RadiusScale`)
+  - 7 steps from xs (2pt) to xxl (24pt)
+  - Support for full (a complete circle)
+- A typography system (`Typography`)
+  - 5 categories: Display, Headline, Title, Body, Label
+  - 14 predefined text styles
+  - Easy application via the `.typography()` modifier
+- Dynamic theme switching through ThemeProvider
+  - Light/dark/custom theme support
+  - Reactive updates via `@Observable`
+  - Follows the system theme
+- Button components
+  - PrimaryButtonStyle - for primary actions
+  - SecondaryButtonStyle - for supporting actions
+  - TertiaryButtonStyle - for understated actions
+  - TextButtonStyle - a text-only button
+  - Uniform sizing via ButtonSize (Large, Medium, Small)
+- Card component
+  - Card - a general-purpose card container
+  - Shadow management through elevation levels (Level0-3)
+- IconButton - an icon-based button
+- FloatingActionButton (FAB) - a button for the primary action
+- DSTextField - a text field integrated with the design system
+  - Error and focus state support
+  - Placeholder and keyboard type configuration
+  - Secure text entry support
+- Layout patterns
+  - SectionCard - a card section with a title
+- View modifiers
+  - `.theme(_:)` - applies a ThemeProvider
+  - `.buttonSize(_:)` - specifies a button size
+  - `.typography(_:)` - applies typography
+- Support for creating custom themes
+  - Your own color palette implementation
+  - Custom spacing and corner radius scales
+- Color initialization from a HEX string (`Color(hex:)`)
+  - Supports 3, 6, and 8 digits (with alpha)
+- Complete documentation comments
+  - Practical code examples on every public API
+  - A usage guide written from the user's point of view
 
-### ドキュメント
-- 包括的な README.md
-  - クイックスタートガイド
-  - デザイントークンの使用例
-  - カスタムテーマ作成例
-  - ログイン画面・設定画面の実装例
-- API リファレンス
-- アーキテクチャガイド（3層トークンシステム）
-- DocC 対応
-  - GitHub Pages での自動ドキュメント公開
+### Documentation
+- A comprehensive README.md
+  - Quick start guide
+  - Design token usage examples
+  - Custom theme creation examples
+  - Implementation examples for a login screen and a settings screen
+- API reference
+- An architecture guide (the 3-layer token system)
+- DocC support
+  - Automatic documentation publishing on GitHub Pages
 
-[未リリース]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.22...HEAD
+[Unreleased]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.22...HEAD
 [1.0.22]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.21...v1.0.22
 [1.0.21]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.20...v1.0.21
 [1.0.20]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.19...v1.0.20
