@@ -47,10 +47,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   so a dark snapshot was drawn with a dark SwiftUI `\.colorScheme` over a light UIKit ground. What
   SwiftUI painted itself was right; the ground under it — every pixel the components do not cover,
   which here is the padding around each one — was not. Of the 76 committed dark references, 53 had
-  a mean pixel brighter than [200, 200, 200] and several were pure white. `FloatingActionButton/
-  small.dark` measured [252, 253, 255] and now measures [2, 3, 5]. **The old dark images were not a
-  baseline being changed; they were the defect.** All 75 that the fix moves are re-recorded, on an
-  iPhone 17 simulator running iOS 26.5.
+  a mean pixel brighter than [200, 200, 200] and several were pure white.
+  `FloatingActionButton/small.dark` measured [252, 253, 255] and now measures [2, 3, 5]. **The old
+  dark images were not a baseline being changed; they were the defect.** All 75 that the fix moves
+  are re-recorded, on an iPhone 17 simulator running iOS 26.5.
 
   Recording under 2.1.0 and under 3.0.0 and comparing bytes shows the change is confined to that
   axis: **every light reference the two recorders produce is byte-identical**, and all 75 dark ones
