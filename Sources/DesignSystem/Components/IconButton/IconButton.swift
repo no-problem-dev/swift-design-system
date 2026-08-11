@@ -28,9 +28,10 @@ import SwiftUI
 /// - **Standard**: no background, icon only
 /// - **Filled**: a Primary-colored background
 /// - **Tonal**: a SecondaryContainer-colored background
-/// - **Outlined**: no background and no stroke, so it currently renders the same as Standard
+/// - **Outlined**: no background, ringed by a stroke in the Outline color
 public struct IconButton: View {
     @Environment(\.colorPalette) private var colorPalette
+    @Environment(\.borderScale) private var borderScale
 
     private let icon: String
     private let style: IconButtonStyle
@@ -57,6 +58,11 @@ public struct IconButton: View {
                 .frame(width: size.containerSize, height: size.containerSize)
                 .background(backgroundColor)
                 .clipShape(Circle())
+                .overlay {
+                    if let borderColor {
+                        Circle().strokeBorder(borderColor, lineWidth: borderScale.regular)
+                    }
+                }
         }
     }
 
@@ -85,6 +91,20 @@ public struct IconButton: View {
             return .clear
         }
     }
+
+    /// The stroke color of the ring, or `nil` for the styles that draw no ring.
+    ///
+    /// Only ``IconButtonStyle/outlined`` is ringed. It is drawn in the palette's `outline`, the
+    /// token every other bordered component in the system reaches for, at
+    /// ``BorderScale/regular`` so a theme can change the weight of every line at once.
+    private var borderColor: Color? {
+        switch style {
+        case .standard, .filled, .tonal:
+            return nil
+        case .outlined:
+            return colorPalette.outline
+        }
+    }
 }
 
 public enum IconButtonStyle {
@@ -94,7 +114,7 @@ public enum IconButtonStyle {
     case filled
     /// Filled with the secondary container color.
     case tonal
-    /// No background and, despite the name, no stroke: renders identically to the standard style.
+    /// No background, ringed by a stroke in the outline color.
     case outlined
 }
 

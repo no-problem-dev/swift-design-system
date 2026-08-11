@@ -5,6 +5,12 @@ import SwiftUI
 /// Each role carries a font size, a weight, and a line height, which keeps text styling
 /// consistent. Apply a role with the `.typography()` modifier.
 ///
+/// A role does not vend a `Font`. Only the modifier can scale text with Dynamic Type — the size
+/// has to be resolved against the ``TypographyScale`` in the environment and then run through
+/// `@ScaledMetric`, neither of which a `Font` value computed outside a view can do. A property
+/// returning a fixed `.system(size:)` would look like the same thing and silently pin the text,
+/// so there isn't one.
+///
 /// ## Example
 /// ```swift
 /// Text("Large heading")
@@ -147,22 +153,6 @@ public enum Typography: CaseIterable, Sendable {
         case .labelLarge, .labelMedium, .labelSmall:
             return .medium
         }
-    }
-
-    /// A SwiftUI font at the fixed size of this role.
-    ///
-    /// The size does not scale with Dynamic Type. Apply the role with the `.typography()`
-    /// modifier instead when the text should scale.
-    public var font: Font {
-        .system(size: size, weight: weight, design: .default)
-    }
-
-    /// Creates a SwiftUI font with the given design.
-    ///
-    /// The size does not scale with Dynamic Type.
-    /// - Parameter design: The font design, such as .default, .serif, .rounded, or .monospaced.
-    public func font(design: Font.Design) -> Font {
-        .system(size: size, weight: weight, design: design)
     }
 
     /// The text style this role scales against under Dynamic Type.

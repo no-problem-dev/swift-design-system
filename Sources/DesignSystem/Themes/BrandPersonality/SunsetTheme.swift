@@ -10,7 +10,7 @@ public struct SunsetTheme: Theme {
 
     public var name: String { "Sunset" }
 
-    public var description: String { "夕焼けのオレンジ。温かくエネルギッシュな雰囲気" }
+    public var description: String { "Sunset orange. Warm and energetic" }
 
     public var category: ThemeCategory { .brandPersonality }
 

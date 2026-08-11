@@ -24,17 +24,9 @@ private struct ThemeEnvironmentView<Content: View>: View {
     @Environment(\.colorScheme) private var systemColorScheme
     let content: Content
 
-    /// Resolves the theme mode that is actually in effect.
-    ///
-    /// - `.system`: follows the system color scheme.
-    /// - `.light`/`.dark`: keeps the choice the user made.
+    /// The theme mode that is actually in effect, with `.system` resolved against the environment.
     private var resolvedMode: ThemeMode {
-        switch provider.themeMode {
-        case .system:
-            return systemColorScheme == .dark ? .dark : .light
-        case .light, .dark:
-            return provider.themeMode
-        }
+        provider.resolvedMode(for: systemColorScheme)
     }
 
     private var resolvedColorScheme: ColorScheme {
@@ -43,7 +35,7 @@ private struct ThemeEnvironmentView<Content: View>: View {
 
     /// The color palette in effect. It is recomputed whenever the provider's current theme changes.
     private var resolvedColorPalette: any ColorPalette {
-        provider.currentTheme.colorPalette(for: resolvedMode)
+        provider.colorPalette(for: systemColorScheme)
     }
 
     var body: some View {

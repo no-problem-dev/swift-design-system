@@ -7,7 +7,47 @@
 
 ## [未リリース]
 
-なし
+**公開 API を壊しています。** `Typography.font` / `Typography.font(design:)` を削除し、
+`ThemeProvider.colorPalette` をプロパティからメソッドへ変えました。
+
+### 修正
+
+- **`IconButton` の `.outlined` が線を描くようになった。** 背景色の分岐しか持っておらず、
+  `.standard` と 1 画素も違わない絵を出していた。名前だけあって輪郭が無い状態。
+  輪郭は `ColorPalette.outline` を `BorderScale.regular`（1pt）で描く。輪郭を持つ他の部品
+  （`OutlinedChipStyle` / `GlassButtonStyle`）と同じトークンの組み合わせに揃えた。
+
+- **`ByteSize.formatted` が型と同じ 1,024 進で数えるようになった。** ファクトリも単位換算も
+  1,024 進なのに `ByteCountFormatter` だけ 1,000 進（`.file`）で数えていたため、
+  `ByteSize.megabytes(100)` が `"104.9 MB"` と表示されていた。`.binary` にして `"100 MB"` になる。
+
+- **`ThemeProvider` のパレット解決が端末の外観に従うようになった。** `themeMode` が `.system` の
+  間は、端末が暗くてもライトのパレットを返していた。解決は `.theme(_:)` の中にしか無く、
+  プロバイダに直接聞くと必ずライトが返る、という食い違いだった。
+
+### 削除
+
+- **`Typography.font` と `Typography.font(design:)`。** 固定 pt の `.system(size:)` を返すだけで
+  Dynamic Type に追随しない。追随するのは `.typography(_:)` モディファイア（環境の
+  `TypographyScale` で解決してから `@ScaledMetric` を通す）だけで、`font` は同じものに見えて
+  文字が伸びなくなる罠だった。文字を出す経路は `.typography(_:)` に一本化。
+
+### 変更
+
+- **`ThemeProvider.colorPalette` はメソッドになった。** `colorPalette(for:)` が `ColorScheme` を
+  受け取り、`.system` をその外観に対して解決する。解決規則そのものは `resolvedMode(for:)` として
+  公開した。`.theme(_:)` は環境の `colorScheme` を渡してこれを呼ぶので、解決の置き場所が 1 つになる。
+
+- **同梱している UI 文言を英語にした。** ピッカー（アイコン / 絵文字 / カラー / 画像 / 動画）、
+  動画プレイヤー、権限アラート、`VideoPickerError.errorDescription`、`StatusIndicator` と
+  `StepIndicator` のアクセシビリティラベル、`ThemeCategory` と各テーマの説明文。
+  カタログとプレビューは配布物ではないため対象外。
+
+### 使う側でやること
+
+- `Typography.font` を使っていたら `.typography(_:)` に置き換える
+- `provider.colorPalette` を読んでいたら `provider.colorPalette(for: colorScheme)` にする。
+  ビューの中なら `@Environment(\.colorPalette)` を読むのが本来の経路
 
 ## [2.4.0] - 2026-08-02
 

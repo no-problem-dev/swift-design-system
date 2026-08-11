@@ -14,9 +14,9 @@ import SwiftUI
 /// StepIndicator(stepCount: 3, currentIndex: nil)
 /// ```
 ///
-/// The accessibility label is generated automatically as a Japanese phrase meaning
-/// "step N of M". Pass `accessibilityText` to override it, both when the steps have names
-/// of their own and whenever the app is not Japanese.
+/// The accessibility label is generated automatically as "Step N of M". Pass
+/// `accessibilityText` to override it, both when the steps have names of their own and
+/// whenever the app is not in English.
 public struct StepIndicator: View {
     @Environment(\.colorPalette) private var colors
     @Environment(\.spacingScale) private var spacing
@@ -31,8 +31,8 @@ public struct StepIndicator: View {
     /// - Parameters:
     ///   - stepCount: The total number of steps.
     ///   - currentIndex: The current step, counting from 0. Pass nil once every step is finished.
-    ///   - accessibilityText: Overrides the accessibility label. When nil, a Japanese
-    ///     "step N of M" phrase is generated.
+    ///   - accessibilityText: Overrides the accessibility label. When nil, a
+    ///     "Step N of M" phrase is generated.
     ///   - dotDiameter: The diameter of a dot. Defaults to 6pt.
     public init(
         stepCount: Int,
@@ -67,8 +67,8 @@ public struct StepIndicator: View {
     }
 
     private var defaultAccessibilityText: String {
-        guard let currentIndex else { return "完了" }
-        return "ステップ \(currentIndex + 1) / \(stepCount)"
+        guard let currentIndex else { return "Completed" }
+        return "Step \(currentIndex + 1) of \(stepCount)"
     }
 }
 

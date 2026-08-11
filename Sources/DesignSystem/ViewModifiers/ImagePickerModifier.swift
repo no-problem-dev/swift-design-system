@@ -58,11 +58,11 @@ public struct ImagePickerModifier: ViewModifier {
                 presenting: permissionAlertConfig
             ) { config in
                 if config.canOpenSettings {
-                    Button("設定を開く") {
+                    Button("Open Settings") {
                         openSettings()
                     }
                 }
-                Button("キャンセル", role: .cancel) {
+                Button("Cancel", role: .cancel) {
                     isPresented = false
                 }
             } message: { config in
@@ -97,24 +97,24 @@ public struct ImagePickerModifier: ViewModifier {
         switch source {
         case .automatic:
             content.confirmationDialog(
-                "画像を選択",
+                "Select an Image",
                 isPresented: $isPresented,
                 titleVisibility: .visible
             ) {
                 // Shown only when a camera is available
                 if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                    Button("カメラで撮影") {
+                    Button("Take Photo") {
                         showCamera()
                     }
                     .tint(Color(colorPalette.primary))
                 }
 
-                Button("写真ライブラリから選択") {
+                Button("Choose from Library") {
                     sourceType = .photoLibrary
                 }
                 .tint(Color(colorPalette.primary))
 
-                Button("キャンセル", role: .cancel) {
+                Button("Cancel", role: .cancel) {
                     isPresented = false
                 }
             }
@@ -237,29 +237,29 @@ struct PermissionAlertConfig {
     init(sourceType: MediaSourceType, status: PermissionStatus) {
         switch sourceType {
         case .camera:
-            self.title = "カメラへのアクセス許可が必要です"
+            self.title = "Camera Access Required"
             switch status {
             case .denied:
-                self.message = "設定からカメラへのアクセスを許可してください。"
+                self.message = "Allow access to the camera in Settings."
                 self.canOpenSettings = true
             case .restricted:
-                self.message = "カメラへのアクセスが制限されています。デバイスの設定またはペアレンタルコントロールを確認してください。"
+                self.message = "Access to the camera is restricted. Check your device settings or parental controls."
                 self.canOpenSettings = false
             case .notDetermined:
-                self.message = "カメラを使用するには、アクセス許可が必要です。"
+                self.message = "Using the camera requires your permission."
                 self.canOpenSettings = false
             }
         case .photoLibrary:
-            self.title = "写真へのアクセス許可が必要です"
+            self.title = "Photos Access Required"
             switch status {
             case .denied:
-                self.message = "設定から写真へのアクセスを許可してください。"
+                self.message = "Allow access to your photos in Settings."
                 self.canOpenSettings = true
             case .restricted:
-                self.message = "写真へのアクセスが制限されています。デバイスの設定またはペアレンタルコントロールを確認してください。"
+                self.message = "Access to your photos is restricted. Check your device settings or parental controls."
                 self.canOpenSettings = false
             case .notDetermined:
-                self.message = "写真ライブラリを使用するには、アクセス許可が必要です。"
+                self.message = "Using the photo library requires your permission."
                 self.canOpenSettings = false
             }
         }
@@ -274,7 +274,7 @@ private func imageConversionError() -> NSError {
     NSError(
         domain: "ImagePickerError",
         code: -1,
-        userInfo: [NSLocalizedDescriptionKey: "画像の変換に失敗しました"]
+        userInfo: [NSLocalizedDescriptionKey: "Couldn't convert the image."]
     )
 }
 

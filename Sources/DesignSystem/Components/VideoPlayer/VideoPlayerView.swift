@@ -130,13 +130,13 @@ public struct VideoPlayerView: View {
                     .frame(minHeight: 200)
             } else if let error = loadError {
                 ContentUnavailableView(
-                    "動画を読み込めません",
+                    "Unable to Load Video",
                     systemImage: "video.slash",
                     description: Text(error.localizedDescription)
                 )
                 .frame(minHeight: 200)
             } else {
-                ProgressView("動画を読み込み中...")
+                ProgressView("Loading Video…")
                     .frame(maxWidth: .infinity, minHeight: 200)
             }
         }
@@ -147,7 +147,7 @@ public struct VideoPlayerView: View {
 
     private func metadataSection(_ metadata: VideoMetadata) -> some View {
         VStack(alignment: .leading, spacing: spacing.xs) {
-            Text("動画情報")
+            Text("Video Info")
                 .font(.caption.bold())
                 .foregroundStyle(Color(colorPalette.onSurfaceVariant))
 
@@ -173,7 +173,7 @@ public struct VideoPlayerView: View {
         HStack(spacing: spacing.sm) {
             if actions.contains(.play) {
                 Chip(
-                    isPlaying ? "一時停止" : "再生",
+                    isPlaying ? "Pause" : "Play",
                     systemImage: isPlaying ? "pause.fill" : "play.fill",
                     action: togglePlayback
                 )
@@ -181,7 +181,7 @@ public struct VideoPlayerView: View {
             }
 
             if actions.contains(.share) {
-                Chip("共有", systemImage: "square.and.arrow.up", action: {
+                Chip("Share", systemImage: "square.and.arrow.up", action: {
                     showingShareSheet = true
                 })
                 .chipStyle(.outlined)
@@ -192,14 +192,14 @@ public struct VideoPlayerView: View {
                     HStack(spacing: spacing.xs) {
                         ProgressView()
                             .controlSize(.small)
-                        Text("保存中...")
+                        Text("Saving…")
                             .typography(.labelMedium)
                             .foregroundStyle(Color(colorPalette.onSurfaceVariant))
                     }
                     .padding(.horizontal, spacing.md)
                     .padding(.vertical, spacing.xs)
                 } else {
-                    Chip("保存", systemImage: "square.and.arrow.down", action: saveToPhotos)
+                    Chip("Save", systemImage: "square.and.arrow.down", action: saveToPhotos)
                         .chipStyle(.filled)
                 }
             }
@@ -299,12 +299,12 @@ public struct VideoPlayerView: View {
 
     private func saveToPhotos() {
         guard let url = tempFileURL ?? source.localURL else {
-            snackbarState.show(message: "保存する動画がありません")
+            snackbarState.show(message: "There is no video to save.")
             return
         }
 
         guard FileManager.default.fileExists(atPath: url.path) else {
-            snackbarState.show(message: "動画ファイルが見つかりません")
+            snackbarState.show(message: "The video file could not be found.")
             return
         }
 
@@ -318,8 +318,8 @@ public struct VideoPlayerView: View {
 
                 guard status == .authorized || status == .limited else {
                     snackbarState.show(
-                        message: "写真ライブラリへのアクセスが許可されていません",
-                        primaryAction: SnackbarAction(title: "設定を開く") {
+                        message: "Access to the photo library has not been granted.",
+                        primaryAction: SnackbarAction(title: "Open Settings") {
                             if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
                                 await UIApplication.shared.open(settingsURL)
                             }
@@ -334,10 +334,10 @@ public struct VideoPlayerView: View {
                     PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: fileURL)
                 }
 
-                snackbarState.show(message: "カメラロールに保存しました ✓", duration: 3.0)
+                snackbarState.show(message: "Saved to your photo library ✓", duration: 3.0)
             } catch {
                 snackbarState.show(
-                    message: "保存に失敗しました: \(error.localizedDescription)",
+                    message: "Save failed: \(error.localizedDescription)",
                     duration: 5.0
                 )
             }
@@ -348,7 +348,7 @@ public struct VideoPlayerView: View {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = seconds >= 3600 ? [.hour, .minute, .second] : [.minute, .second]
         formatter.zeroFormattingBehavior = .pad
-        return formatter.string(from: seconds) ?? "\(Int(seconds))秒"
+        return formatter.string(from: seconds) ?? "\(Int(seconds))s"
     }
 }
 

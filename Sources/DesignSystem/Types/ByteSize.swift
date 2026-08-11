@@ -2,9 +2,9 @@ import Foundation
 
 /// A byte count that carries its unit, so a size limit cannot be passed as a bare number.
 ///
-/// The units are binary: a kilobyte is 1,024 bytes and a megabyte is 1,024 of those. `formatted`
-/// counts the way the Finder does, in powers of 1,000, so a displayed value reads slightly larger
-/// than the unit it was built from.
+/// The units are binary throughout: a kilobyte is 1,024 bytes and a megabyte is 1,024 of those,
+/// and `formatted` counts the same way, so a displayed value reads back as the unit it was built
+/// from.
 ///
 /// ## Example
 /// ```swift
@@ -16,7 +16,7 @@ import Foundation
 /// let size = ByteSize.megabytes(100)
 ///
 /// print(size.bytes) // 104857600
-/// print(size.formatted) // "104.9 MB"
+/// print(size.formatted) // "100 MB"
 /// ```
 public struct ByteSize: Sendable, Equatable, Comparable, Hashable {
     public let bytes: Int
@@ -64,12 +64,12 @@ public struct ByteSize: Sendable, Equatable, Comparable, Hashable {
 
     /// A string for display, in whichever unit fits, such as "1.5 MB" or "500 KB".
     ///
-    /// The count follows the Finder's convention of 1,000 bytes to the kilobyte, so the number
-    /// differs from `kilobytes` and its siblings, which count in 1,024s.
+    /// The count is binary, matching `kilobytes` and its siblings: `ByteSize.megabytes(100)`
+    /// formats as "100 MB", not as the "104.9 MB" a 1,000-based count would give.
     public var formatted: String {
         let formatter = ByteCountFormatter()
         formatter.allowedUnits = [.useBytes, .useKB, .useMB, .useGB]
-        formatter.countStyle = .file
+        formatter.countStyle = .binary
         return formatter.string(fromByteCount: Int64(bytes))
     }
 

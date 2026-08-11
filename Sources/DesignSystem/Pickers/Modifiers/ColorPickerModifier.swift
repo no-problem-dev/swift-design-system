@@ -91,13 +91,13 @@ struct DSColorPickerView: View {
                 .padding(spacing.md)
             }
             .background(colors.background)
-            .navigationTitle("カラーを選択")
+            .navigationTitle("Select a Color")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") {
+                    Button("Cancel") {
                         dismiss()
                     }
                     .foregroundColor(colors.onSurfaceVariant)
@@ -105,7 +105,7 @@ struct DSColorPickerView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     if selectedColor != nil {
-                        Button("クリア") {
+                        Button("Clear") {
                             selectedColor = nil
                         }
                         .foregroundColor(colors.primary)
@@ -126,7 +126,7 @@ struct DSColorPickerView: View {
                 )
 
             VStack(alignment: .leading, spacing: spacing.xs) {
-                Text("選択中の色")
+                Text("Selected Color")
                     .font(.caption)
                     .foregroundColor(colors.onSurfaceVariant)
                 Text(hex.uppercased())

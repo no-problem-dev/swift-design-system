@@ -1,5 +1,5 @@
 {
-  "generatedAt" : "2026-08-01T16:45:24Z",
+  "generatedAt" : "2026-08-11T00:11:21Z",
   "name" : "IconButton",
   "states" : {
     "allSizes" : {
@@ -40,6 +40,34 @@
         },
         {
           "file" : "disabled.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "outlined" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "outlined.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "outlined.dark.png",
+          "theme" : "dark"
+        }
+      ]
+    },
+    "standard" : {
+      "disableAnimations" : false,
+      "inNavigation" : false,
+      "snapshots" : [
+        {
+          "file" : "standard.light.png",
+          "theme" : "light"
+        },
+        {
+          "file" : "standard.dark.png",
           "theme" : "dark"
         }
       ]

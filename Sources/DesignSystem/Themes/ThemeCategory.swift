@@ -8,13 +8,13 @@ import Foundation
 /// - **accessibility**: High contrast themes that meet WCAG.
 /// - **custom**: Themes an app defines for itself.
 public enum ThemeCategory: String, Sendable, CaseIterable, Identifiable {
-    case standard = "標準"
+    case standard = "Standard"
 
-    case custom = "カスタム"
+    case custom = "Custom"
 
-    case brandPersonality = "ブランドパーソナリティ"
+    case brandPersonality = "Brand Personality"
 
-    case accessibility = "アクセシビリティ"
+    case accessibility = "Accessibility"
 
     public var id: String { rawValue }
 
@@ -22,13 +22,13 @@ public enum ThemeCategory: String, Sendable, CaseIterable, Identifiable {
     public var description: String {
         switch self {
         case .standard:
-            return "基本的なライトテーマとダークテーマ"
+            return "The basic light and dark themes"
         case .brandPersonality:
-            return "ブランドの個性を表現する多彩なテーマ"
+            return "A range of themes that express a brand's personality"
         case .accessibility:
-            return "アクセシビリティを重視した高コントラストテーマ"
+            return "High contrast themes built for accessibility"
         case .custom:
-            return "アプリ固有のカスタムテーマ"
+            return "Custom themes defined by the app"
         }
     }
 

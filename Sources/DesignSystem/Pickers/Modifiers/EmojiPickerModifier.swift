@@ -116,13 +116,13 @@ struct DSEmojiPickerView: View {
                 }
             }
             .background(colors.background)
-            .navigationTitle("絵文字を選択")
+            .navigationTitle("Select an Emoji")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") {
+                    Button("Cancel") {
                         dismiss()
                     }
                     .foregroundColor(colors.onSurfaceVariant)
@@ -130,7 +130,7 @@ struct DSEmojiPickerView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     if selectedEmoji != nil {
-                        Button("クリア") {
+                        Button("Clear") {
                             selectedEmoji = nil
                             dismiss()
                         }
@@ -147,7 +147,7 @@ struct DSEmojiPickerView: View {
                 .font(.system(size: 16))
                 .foregroundColor(colors.onSurfaceVariant)
 
-            TextField("絵文字を検索...", text: $searchText)
+            TextField("Search emoji", text: $searchText)
                 .autocorrectionDisabled()
 
             if !searchText.isEmpty {

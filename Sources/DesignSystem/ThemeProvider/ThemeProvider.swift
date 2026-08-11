@@ -57,13 +57,33 @@ public final class ThemeProvider {
     /// themes are registered.
     public private(set) var availableThemes: [any Theme]
 
-    /// The palette of the current theme for the current mode.
+    /// The mode actually in effect for a given device appearance.
     ///
-    /// This resolves the mode as stored, so while the mode follows the device this returns the
-    /// light palette. Views should read the palette from the environment instead, because
-    /// `.theme(_:)` resolves the device appearance before handing the palette down.
-    public var colorPalette: any ColorPalette {
-        currentTheme.colorPalette(for: themeMode)
+    /// `.system` answers with the appearance it is handed; `.light` and `.dark` are pinned and
+    /// ignore it. Resolving `.system` needs an appearance from somewhere, which is why this takes
+    /// one rather than reading a global: inside a view it comes from the environment, and a call
+    /// site outside a view has to say which appearance it means.
+    ///
+    /// - Parameter colorScheme: The device appearance to resolve `.system` against.
+    public func resolvedMode(for colorScheme: ColorScheme) -> ThemeMode {
+        switch themeMode {
+        case .system:
+            return colorScheme == .dark ? .dark : .light
+        case .light, .dark:
+            return themeMode
+        }
+    }
+
+    /// The palette of the current theme, resolved for a given device appearance.
+    ///
+    /// `.theme(_:)` calls this with the appearance from the environment and publishes the result
+    /// to `\.colorPalette`, so views should read the environment rather than call this. Reach for
+    /// it directly only where there is no environment to read — a snapshot fixture, a test, or
+    /// code that needs the other appearance's palette on purpose.
+    ///
+    /// - Parameter colorScheme: The device appearance to resolve `.system` against.
+    public func colorPalette(for colorScheme: ColorScheme) -> any ColorPalette {
+        currentTheme.colorPalette(for: resolvedMode(for: colorScheme))
     }
 
     /// Creates a provider with a starting theme, a starting mode, and any custom themes to register.

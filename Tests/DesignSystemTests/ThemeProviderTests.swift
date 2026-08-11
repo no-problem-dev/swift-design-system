@@ -86,14 +86,14 @@ final class ThemeProviderTests: XCTestCase {
 
     func testSwitchToThemeByLiteralIDChangesResolvedPalette() {
         let provider = ThemeProvider()
-        let defaultPrimary = provider.colorPalette.primary
+        let defaultPrimary = provider.colorPalette(for: .light).primary
 
         provider.switchToTheme(id: "ocean")
 
         XCTAssertEqual(provider.currentTheme.id, "ocean")
         // ID だけでなく解決されるパレットまで実際に入れ替わる
-        assertColorsDiffer(provider.colorPalette.primary, defaultPrimary, "primary")
-        assertSameColor(provider.colorPalette.primary, OceanTheme().colorPalette(for: .system).primary, "ocean primary")
+        assertColorsDiffer(provider.colorPalette(for: .light).primary, defaultPrimary, "primary")
+        assertSameColor(provider.colorPalette(for: .light).primary, OceanTheme().colorPalette(for: .light).primary, "ocean primary")
     }
 
     func testSwitchToUnknownThemeIsNoOp() {
@@ -102,7 +102,7 @@ final class ThemeProviderTests: XCTestCase {
 
         provider.switchToTheme(id: "nonexistent-theme")
         XCTAssertEqual(provider.currentTheme.id, before)
-        assertSameColor(provider.colorPalette.primary, LightColorPalette().primary, "primary")
+        assertSameColor(provider.colorPalette(for: .light).primary, LightColorPalette().primary, "primary")
     }
 
     func testApplyThemeSetsCurrentThemeAndPalette() {
@@ -112,8 +112,8 @@ final class ThemeProviderTests: XCTestCase {
 
         XCTAssertEqual(provider.currentTheme.id, "high-contrast")
         assertSameColor(
-            provider.colorPalette.primary,
-            HighContrastTheme().colorPalette(for: .system).primary,
+            provider.colorPalette(for: .light).primary,
+            HighContrastTheme().colorPalette(for: .light).primary,
             "high-contrast primary"
         )
     }
@@ -124,32 +124,56 @@ final class ThemeProviderTests: XCTestCase {
         let light = ThemeProvider(initialMode: .light)
         let dark = ThemeProvider(initialMode: .dark)
 
-        assertSameColor(light.colorPalette.primary, LightColorPalette().primary, "light primary")
-        assertSameColor(dark.colorPalette.primary, DarkColorPalette().primary, "dark primary")
-        assertColorsDiffer(light.colorPalette.primary, dark.colorPalette.primary, "primary")
-        assertColorsDiffer(light.colorPalette.background, dark.colorPalette.background, "background")
+        assertSameColor(light.colorPalette(for: .light).primary, LightColorPalette().primary, "light primary")
+        assertSameColor(dark.colorPalette(for: .dark).primary, DarkColorPalette().primary, "dark primary")
+        assertColorsDiffer(light.colorPalette(for: .light).primary, dark.colorPalette(for: .dark).primary, "primary")
+        assertColorsDiffer(light.colorPalette(for: .light).background, dark.colorPalette(for: .dark).background, "background")
     }
 
-    func testSystemModeResolvesToTheLightPalette() {
-        // .system は既定モード。DefaultTheme は .system と .light を同じ分岐で扱う
+    func testSystemModeFollowsTheAppearanceItIsGiven() {
+        // .system は既定モード。端末の外観が dark なら dark パレットが返らなければならない
+        // （常に light を返していたのが元の不具合）
         let provider = ThemeProvider()
         XCTAssertEqual(provider.themeMode, .system)
 
-        assertSameColor(provider.colorPalette.primary, LightColorPalette().primary, "system primary")
-        assertSameColor(provider.colorPalette.background, LightColorPalette().background, "system background")
-        assertColorsDiffer(provider.colorPalette.background, DarkColorPalette().background, "background")
+        assertSameColor(provider.colorPalette(for: .light).background, LightColorPalette().background, "system + light")
+        assertSameColor(provider.colorPalette(for: .dark).background, DarkColorPalette().background, "system + dark")
+        assertColorsDiffer(
+            provider.colorPalette(for: .light).background,
+            provider.colorPalette(for: .dark).background,
+            "system background"
+        )
+    }
+
+    func testPinnedModesIgnoreTheAppearance() {
+        // .light / .dark は端末の外観に関係なく固定される
+        let light = ThemeProvider(initialMode: .light)
+        let dark = ThemeProvider(initialMode: .dark)
+
+        assertSameColor(light.colorPalette(for: .dark).background, LightColorPalette().background, "pinned light")
+        assertSameColor(dark.colorPalette(for: .light).background, DarkColorPalette().background, "pinned dark")
+    }
+
+    func testResolvedModeNeverReportsSystem() {
+        // .system は必ず light / dark のどちらかへ解決される。
+        // .theme(_:) はこの解決結果で colorScheme を決めるため、system が漏れると外観が固定される
+        XCTAssertEqual(ThemeProvider(initialMode: .system).resolvedMode(for: .light), .light)
+        XCTAssertEqual(ThemeProvider(initialMode: .system).resolvedMode(for: .dark), .dark)
+        XCTAssertEqual(ThemeProvider(initialMode: .light).resolvedMode(for: .dark), .light)
+        XCTAssertEqual(ThemeProvider(initialMode: .dark).resolvedMode(for: .light), .dark)
     }
 
     func testChangingModeReresolvesThePaletteOfTheCurrentTheme() {
         let provider = ThemeProvider(initialMode: .light)
         provider.switchToTheme(id: "high-contrast")
-        let lightPrimary = provider.colorPalette.primary
+        let lightPrimary = provider.colorPalette(for: .light).primary
 
         provider.themeMode = .dark
 
-        assertColorsDiffer(provider.colorPalette.primary, lightPrimary, "high-contrast primary")
+        // 端末の外観は light のままでも、モードを .dark に固定したので dark パレットになる
+        assertColorsDiffer(provider.colorPalette(for: .light).primary, lightPrimary, "high-contrast primary")
         assertSameColor(
-            provider.colorPalette.primary,
+            provider.colorPalette(for: .light).primary,
             HighContrastTheme().colorPalette(for: .dark).primary,
             "high-contrast dark primary"
         )

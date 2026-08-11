@@ -92,7 +92,7 @@ public struct AttachmentThumbnail: View {
                 )
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("添付を削除")
+        .accessibilityLabel("Remove Attachment")
     }
 }
 

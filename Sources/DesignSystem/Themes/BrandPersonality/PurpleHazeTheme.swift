@@ -10,7 +10,7 @@ public struct PurpleHazeTheme: Theme {
 
     public var name: String { "Purple Haze" }
 
-    public var description: String { "鮮やかな紫。クリエイティブで革新的な雰囲気" }
+    public var description: String { "Vivid purple. Creative and inventive" }
 
     public var category: ThemeCategory { .brandPersonality }
 

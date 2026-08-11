@@ -49,24 +49,24 @@ public struct VideoPickerModifier: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .confirmationDialog(
-                "動画を選択",
+                "Select a Video",
                 isPresented: $isPresented,
                 titleVisibility: .visible
             ) {
                 // Shown only when a camera is available
                 if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                    Button("動画を撮影") {
+                    Button("Record Video") {
                         requestPermissionAndShowPicker(for: .camera)
                     }
                     .tint(Color(colorPalette.primary))
                 }
 
-                Button("動画ライブラリから選択") {
+                Button("Choose from Library") {
                     requestPermissionAndShowPicker(for: .photoLibrary)
                 }
                 .tint(Color(colorPalette.primary))
 
-                Button("キャンセル", role: .cancel) {
+                Button("Cancel", role: .cancel) {
                     isPresented = false
                 }
             }
@@ -106,11 +106,11 @@ public struct VideoPickerModifier: ViewModifier {
                 presenting: permissionAlertConfig
             ) { config in
                 if config.canOpenSettings {
-                    Button("設定を開く") {
+                    Button("Open Settings") {
                         openSettings()
                     }
                 }
-                Button("キャンセル", role: .cancel) {
+                Button("Cancel", role: .cancel) {
                     isPresented = false
                 }
             } message: { config in
@@ -247,11 +247,11 @@ public enum VideoPickerError: LocalizedError, Sendable {
     public var errorDescription: String? {
         switch self {
         case .loadFailed(let message):
-            return "動画の読み込みに失敗しました: \(message)"
+            return "Couldn't load the video: \(message)"
         case .durationExceeded(let actual, let max):
-            return String(format: "動画が長すぎます（%.0f秒）。最大%.0f秒までです。", actual, max)
+            return String(format: "The video is too long (%.0f seconds). The maximum is %.0f seconds.", actual, max)
         case .sizeExceeded(let actual, let max):
-            return "ファイルサイズが大きすぎます（\(actual.formatted)）。最大\(max.formatted)までです。"
+            return "The file is too large (\(actual.formatted)). The maximum is \(max.formatted)."
         }
     }
 }
@@ -314,7 +314,7 @@ struct VideoPickerViewController: UIViewControllerRepresentable {
             didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
         ) {
             guard let videoURL = info[.mediaURL] as? URL else {
-                parent.onError?(.loadFailed("動画URLの取得に失敗しました"))
+                parent.onError?(.loadFailed("The video URL was unavailable."))
                 parent.isPresented = nil
                 return
             }

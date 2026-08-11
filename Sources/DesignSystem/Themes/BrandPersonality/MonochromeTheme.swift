@@ -10,7 +10,7 @@ public struct MonochromeTheme: Theme {
 
     public var name: String { "Monochrome" }
 
-    public var description: String { "グレースケール。ミニマルでエレガントな雰囲気" }
+    public var description: String { "Grayscale. Minimal and elegant" }
 
     public var category: ThemeCategory { .brandPersonality }
 

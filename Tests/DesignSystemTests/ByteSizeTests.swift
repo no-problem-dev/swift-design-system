@@ -3,8 +3,9 @@ import XCTest
 
 /// `ByteSize` の算術・変換・プロトコル適合の実値検証。
 ///
-/// `formatted` は `ByteCountFormatter` 由来でロケール・OS に依存するため、
-/// 文字列そのものは検証せず `bytes` の値で検証する。
+/// `formatted` は `ByteCountFormatter` 由来で、区切り記号や小数表記はロケールに依存する。
+/// 依存しないのは「どの単位に何で割るか」で、そこは型の算術（1,024 進）と一致していなければ
+/// ならない。単位の桁が一致することだけを実文字列で押さえる。
 final class ByteSizeTests: XCTestCase {
 
     // MARK: - ファクトリと単位換算
@@ -196,5 +197,27 @@ final class ByteSizeTests: XCTestCase {
     func testFormattedIsNonEmptyAndDiffersBetweenScales() {
         XCTAssertFalse(1.mb.formatted.isEmpty)
         XCTAssertNotEqual(1.kb.formatted, 1.gb.formatted)
+    }
+
+    // MARK: - formatted は型と同じ 1,024 進で数える
+
+    func testFormattedCountsInBinaryUnitsLikeTheArithmetic() {
+        // 1,000 進で数えると 100MB が "104.9 MB"、1GB が "1.07 GB" になり、
+        // 組み立てた単位と表示が食い違う
+        XCTAssertEqual(ByteSize.megabytes(100).formatted, "100 MB")
+        XCTAssertEqual(ByteSize.megabytes(1).formatted, "1 MB")
+        XCTAssertEqual(ByteSize.kilobytes(1).formatted, "1 KB")
+        XCTAssertEqual(ByteSize.gigabytes(1).formatted, "1 GB")
+        XCTAssertEqual(ByteSize.gigabytes(2).formatted, "2 GB")
+        XCTAssertEqual(50.mb.formatted, "50 MB")
+    }
+
+    func testFormattedRoundTripsWithTheUnitAccessors() {
+        // formatted が示す単位と桁は、切り捨て換算のプロパティと一致する
+        for value in [1, 3, 7, 100, 512] {
+            let size = ByteSize.megabytes(value)
+            XCTAssertEqual(size.megabytes, value)
+            XCTAssertEqual(size.formatted, "\(value) MB", "megabytes(\(value))")
+        }
     }
 }

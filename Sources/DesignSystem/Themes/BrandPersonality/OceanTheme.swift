@@ -10,7 +10,7 @@ public struct OceanTheme: Theme {
 
     public var name: String { "Ocean" }
 
-    public var description: String { "深い海の青。プロフェッショナルで落ち着いた雰囲気" }
+    public var description: String { "Deep ocean blue. Professional and calm" }
 
     public var category: ThemeCategory { .brandPersonality }
 

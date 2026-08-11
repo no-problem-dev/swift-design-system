@@ -469,6 +469,21 @@ struct IconButtonSnapshots {
         .padding()
     }
 
+    /// `.standard` は線を描かない。次の `outlined` と対で「別の絵になる」ことを固定する
+    @ComponentSnapshot(width: 120, height: 120)
+    func standard() -> some View {
+        IconButton(icon: "square.and.arrow.up", style: .standard) {}
+            .padding()
+    }
+
+    /// `.outlined` は outline 色の 1pt の輪を描く。
+    /// 背景色の分岐しか持たない実装では `standard` と同じ画像になり、この 1 枚が成立しない
+    @ComponentSnapshot(width: 120, height: 120)
+    func outlined() -> some View {
+        IconButton(icon: "square.and.arrow.up", style: .outlined) {}
+            .padding()
+    }
+
     @ComponentSnapshot(width: 300, height: 120)
     func allSizes() -> some View {
         HStack(spacing: 12) {

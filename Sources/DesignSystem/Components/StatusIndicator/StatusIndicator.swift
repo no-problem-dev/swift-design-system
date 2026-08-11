@@ -62,11 +62,11 @@ public struct StatusIndicator: View {
 
     private var accessibilityText: String {
         switch kind {
-        case .pending: "待機中"
-        case .running: "実行中"
-        case .success: "完了"
-        case .failure: "失敗"
-        case .canceled: "中断"
+        case .pending: "Pending"
+        case .running: "Running"
+        case .success: "Completed"
+        case .failure: "Failed"
+        case .canceled: "Canceled"
         }
     }
 }
