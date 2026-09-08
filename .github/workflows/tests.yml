@@ -108,8 +108,16 @@ jobs:
             echo "iOS を宣言していないパッケージなので飛ばす"
             exit 0
           fi
-          SCHEME=$(xcodebuild -list -json | python3 -c \
-            'import json,sys; print(next(s for s in json.load(sys.stdin)["workspace"]["schemes"] if s.endswith("-Package")))')
+          # **製品が 1 つの package には集約 scheme が生えない。** 名前そのものが scheme になる。
+          # `-Package` だけを探すと、そこで StopIteration になって落ちる（34 本で実際に落ちた）。
+          SCHEME=$(xcodebuild -list -json | python3 -c '
+          import json, sys
+          w = json.load(sys.stdin).get("workspace", {})
+          names, pkg = w.get("schemes", []), w.get("name", "")
+          if not names:
+              sys.exit("scheme が 1 つも無い")
+          print(next((s for s in names if s.endswith("-Package")), None) or (pkg if pkg in names else names[0]))
+          ')
           echo "scheme: $SCHEME"
           xcodebuild build-for-testing -scheme "$SCHEME" \
             -destination 'generic/platform=iOS Simulator' -quiet
