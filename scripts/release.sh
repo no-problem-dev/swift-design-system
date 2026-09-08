@@ -40,6 +40,16 @@ if [[ -n "$(git status --porcelain)" ]]; then
   exit 1
 fi
 
+# **タグを先に取る。** 版の計算も「既にタグ済み」の判定も git tag を見るので、
+# 手元のタグが古いと**存在する版をもう一度出そうとする**。
+# 実際に起きた: swift-llm-cloud で remote に 6.1.0 が在るのに手元に無く、
+# current=6.0.0 と読んで next=6.1.0 を計算した。main への push は通り、
+# タグ push だけが弾かれて、CHANGELOG に 6.1.0 が 2 つ並んだ状態が remote に残った。
+git fetch --quiet --tags origin 2>/dev/null || {
+  echo "タグを取得できなかった。版の計算が古い基点になるので中止する。" >&2
+  exit 1
+}
+
 RESULT="$("$SCRIPT_DIR/compute-next-version.sh")"
 echo "$RESULT"
 VERSION=$(echo "$RESULT" | tr ' ' '\n' | sed -n 's/^next=//p')
