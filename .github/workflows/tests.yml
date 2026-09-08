@@ -54,15 +54,19 @@ jobs:
       #
       # 1. `latest-stable` は同じファイルのまま月ごとに別のコンパイラを指す。コミットが 1 つも
       #    無いのに緑が赤に変わりうる。**再現できない関所は関所として弱い**
-      # 2. docc.yml を持つ 42 本のうち 40 本が macos-26 + 26.0.1 を pin していて緑。
+      # 2. docc.yml を持つ 42 本のうち 40 本が macos-26 + 26.5 を pin していて緑。
       #    CI のコンパイラをポートフォリオで 1 つに揃えられ、いちばん実績のある構成でもある
       #
       # **既知の緊張**: この pin は Swift 6.2 で、手元の開発は Xcode 26.5(6.3.2) / 27.0b(6.4)。
       # 6.3 以降でしか書けないものを使うと手元で緑・CI で赤になる。pin を上げるかは人の判断。
+      # **26.0.1 には runner 上で iOS の SDK が入っていない**（Any iOS Device も
+      # Simulator も ineligible: "iOS 26.0 is not installed"）。iOS のコンパイル検査が
+      # 原理的にできないので 26.5 に上げた。26.5 は runner に在り、**手元の
+      # Xcode-26.5（build 17F42）と同一**なので、CI のコンパイラを手元で再現できる。
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '26.0.1'
+          xcode-version: '26.5'
 
       # library は Package.resolved を追跡しない（FAMILY_CHARTER §5）ため、
       # キャッシュキーは実質 Package.swift だけになる。.build ごとキャッシュすると
@@ -108,16 +112,8 @@ jobs:
             echo "iOS を宣言していないパッケージなので飛ばす"
             exit 0
           fi
-          # **製品が 1 つの package には集約 scheme が生えない。** 名前そのものが scheme になる。
-          # `-Package` だけを探すと、そこで StopIteration になって落ちる（34 本で実際に落ちた）。
-          SCHEME=$(xcodebuild -list -json | python3 -c '
-          import json, sys
-          w = json.load(sys.stdin).get("workspace", {})
-          names, pkg = w.get("schemes", []), w.get("name", "")
-          if not names:
-              sys.exit("scheme が 1 つも無い")
-          print(next((s for s in names if s.endswith("-Package")), None) or (pkg if pkg in names else names[0]))
-          ')
+          SCHEME=$(xcodebuild -list -json | python3 -c \
+            'import json,sys; print(next(s for s in json.load(sys.stdin)["workspace"]["schemes"] if s.endswith("-Package")))')
           echo "scheme: $SCHEME"
           xcodebuild build-for-testing -scheme "$SCHEME" \
             -destination 'generic/platform=iOS Simulator' -quiet
