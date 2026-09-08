@@ -15,25 +15,16 @@ swift build
 swift test
 ```
 
-**CI runs `swift build` and `swift test` on every push and pull request**
-(`.github/workflows/tests.yml`), resolving dependencies fresh rather than from a
-cache. That run is the authority: a local `.build` left over from an earlier
-resolve can report green where a fresh checkout does not. Run both commands
-locally first anyway — it is faster than waiting for a runner.
-
-Snapshot tests are the exception and do not run in CI: the recorded pixels follow
-the host simulator's scale, so they are compared locally with
-`xcodebuild test -destination 'platform=iOS Simulator,...'`. Wrap image-test files
-in `#if canImport(UIKit)` so the macOS run leaves them out.
+**Verification happens here, not in CI.** The release workflow does not build or
+test — it only turns a tag into a GitHub Release. Run both commands locally and
+make sure they pass before opening a pull request.
 
 Documentation lives in the DocC catalog under `Sources/*/*.docc/`. Public
 declarations are documented with `///` comments, in English.
 
 ## Releasing
 
-Maintainers only. Release from a commit whose Tests run is green — `release-on-tag.yml`
-turns a tag into a GitHub Release and nothing else, so nothing is compiled on the
-way out. The version is **computed, never chosen**:
+Maintainers only. The version is **computed, never chosen**:
 
 ```bash
 scripts/release.sh --dry-run   # see what version the API diff implies
