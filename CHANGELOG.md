@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.0] - 2026-09-30
+
 **This breaks the public API.** `GlassButtonStyle` / `.glass` are renamed, and `RadiusScale` gains
 a requirement (`card`). The migration is at the end of this section.
 
