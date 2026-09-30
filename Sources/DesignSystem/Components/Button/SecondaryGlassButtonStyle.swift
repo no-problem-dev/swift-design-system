@@ -5,7 +5,10 @@ import SwiftUI
 /// Use it for the secondary action that pairs with `.primaryGlass`, when a group of actions
 /// should let the background show through and share the same glass language.
 /// It is the standard form for a secondary button on a glass surface (`surfaceStyle(.glass)`).
-public struct GlassButtonStyle: ButtonStyle {
+///
+/// Named `SecondaryGlass` rather than `Glass` because SwiftUI (iOS 26 / macOS 26) ships its own
+/// `GlassButtonStyle` and `.glass`; the same names made every call site ambiguous.
+public struct SecondaryGlassButtonStyle: ButtonStyle {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.buttonSize) private var buttonSize
     @Environment(\.isEnabled) private var isEnabled
@@ -49,9 +52,9 @@ public struct GlassButtonStyle: ButtonStyle {
     }
 }
 
-public extension ButtonStyle where Self == GlassButtonStyle {
-    /// A neutral, untinted Liquid Glass button style.
-    static var glass: GlassButtonStyle {
-        GlassButtonStyle()
+public extension ButtonStyle where Self == SecondaryGlassButtonStyle {
+    /// A neutral, untinted Liquid Glass button style, the secondary partner of `.primaryGlass`.
+    static var secondaryGlass: SecondaryGlassButtonStyle {
+        SecondaryGlassButtonStyle()
     }
 }

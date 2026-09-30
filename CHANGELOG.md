@@ -7,6 +7,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+**This breaks the public API.** `GlassButtonStyle` / `.glass` are renamed, and `RadiusScale` gains
+a requirement (`card`). The migration is at the end of this section.
+
+### Fixed
+
+- **Outside `.theme(_:)`, the default palette now follows the appearance.** The environment's
+  default `colorPalette` was `LightColorPalette` whatever the `colorScheme`, so a widget or a Live
+  Activity — which never goes through `.theme(_:)` — drew light-palette text on the dark
+  background the system gives it in dark mode. The default is now `DarkColorPalette` when
+  `colorScheme` is `.dark` and `LightColorPalette` otherwise. A palette that was set (by
+  `.theme(_:)` or `.environment(\.colorPalette, …)`) still wins over the appearance.
+
+- **`DesignSystem` now builds for app extensions.** The "Open Settings" actions of
+  `VideoPlayerView`, `.imagePicker(…)` and `.videoPicker(…)` called `UIApplication.shared.open`,
+  which is unavailable in extensions, so linking the product into a widget extension failed with
+  `'shared' is unavailable in application extensions for iOS`. They now go through the
+  environment's `openURL`. Nothing had to be marked unavailable, so no API disappears from an
+  extension and the product does not need splitting; checked with
+  `xcodebuild -scheme DesignSystem -destination 'generic/platform=iOS Simulator'
+  APPLICATION_EXTENSION_API_ONLY=YES build`.
+
+### Changed
+
+- **`GlassButtonStyle` is renamed `SecondaryGlassButtonStyle`, and `.glass` is `.secondaryGlass`.**
+  SwiftUI (iOS 26 / macOS 26) ships its own `GlassButtonStyle` and `.glass`, so importing both made
+  every use ambiguous and apps wrote `SwiftUI.GlassButtonStyle()` to get past it. The new name pairs
+  with `PrimaryGlassButtonStyle` / `.primaryGlass`, which it already was the secondary partner of.
+  Rendering is unchanged.
+
+- **`RadiusScale.card` is a protocol requirement again.** 4.0.0 removed it as a token nothing
+  read, but that search only covered this package: jibun-bgm and KyoichiAI read `radius.card`
+  from the environment on a dozen surfaces, which kept them from moving past 3.x. It has no
+  default, because a theme with tighter steps (SmartHR, `lg` = 8pt) would otherwise inherit a 24pt
+  corner that belongs to none of its steps. `DefaultRadiusScale.card` is 24pt as before;
+  `TokenDiff.radius` and the radius catalog now show it.
+
+- The test target excludes `__Snapshots__`, which removes the "174 unhandled files" build warning.
+
+### Migration from 4.x
+
+| 4.x | 5.0.0 |
+|---|---|
+| `GlassButtonStyle()` | `SecondaryGlassButtonStyle()` |
+| `.buttonStyle(.glass)` meaning this package's style | `.buttonStyle(.secondaryGlass)`. Left as is, `.glass` now resolves to SwiftUI's own style, which exists only on iOS 26 / macOS 26 |
+| `SwiftUI.GlassButtonStyle()` (written to avoid the clash) | Keeps working; the qualifier can be dropped |
+| a custom `RadiusScale` conformer | add `var card: CGFloat` (the default theme uses 24) |
+| relying on `colorPalette` being light outside `.theme(_:)` | set `.environment(\.colorPalette, LightColorPalette())` explicitly |
+
+Known uses at release time: swift-a2ui writes `.buttonStyle(.glass)` (`BasicCatalog+Inputs.swift:50`)
+and must switch to `.secondaryGlass`; jibun-bgm writes `SwiftUI.GlassButtonStyle()` and reads
+`radius.card`, both of which work unchanged on 5.0.0; swift-design-brands' `SmartHRRadiusScale`
+already declares `card`.
+
 ## [4.1.0] - 2026-08-11
 
 ### Added

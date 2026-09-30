@@ -117,7 +117,7 @@ reference below. Build the docs for an iOS destination to see them.
 - ``PrimaryButtonStyle``
 - ``SecondaryButtonStyle``
 - ``TertiaryButtonStyle``
-- ``GlassButtonStyle``
+- ``SecondaryGlassButtonStyle``
 - ``PrimaryGlassButtonStyle``
 - ``PrimaryTonalButtonStyle``
 - ``ButtonSize``

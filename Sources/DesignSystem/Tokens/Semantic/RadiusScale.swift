@@ -27,6 +27,7 @@ import Foundation
 /// - `lg`: 12pt - a large rounding
 /// - `xl`: 16pt - a very large rounding
 /// - `xxl`: 20pt - an extra large rounding
+/// - `card`: 24pt - a leading surface (a composer, a hero card)
 /// - `full`: 9999pt - fully rounded (buttons, avatars)
 public protocol RadiusScale: Sendable {
     /// Square corners (0pt).
@@ -49,6 +50,14 @@ public protocol RadiusScale: Sendable {
 
     /// An extra large rounding (20pt).
     var xxl: CGFloat { get }
+
+    /// The rounding for a leading surface (24pt in the default theme), such as a composer or a
+    /// hero card.
+    ///
+    /// Use it on the large surface a screen is built around. It has no default: a theme whose
+    /// steps are tighter than the default (a brand with `lg` at 8pt) would otherwise inherit a 24pt
+    /// corner that belongs to none of its steps.
+    var card: CGFloat { get }
 
     /// Fully rounded (9999pt), for buttons and avatars.
     var full: CGFloat { get }

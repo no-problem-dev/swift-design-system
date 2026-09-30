@@ -135,7 +135,7 @@ final class DesignCatalogKitTests: XCTestCase {
     /// `.infinity` の full は "∞"、有限の巨大値は指数表記せず桁を並べる
     func testRadiusFullFormatsInfinityAndHugeFiniteValue() throws {
         let rows = TokenDiff.radius(DefaultRadiusScale(), EdgeCaseRadiusScale())
-        XCTAssertEqual(rows.count, 8)
+        XCTAssertEqual(rows.count, 9)
 
         let full = try row(rows, "full")
         XCTAssertEqual(full.a, "∞", "DefaultRadiusScale.full は .infinity")
@@ -156,7 +156,7 @@ final class DesignCatalogKitTests: XCTestCase {
     /// 差分ゼロの組み合わせでは differing() が空になる
     func testDifferingIsEmptyWhenAllValuesMatch() {
         let rows = TokenDiff.radius(DefaultRadiusScale(), DefaultRadiusScale())
-        XCTAssertEqual(rows.count, 8)
+        XCTAssertEqual(rows.count, 9)
         XCTAssertTrue(TokenDiff.differing(rows).isEmpty)
         // 全行が値を持ち、full は ∞ 同士で一致している
         XCTAssertEqual(rows.first { $0.label == "full" }?.a, "∞")

@@ -53,7 +53,7 @@ Text("Hello")
 |---|---|---|
 | ``ColorPalette`` | `\.colorPalette` | Roles such as `primary`, `surface`, and `error`, each paired with an `on-` role for content drawn on top |
 | ``SpacingScale`` | `\.spacingScale` | Ten steps, `none` through `xxxxl` |
-| ``RadiusScale`` | `\.radiusScale` | Eight steps, `none` through `full` |
+| ``RadiusScale`` | `\.radiusScale` | Nine steps, `none` through `full` (including `card`) |
 | ``TypographyScale`` | `\.typographyScale` | Text roles that scale with Dynamic Type |
 | ``Motion`` | `\.motion` | Animation durations and curves |
 | ``IconSizeScale`` | `\.iconSizeScale` | Icon dimensions matched to the type scale |

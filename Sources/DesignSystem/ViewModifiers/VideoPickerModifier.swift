@@ -20,6 +20,7 @@ import UniformTypeIdentifiers
 ///   - `NSMicrophoneUsageDescription`: the reason for using the microphone, needed when recording.
 public struct VideoPickerModifier: ViewModifier {
     @Environment(\.colorPalette) private var colorPalette
+    @Environment(\.openURL) private var openURL
 
     @Binding var isPresented: Bool
     @Binding var selectedVideoData: Data?
@@ -231,7 +232,7 @@ public struct VideoPickerModifier: ViewModifier {
 
     private func openSettings() {
         if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-            UIApplication.shared.open(settingsURL)
+            openURL(settingsURL)
         }
     }
 }

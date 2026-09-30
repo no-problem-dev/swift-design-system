@@ -27,6 +27,7 @@ public struct VideoPlayerView: View {
     @Environment(\.colorPalette) private var colorPalette
     @Environment(\.spacingScale) private var spacing
     @Environment(\.radiusScale) private var radius
+    @Environment(\.openURL) private var openURL
 
     private let source: VideoSource
     private var showMetadata: Bool = false
@@ -321,7 +322,7 @@ public struct VideoPlayerView: View {
                         message: "Access to the photo library has not been granted.",
                         primaryAction: SnackbarAction(title: "Open Settings") {
                             if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                                await UIApplication.shared.open(settingsURL)
+                                openURL(settingsURL)
                             }
                         },
                         duration: 5.0

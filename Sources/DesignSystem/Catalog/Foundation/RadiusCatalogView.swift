@@ -18,6 +18,7 @@ struct RadiusCatalogView: View {
                     RadiusDemoView(name: "lg", value: radius.lg)
                     RadiusDemoView(name: "xl", value: radius.xl)
                     RadiusDemoView(name: "xxl", value: radius.xxl)
+                    RadiusDemoView(name: "card", value: radius.card)
                     RadiusDemoView(name: "full", value: radius.full)
                 }
             }

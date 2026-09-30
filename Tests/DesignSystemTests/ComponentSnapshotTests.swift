@@ -83,7 +83,7 @@ struct ButtonSnapshots {
     @ComponentSnapshot(width: 340, height: 100)
     func glass() -> some View {
         Button("あとで読む") {}
-            .buttonStyle(.glass)
+            .buttonStyle(.secondaryGlass)
             .padding()
     }
 

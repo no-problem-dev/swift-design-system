@@ -95,7 +95,7 @@ public extension StatusKind {
         ForEach(StatusKind.allCases, id: \.self) { kind in
             HStack(spacing: 12) {
                 StatusIndicator(kind)
-                Text("\(kind)")
+                Text(String(describing: kind))
             }
         }
     }

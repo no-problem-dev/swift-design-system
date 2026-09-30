@@ -65,6 +65,7 @@ final class ThemeBundleTests: XCTestCase {
         XCTAssertEqual(radius.lg, 12)
         XCTAssertEqual(radius.xl, 16)
         XCTAssertEqual(radius.xxl, 20)
+        XCTAssertEqual(radius.card, 24)
         // full はピル形状用のセンチネル。有限値にすると角丸が効かなくなる
         XCTAssertEqual(radius.full, .infinity)
     }
@@ -85,5 +86,14 @@ final class ThemeBundleTests: XCTestCase {
         let provider = ThemeProvider(initialTheme: BrandTheme())
         XCTAssertEqual(provider.currentTheme.spacingScale.xs, 16)
         XCTAssertEqual(provider.currentTheme.radiusScale.lg, 8)
+    }
+
+    /// `card` は protocol の要件なので、`any RadiusScale`（環境から読む形）越しにテーマの値が届く。
+    /// 4.x では DefaultRadiusScale だけのプロパティで、環境から読むと常にコンパイルできなかった。
+    func testCardRadiusReachesThroughTheEnvironment() {
+        var env = EnvironmentValues()
+        XCTAssertEqual(env.radiusScale.card, 24)
+        env.radiusScale = BrandRadius()
+        XCTAssertEqual(env.radiusScale.card, 8)
     }
 }

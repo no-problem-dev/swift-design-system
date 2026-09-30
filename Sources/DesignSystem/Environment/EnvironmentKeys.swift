@@ -2,13 +2,23 @@ import SwiftUI
 
 // MARK: - ColorPalette
 
+/// Holds a palette only when one was put into the environment; `nil` means "none was set".
 private struct ColorPaletteKey: EnvironmentKey {
-    static let defaultValue: any ColorPalette = LightColorPalette()
+    static let defaultValue: (any ColorPalette)? = nil
 }
 
 extension EnvironmentValues {
+    /// The color palette views draw with.
+    ///
+    /// `.theme(_:)` sets it from the provider's theme. Where nothing has set it — a widget, a Live
+    /// Activity, a preview, or any view outside `.theme(_:)` — it follows the environment's
+    /// `colorScheme`: ``DarkColorPalette`` in dark appearance and ``LightColorPalette`` otherwise.
+    /// A fixed light default would draw dark text on the dark background the system gives a widget.
     public var colorPalette: any ColorPalette {
-        get { self[ColorPaletteKey.self] }
+        get {
+            if let palette = self[ColorPaletteKey.self] { return palette }
+            return colorScheme == .dark ? DarkColorPalette() : LightColorPalette()
+        }
         set { self[ColorPaletteKey.self] = newValue }
     }
 }

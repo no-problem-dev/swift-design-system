@@ -49,7 +49,9 @@ let package = Package(
             dependencies: [
                 "DesignSystem",
                 .product(name: "VisualTesting", package: "swift-visual-testing"),
-            ]
+            ],
+            // Reference images are read from disk next to the test source, not bundled.
+            exclude: ["__Snapshots__"]
         ),
         .testTarget(
             name: "DesignSpecTests",

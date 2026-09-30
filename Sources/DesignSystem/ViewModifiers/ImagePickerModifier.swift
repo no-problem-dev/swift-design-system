@@ -17,6 +17,7 @@ import PhotosUI
 ///   permission the app does not use invites questions during review.
 public struct ImagePickerModifier: ViewModifier {
     @Environment(\.colorPalette) private var colorPalette
+    @Environment(\.openURL) private var openURL
 
     @Binding var isPresented: Bool
     @Binding var selectedImageData: Data?
@@ -182,7 +183,7 @@ public struct ImagePickerModifier: ViewModifier {
 
     private func openSettings() {
         if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-            UIApplication.shared.open(settingsURL)
+            openURL(settingsURL)
         }
     }
 }
