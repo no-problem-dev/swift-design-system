@@ -36,9 +36,12 @@ public extension View {
     /// For a purchase button that should catch the eye without moving forever: the first sweep
     /// comes after `firstDelay`, then one every `interval`, `times` in all. Nothing runs while
     /// `isActive` is false (the button is busy, say), while Reduce Motion is on, or while the
-    /// scene is not active; the count starts over when it can run again. Stopping after a few
-    /// sweeps also means nothing moves on its own for more than five seconds without a way to
-    /// stop it (WCAG 2.2.2).
+    /// scene is not active. When it can run again it waits `firstDelay` and runs only the sweeps
+    /// it has not run yet, so the total stays at `times` for the life of the view. It stops by
+    /// itself after a few sweeps (WCAG 2.2.2 asks for a way to stop motion that goes on).
+    ///
+    /// `clipShape` clips the view and becomes its hit-test region, as with `shine`; pass the
+    /// button's own shape.
     ///
     /// - Parameters:
     ///   - interval: The time from one sweep to the next.
@@ -53,7 +56,7 @@ public extension View {
         firstDelay: Duration = .milliseconds(1200),
         isActive: Bool = true,
         duration: CGFloat = 0.9,
-        clipShape: some Shape = .capsule
+        clipShape: some Shape = .rect
     ) -> some View {
         modifier(ShineRepeatingModifier(
             schedule: ShineSchedule(interval: interval, times: times, firstDelay: firstDelay),
@@ -64,23 +67,30 @@ public extension View {
     }
 }
 
-/// When the sweeps of ``SwiftUICore/View/shineRepeating(every:times:firstDelay:isActive:duration:clipShape:)`` happen.
+/// When the sweeps of `shineRepeating(every:times:firstDelay:isActive:duration:clipShape:)` happen.
 struct ShineSchedule: Equatable, Sendable {
     let interval: Duration
     let times: Int
     let firstDelay: Duration
 
-    /// Waits `firstDelay`, then calls `fire` `times` times with `interval` between calls.
-    /// Returns early, without firing again, once the task is cancelled or `sleep` throws.
+    /// Whether sweeps may run at all.
+    static func shouldRun(isActive: Bool, reduceMotion: Bool, sceneIsActive: Bool) -> Bool {
+        isActive && !reduceMotion && sceneIsActive
+    }
+
+    /// Waits `firstDelay`, then calls `fire` for each sweep not yet run (`times − alreadyFired`),
+    /// with `interval` between calls. Returns early, without firing again, once the task is
+    /// cancelled or `sleep` throws.
     @MainActor
-    func run(sleep: (Duration) async throws -> Void, fire: () -> Void) async {
-        guard times > 0 else { return }
+    func run(alreadyFired: Int = 0, sleep: (Duration) async throws -> Void, fire: () -> Void) async {
+        let remaining = times - alreadyFired
+        guard remaining > 0 else { return }
         do {
             try await sleep(firstDelay)
-            for index in 0..<times {
+            for index in 0..<remaining {
                 try Task.checkCancellation()
                 fire()
-                if index < times - 1 { try await sleep(interval) }
+                if index < remaining - 1 { try await sleep(interval) }
             }
         } catch {
             return
@@ -146,15 +156,21 @@ private struct ShineRepeatingModifier: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
     @State private var trigger = false
+    @State private var fired = 0
 
-    private var runs: Bool { isActive && !reduceMotion && scenePhase == .active }
+    private var runs: Bool {
+        ShineSchedule.shouldRun(isActive: isActive, reduceMotion: reduceMotion, sceneIsActive: scenePhase == .active)
+    }
 
     func body(content: Content) -> some View {
         content
             .shine(trigger, duration: duration, clipShape: clipShape)
             .task(id: runs) {
                 guard runs else { return }
-                await schedule.run(sleep: { try await Task.sleep(for: $0) }, fire: { trigger.toggle() })
+                await schedule.run(alreadyFired: fired, sleep: { try await Task.sleep(for: $0) }, fire: {
+                    fired += 1
+                    trigger.toggle()
+                })
             }
     }
 }

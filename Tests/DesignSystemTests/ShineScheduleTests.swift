@@ -29,4 +29,17 @@ struct ShineScheduleTests {
         await ShineSchedule(interval: .seconds(1), times: 0, firstDelay: .zero).run(sleep: { _ in }, fire: { fired += 1 })
         #expect(fired == 0)
     }
+
+    @Test func resumingRunsOnlyTheSweepsLeft() async {
+        var fired = 0
+        await ShineSchedule(interval: .seconds(4), times: 3, firstDelay: .zero).run(alreadyFired: 2, sleep: { _ in }, fire: { fired += 1 })
+        #expect(fired == 1)
+    }
+
+    @Test func runsOnlyWhenActiveVisibleAndMotionAllowed() {
+        #expect(ShineSchedule.shouldRun(isActive: true, reduceMotion: false, sceneIsActive: true))
+        #expect(!ShineSchedule.shouldRun(isActive: false, reduceMotion: false, sceneIsActive: true))
+        #expect(!ShineSchedule.shouldRun(isActive: true, reduceMotion: true, sceneIsActive: true))
+        #expect(!ShineSchedule.shouldRun(isActive: true, reduceMotion: false, sceneIsActive: false))
+    }
 }
