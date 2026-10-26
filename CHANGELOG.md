@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **`shineRepeating(every:times:firstDelay:isActive:duration:clipShape:)`.** Shines a view a fixed
+  number of times with a pause between sweeps, then stops — the shape a purchase button wants:
+  the first sweep after 1.2 s, then one every 4 s, three in all by default. It does not run while
+  `isActive` is false, while Reduce Motion is on, or while the scene is not active, and after a
+  pause it runs only the sweeps it has left, so it stops by itself after `times` sweeps.
+
+### Fixed
+- **`shine(_:duration:clipShape:rightToLeft:)` now honours Reduce Motion.** It drew the band
+  regardless; with Reduce Motion on it now draws nothing (the clip and content shape still apply).
+
 ## [5.0.0] - 2026-09-30
 
 **This breaks the public API.** `GlassButtonStyle` / `.glass` are renamed, and `RadiusScale` gains
