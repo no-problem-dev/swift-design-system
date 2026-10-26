@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.0] - 2026-10-26
+
 ### Added
 - **`shineRepeating(every:times:firstDelay:isActive:duration:clipShape:)`.** Shines a view a fixed
   number of times with a pause between sweeps, then stops — the shape a purchase button wants:
