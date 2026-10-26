@@ -21,8 +21,14 @@ public extension View {
     ///   - rightToLeft: Sweeps from the trailing edge instead of the leading edge.
     ///
     /// Source: Kavsoft "SwiftUI Shine Effect - Custom View Modifier" (2023-11)
+    @ViewBuilder
     func shine(_ toggle: Bool, duration: CGFloat = 0.5, clipShape: some Shape = .rect, rightToLeft: Bool = false) -> some View {
-        modifier(ShineModifier(toggle: toggle, duration: duration, clipShape: AnyShape(clipShape), rightToLeft: rightToLeft))
+        self
+            .overlay {
+                ShineBand(toggle: toggle, duration: duration, rightToLeft: rightToLeft)
+            }
+            .clipShape(clipShape)
+            .contentShape(clipShape)
     }
 
     /// Shines the view a fixed number of times, with a pause between sweeps, then stops.
@@ -82,58 +88,53 @@ struct ShineSchedule: Equatable, Sendable {
     }
 }
 
-private struct ShineModifier: ViewModifier {
+/// The gloss band itself. Draws nothing when Reduce Motion is on.
+private struct ShineBand: View {
     let toggle: Bool
     let duration: CGFloat
-    let clipShape: AnyShape
     let rightToLeft: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    func body(content: Content) -> some View {
-        content
-            .overlay {
-                if !reduceMotion {
-                    GeometryReader {
-                        let size = $0.size
-                        // Rule out negative and extremely small durations
-                        let moddedDuration = max(0.3, duration)
-                        // The 45° rotation and scaleEffect(y: 8) stretch the band along its diagonal,
-                        // so the off-screen distance adds the height as well as the width (this keeps
-                        // the band from lingering on tall views, and is a fix on top of the source)
-                        let travel = size.width + size.height
+    var body: some View {
+        if !reduceMotion {
+            GeometryReader {
+                let size = $0.size
+                // Rule out negative and extremely small durations
+                let moddedDuration = max(0.3, duration)
+                // The 45° rotation and scaleEffect(y: 8) stretch the band along its diagonal,
+                // so the off-screen distance adds the height as well as the width (this keeps
+                // the band from lingering on tall views, and is a fix on top of the source)
+                let travel = size.width + size.height
 
-                        Rectangle()
-                            .fill(.linearGradient(
-                                colors: [
-                                    .clear,
-                                    .clear,
-                                    .white.opacity(0.1),
-                                    .white.opacity(0.5),
-                                    .white.opacity(1),
-                                    .white.opacity(0.5),
-                                    .white.opacity(0.1),
-                                    .clear,
-                                    .clear,
-                                ],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            ))
-                            .scaleEffect(y: 8)
-                            .keyframeAnimator(initialValue: 0.0, trigger: toggle, content: { content, progress in
-                                content
-                                    .offset(x: -travel + (progress * (travel * 2)))
-                            }, keyframes: { _ in
-                                CubicKeyframe(.zero, duration: 0.1)
-                                CubicKeyframe(1, duration: moddedDuration)
-                            })
-                            .rotationEffect(.degrees(45))
-                            .scaleEffect(x: rightToLeft ? -1 : 1)
-                    }
-                    .allowsHitTesting(false)
-                }
+                Rectangle()
+                    .fill(.linearGradient(
+                        colors: [
+                            .clear,
+                            .clear,
+                            .white.opacity(0.1),
+                            .white.opacity(0.5),
+                            .white.opacity(1),
+                            .white.opacity(0.5),
+                            .white.opacity(0.1),
+                            .clear,
+                            .clear,
+                        ],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    ))
+                    .scaleEffect(y: 8)
+                    .keyframeAnimator(initialValue: 0.0, trigger: toggle, content: { content, progress in
+                        content
+                            .offset(x: -travel + (progress * (travel * 2)))
+                    }, keyframes: { _ in
+                        CubicKeyframe(.zero, duration: 0.1)
+                        CubicKeyframe(1, duration: moddedDuration)
+                    })
+                    .rotationEffect(.degrees(45))
+                    .scaleEffect(x: rightToLeft ? -1 : 1)
             }
-            .clipShape(clipShape)
-            .contentShape(clipShape)
+            .allowsHitTesting(false)
+        }
     }
 }
 
