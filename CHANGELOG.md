@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.1] - 2026-10-28
+
 ### Fixed
 - **The components speak Japanese again.** 4.0.0 replaced the hardcoded Japanese with English
   literals and nothing to translate them, so on a Japanese device `.imagePicker(…)` showed
