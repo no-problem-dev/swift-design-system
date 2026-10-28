@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **The components speak Japanese again.** 4.0.0 replaced the hardcoded Japanese with English
+  literals and nothing to translate them, so on a Japanese device `.imagePicker(…)` showed
+  "Select an Image" / "Take Photo" / "Choose from Library", and its permission alert — whose
+  title and message are plain `String`s an app's own catalog cannot reach — was English too.
+  `DesignSystem` now ships a string catalog (`Resources/Localizable.xcstrings`, English source
+  with Japanese) and looks every user-facing string up in it: the image and video pickers and
+  their permission alerts and errors, the color / emoji / icon pickers, `VideoPlayerView`, the
+  accessibility text of `StatusIndicator`, `StepIndicator`, `SegmentedControl`,
+  `AttachmentThumbnail` and `LinkCard`, and the `description` of the built-in themes and of
+  `ThemeCategory`. The Japanese is the wording from before 4.0.0. The bundle carries both
+  `en.lproj` and `ja.lproj`, so an English device still gets English.
+
 ## [5.1.0] - 2026-10-26
 
 ### Added

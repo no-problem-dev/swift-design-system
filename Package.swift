@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "DesignSystem",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17),
         .macOS(.v14)
@@ -30,7 +31,9 @@ let package = Package(
     targets: [
         .target(
             name: "DesignSystem",
-            dependencies: []
+            dependencies: [],
+            // The string catalog holds the Japanese for every user-facing string the components show.
+            resources: [.process("Resources")]
         ),
         // A Codable model of a brand's design specification (the nine DESIGN.md sections).
         // Pure data with no SwiftUI dependency, so a CLI can generate, validate, diff, and import it.

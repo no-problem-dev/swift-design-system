@@ -50,24 +50,24 @@ public struct VideoPickerModifier: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .confirmationDialog(
-                "Select a Video",
+                String(localized: "Select a Video", bundle: .module),
                 isPresented: $isPresented,
                 titleVisibility: .visible
             ) {
                 // Shown only when a camera is available
                 if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                    Button("Record Video") {
+                    Button(String(localized: "Record Video", bundle: .module)) {
                         requestPermissionAndShowPicker(for: .camera)
                     }
                     .tint(Color(colorPalette.primary))
                 }
 
-                Button("Choose from Library") {
+                Button(String(localized: "Choose from Library", bundle: .module)) {
                     requestPermissionAndShowPicker(for: .photoLibrary)
                 }
                 .tint(Color(colorPalette.primary))
 
-                Button("Cancel", role: .cancel) {
+                Button(String(localized: "Cancel", bundle: .module), role: .cancel) {
                     isPresented = false
                 }
             }
@@ -107,11 +107,11 @@ public struct VideoPickerModifier: ViewModifier {
                 presenting: permissionAlertConfig
             ) { config in
                 if config.canOpenSettings {
-                    Button("Open Settings") {
+                    Button(String(localized: "Open Settings", bundle: .module)) {
                         openSettings()
                     }
                 }
-                Button("Cancel", role: .cancel) {
+                Button(String(localized: "Cancel", bundle: .module), role: .cancel) {
                     isPresented = false
                 }
             } message: { config in
@@ -248,11 +248,15 @@ public enum VideoPickerError: LocalizedError, Sendable {
     public var errorDescription: String? {
         switch self {
         case .loadFailed(let message):
-            return "Couldn't load the video: \(message)"
+            return String(localized: "Couldn't load the video: \(message)", bundle: .module)
         case .durationExceeded(let actual, let max):
-            return String(format: "The video is too long (%.0f seconds). The maximum is %.0f seconds.", actual, max)
+            let seconds = FloatingPointFormatStyle<Double>.number.precision(.fractionLength(0))
+            return String(
+                localized: "The video is too long (\(actual.formatted(seconds)) seconds). The maximum is \(max.formatted(seconds)) seconds.",
+                bundle: .module
+            )
         case .sizeExceeded(let actual, let max):
-            return "The file is too large (\(actual.formatted)). The maximum is \(max.formatted)."
+            return String(localized: "The file is too large (\(actual.formatted)). The maximum is \(max.formatted).", bundle: .module)
         }
     }
 }
@@ -315,7 +319,7 @@ struct VideoPickerViewController: UIViewControllerRepresentable {
             didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
         ) {
             guard let videoURL = info[.mediaURL] as? URL else {
-                parent.onError?(.loadFailed("The video URL was unavailable."))
+                parent.onError?(.loadFailed(String(localized: "The video URL was unavailable.", bundle: .module)))
                 parent.isPresented = nil
                 return
             }

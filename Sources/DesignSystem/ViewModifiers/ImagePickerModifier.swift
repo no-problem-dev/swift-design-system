@@ -59,11 +59,11 @@ public struct ImagePickerModifier: ViewModifier {
                 presenting: permissionAlertConfig
             ) { config in
                 if config.canOpenSettings {
-                    Button("Open Settings") {
+                    Button(String(localized: "Open Settings", bundle: .module)) {
                         openSettings()
                     }
                 }
-                Button("Cancel", role: .cancel) {
+                Button(String(localized: "Cancel", bundle: .module), role: .cancel) {
                     isPresented = false
                 }
             } message: { config in
@@ -98,24 +98,24 @@ public struct ImagePickerModifier: ViewModifier {
         switch source {
         case .automatic:
             content.confirmationDialog(
-                "Select an Image",
+                String(localized: "Select an Image", bundle: .module),
                 isPresented: $isPresented,
                 titleVisibility: .visible
             ) {
                 // Shown only when a camera is available
                 if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                    Button("Take Photo") {
+                    Button(String(localized: "Take Photo", bundle: .module)) {
                         showCamera()
                     }
                     .tint(Color(colorPalette.primary))
                 }
 
-                Button("Choose from Library") {
+                Button(String(localized: "Choose from Library", bundle: .module)) {
                     sourceType = .photoLibrary
                 }
                 .tint(Color(colorPalette.primary))
 
-                Button("Cancel", role: .cancel) {
+                Button(String(localized: "Cancel", bundle: .module), role: .cancel) {
                     isPresented = false
                 }
             }
@@ -238,29 +238,29 @@ struct PermissionAlertConfig {
     init(sourceType: MediaSourceType, status: PermissionStatus) {
         switch sourceType {
         case .camera:
-            self.title = "Camera Access Required"
+            self.title = String(localized: "Camera Access Required", bundle: .module)
             switch status {
             case .denied:
-                self.message = "Allow access to the camera in Settings."
+                self.message = String(localized: "Allow access to the camera in Settings.", bundle: .module)
                 self.canOpenSettings = true
             case .restricted:
-                self.message = "Access to the camera is restricted. Check your device settings or parental controls."
+                self.message = String(localized: "Access to the camera is restricted. Check your device settings or parental controls.", bundle: .module)
                 self.canOpenSettings = false
             case .notDetermined:
-                self.message = "Using the camera requires your permission."
+                self.message = String(localized: "Using the camera requires your permission.", bundle: .module)
                 self.canOpenSettings = false
             }
         case .photoLibrary:
-            self.title = "Photos Access Required"
+            self.title = String(localized: "Photos Access Required", bundle: .module)
             switch status {
             case .denied:
-                self.message = "Allow access to your photos in Settings."
+                self.message = String(localized: "Allow access to your photos in Settings.", bundle: .module)
                 self.canOpenSettings = true
             case .restricted:
-                self.message = "Access to your photos is restricted. Check your device settings or parental controls."
+                self.message = String(localized: "Access to your photos is restricted. Check your device settings or parental controls.", bundle: .module)
                 self.canOpenSettings = false
             case .notDetermined:
-                self.message = "Using the photo library requires your permission."
+                self.message = String(localized: "Using the photo library requires your permission.", bundle: .module)
                 self.canOpenSettings = false
             }
         }
@@ -275,7 +275,7 @@ private func imageConversionError() -> NSError {
     NSError(
         domain: "ImagePickerError",
         code: -1,
-        userInfo: [NSLocalizedDescriptionKey: "Couldn't convert the image."]
+        userInfo: [NSLocalizedDescriptionKey: String(localized: "Couldn't convert the image.", bundle: .module)]
     )
 }
 

@@ -10,7 +10,7 @@ public struct SunsetTheme: Theme {
 
     public var name: String { "Sunset" }
 
-    public var description: String { "Sunset orange. Warm and energetic" }
+    public var description: String { String(localized: "Sunset orange. Warm and energetic", bundle: .module) }
 
     public var category: ThemeCategory { .brandPersonality }
 

@@ -131,13 +131,13 @@ public struct VideoPlayerView: View {
                     .frame(minHeight: 200)
             } else if let error = loadError {
                 ContentUnavailableView(
-                    "Unable to Load Video",
+                    String(localized: "Unable to Load Video", bundle: .module),
                     systemImage: "video.slash",
                     description: Text(error.localizedDescription)
                 )
                 .frame(minHeight: 200)
             } else {
-                ProgressView("Loading Video…")
+                ProgressView(String(localized: "Loading Video…", bundle: .module))
                     .frame(maxWidth: .infinity, minHeight: 200)
             }
         }
@@ -148,7 +148,7 @@ public struct VideoPlayerView: View {
 
     private func metadataSection(_ metadata: VideoMetadata) -> some View {
         VStack(alignment: .leading, spacing: spacing.xs) {
-            Text("Video Info")
+            Text("Video Info", bundle: .module)
                 .font(.caption.bold())
                 .foregroundStyle(Color(colorPalette.onSurfaceVariant))
 
@@ -174,7 +174,7 @@ public struct VideoPlayerView: View {
         HStack(spacing: spacing.sm) {
             if actions.contains(.play) {
                 Chip(
-                    isPlaying ? "Pause" : "Play",
+                    isPlaying ? String(localized: "Pause", bundle: .module) : String(localized: "Play", bundle: .module),
                     systemImage: isPlaying ? "pause.fill" : "play.fill",
                     action: togglePlayback
                 )
@@ -182,7 +182,7 @@ public struct VideoPlayerView: View {
             }
 
             if actions.contains(.share) {
-                Chip("Share", systemImage: "square.and.arrow.up", action: {
+                Chip(String(localized: "Share", bundle: .module), systemImage: "square.and.arrow.up", action: {
                     showingShareSheet = true
                 })
                 .chipStyle(.outlined)
@@ -193,14 +193,14 @@ public struct VideoPlayerView: View {
                     HStack(spacing: spacing.xs) {
                         ProgressView()
                             .controlSize(.small)
-                        Text("Saving…")
+                        Text("Saving…", bundle: .module)
                             .typography(.labelMedium)
                             .foregroundStyle(Color(colorPalette.onSurfaceVariant))
                     }
                     .padding(.horizontal, spacing.md)
                     .padding(.vertical, spacing.xs)
                 } else {
-                    Chip("Save", systemImage: "square.and.arrow.down", action: saveToPhotos)
+                    Chip(String(localized: "Save", bundle: .module), systemImage: "square.and.arrow.down", action: saveToPhotos)
                         .chipStyle(.filled)
                 }
             }
@@ -300,12 +300,12 @@ public struct VideoPlayerView: View {
 
     private func saveToPhotos() {
         guard let url = tempFileURL ?? source.localURL else {
-            snackbarState.show(message: "There is no video to save.")
+            snackbarState.show(message: String(localized: "There is no video to save.", bundle: .module))
             return
         }
 
         guard FileManager.default.fileExists(atPath: url.path) else {
-            snackbarState.show(message: "The video file could not be found.")
+            snackbarState.show(message: String(localized: "The video file could not be found.", bundle: .module))
             return
         }
 
@@ -319,8 +319,8 @@ public struct VideoPlayerView: View {
 
                 guard status == .authorized || status == .limited else {
                     snackbarState.show(
-                        message: "Access to the photo library has not been granted.",
-                        primaryAction: SnackbarAction(title: "Open Settings") {
+                        message: String(localized: "Access to the photo library has not been granted.", bundle: .module),
+                        primaryAction: SnackbarAction(title: String(localized: "Open Settings", bundle: .module)) {
                             if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
                                 openURL(settingsURL)
                             }
@@ -335,10 +335,10 @@ public struct VideoPlayerView: View {
                     PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: fileURL)
                 }
 
-                snackbarState.show(message: "Saved to your photo library ✓", duration: 3.0)
+                snackbarState.show(message: String(localized: "Saved to your photo library ✓", bundle: .module), duration: 3.0)
             } catch {
                 snackbarState.show(
-                    message: "Save failed: \(error.localizedDescription)",
+                    message: String(localized: "Save failed: \(error.localizedDescription)", bundle: .module),
                     duration: 5.0
                 )
             }

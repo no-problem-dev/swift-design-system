@@ -116,13 +116,13 @@ struct DSIconPickerView: View {
                 }
             }
             .background(colors.background)
-            .navigationTitle("Select an Icon")
+            .navigationTitle(String(localized: "Select an Icon", bundle: .module))
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(String(localized: "Cancel", bundle: .module)) {
                         dismiss()
                     }
                     .foregroundColor(colors.onSurfaceVariant)
@@ -130,7 +130,7 @@ struct DSIconPickerView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     if selectedIcon != nil {
-                        Button("Clear") {
+                        Button(String(localized: "Clear", bundle: .module)) {
                             selectedIcon = nil
                             dismiss()
                         }
@@ -147,7 +147,7 @@ struct DSIconPickerView: View {
                 .font(.system(size: 16))
                 .foregroundColor(colors.onSurfaceVariant)
 
-            TextField("Search icons", text: $searchText)
+            TextField(String(localized: "Search icons", bundle: .module), text: $searchText)
                 .autocorrectionDisabled()
 
             if !searchText.isEmpty {
