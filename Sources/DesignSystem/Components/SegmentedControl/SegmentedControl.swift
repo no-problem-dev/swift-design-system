@@ -41,7 +41,7 @@ public struct SegmentedControl<Selection: Hashable, Content: View>: View {
                 }
                 .buttonStyle(.plain)
                 .background(backgroundColor(for: option), in: RoundedRectangle(cornerRadius: radiusScale.md))
-                .accessibilityValue(selection.wrappedValue == option ? "Selected" : "")
+                .accessibilityValue(selection.wrappedValue == option ? String(localized: "Selected", bundle: .module) : "")
             }
         }
         .padding(spacingScale.xs)

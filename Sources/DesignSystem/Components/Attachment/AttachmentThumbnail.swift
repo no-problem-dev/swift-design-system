@@ -92,7 +92,7 @@ public struct AttachmentThumbnail: View {
                 )
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Remove Attachment")
+        .accessibilityLabel(Text("Remove Attachment", bundle: .module))
     }
 }
 

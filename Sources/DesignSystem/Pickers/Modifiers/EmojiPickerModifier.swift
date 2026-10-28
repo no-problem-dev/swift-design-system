@@ -116,13 +116,13 @@ struct DSEmojiPickerView: View {
                 }
             }
             .background(colors.background)
-            .navigationTitle("Select an Emoji")
+            .navigationTitle(String(localized: "Select an Emoji", bundle: .module))
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(String(localized: "Cancel", bundle: .module)) {
                         dismiss()
                     }
                     .foregroundColor(colors.onSurfaceVariant)
@@ -130,7 +130,7 @@ struct DSEmojiPickerView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     if selectedEmoji != nil {
-                        Button("Clear") {
+                        Button(String(localized: "Clear", bundle: .module)) {
                             selectedEmoji = nil
                             dismiss()
                         }
@@ -147,7 +147,7 @@ struct DSEmojiPickerView: View {
                 .font(.system(size: 16))
                 .foregroundColor(colors.onSurfaceVariant)
 
-            TextField("Search emoji", text: $searchText)
+            TextField(String(localized: "Search emoji", bundle: .module), text: $searchText)
                 .autocorrectionDisabled()
 
             if !searchText.isEmpty {

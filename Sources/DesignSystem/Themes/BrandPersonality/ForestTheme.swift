@@ -10,7 +10,7 @@ public struct ForestTheme: Theme {
 
     public var name: String { "Forest" }
 
-    public var description: String { "Deep forest green. Natural and calm" }
+    public var description: String { String(localized: "Deep forest green. Natural and calm", bundle: .module) }
 
     public var category: ThemeCategory { .brandPersonality }
 

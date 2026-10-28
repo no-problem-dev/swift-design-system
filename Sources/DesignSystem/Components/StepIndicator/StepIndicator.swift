@@ -67,8 +67,8 @@ public struct StepIndicator: View {
     }
 
     private var defaultAccessibilityText: String {
-        guard let currentIndex else { return "Completed" }
-        return "Step \(currentIndex + 1) of \(stepCount)"
+        guard let currentIndex else { return String(localized: "Completed", bundle: .module) }
+        return String(localized: "Step \(currentIndex + 1) of \(stepCount)", bundle: .module)
     }
 }
 

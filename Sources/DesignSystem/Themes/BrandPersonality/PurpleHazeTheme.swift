@@ -10,7 +10,7 @@ public struct PurpleHazeTheme: Theme {
 
     public var name: String { "Purple Haze" }
 
-    public var description: String { "Vivid purple. Creative and inventive" }
+    public var description: String { String(localized: "Vivid purple. Creative and inventive", bundle: .module) }
 
     public var category: ThemeCategory { .brandPersonality }
 

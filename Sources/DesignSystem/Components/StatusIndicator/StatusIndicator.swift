@@ -62,11 +62,11 @@ public struct StatusIndicator: View {
 
     private var accessibilityText: String {
         switch kind {
-        case .pending: "Pending"
-        case .running: "Running"
-        case .success: "Completed"
-        case .failure: "Failed"
-        case .canceled: "Canceled"
+        case .pending: String(localized: "Pending", bundle: .module)
+        case .running: String(localized: "Running", bundle: .module)
+        case .success: String(localized: "Completed", bundle: .module)
+        case .failure: String(localized: "Failed", bundle: .module)
+        case .canceled: String(localized: "Canceled", bundle: .module)
         }
     }
 }

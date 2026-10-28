@@ -61,7 +61,7 @@ public struct LinkCard<Accessory: View>: View {
             Button(action: action) { cardBody }
                 .buttonStyle(.plain)
                 .accessibilityLabel(displayTitle)
-                .accessibilityHint("Opens the link")
+                .accessibilityHint(Text("Opens the link", bundle: .module))
         } else {
             cardBody
         }

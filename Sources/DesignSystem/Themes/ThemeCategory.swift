@@ -22,13 +22,13 @@ public enum ThemeCategory: String, Sendable, CaseIterable, Identifiable {
     public var description: String {
         switch self {
         case .standard:
-            return "The basic light and dark themes"
+            return String(localized: "The basic light and dark themes", bundle: .module)
         case .brandPersonality:
-            return "A range of themes that express a brand's personality"
+            return String(localized: "A range of themes that express a brand's personality", bundle: .module)
         case .accessibility:
-            return "High contrast themes built for accessibility"
+            return String(localized: "High contrast themes built for accessibility", bundle: .module)
         case .custom:
-            return "Custom themes defined by the app"
+            return String(localized: "Custom themes defined by the app", bundle: .module)
         }
     }
 

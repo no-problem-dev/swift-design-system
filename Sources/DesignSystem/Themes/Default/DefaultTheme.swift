@@ -8,7 +8,7 @@ public struct DefaultTheme: Theme {
 
     public var name: String { "Default" }
 
-    public var description: String { "The standard system theme, based on blue" }
+    public var description: String { String(localized: "The standard system theme, based on blue", bundle: .module) }
 
     public var category: ThemeCategory { .standard }
 

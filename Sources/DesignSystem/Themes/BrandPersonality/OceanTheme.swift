@@ -10,7 +10,7 @@ public struct OceanTheme: Theme {
 
     public var name: String { "Ocean" }
 
-    public var description: String { "Deep ocean blue. Professional and calm" }
+    public var description: String { String(localized: "Deep ocean blue. Professional and calm", bundle: .module) }
 
     public var category: ThemeCategory { .brandPersonality }
 

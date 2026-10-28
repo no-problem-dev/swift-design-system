@@ -10,7 +10,7 @@ public struct HighContrastTheme: Theme {
 
     public var name: String { "High Contrast" }
 
-    public var description: String { "WCAG AAA compliant. Maximum legibility and accessibility" }
+    public var description: String { String(localized: "WCAG AAA compliant. Maximum legibility and accessibility", bundle: .module) }
 
     public var category: ThemeCategory { .accessibility }
 
