@@ -61,10 +61,10 @@ themeProvider.toggleMode()   // system → light → dark → system
 
 ## Documentation
 
-[**API reference and guides**](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/) —
-including [Getting Started](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/gettingstarted/),
-[Token Architecture](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/tokenarchitecture/),
-and [Custom Theme](https://no-problem-dev.github.io/swift-design-system/documentation/designsystem/customtheme/).
+[**API reference and guides**](Sources/DesignSystem/Documentation.docc) —
+including [Getting Started](Sources/DesignSystem/Documentation.docc/GettingStarted.md),
+[Token Architecture](Sources/DesignSystem/Documentation.docc/TokenArchitecture.md),
+and [Custom Theme](Sources/DesignSystem/Documentation.docc/CustomTheme.md).
 
 ## Installation
 
