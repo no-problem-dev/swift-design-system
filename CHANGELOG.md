@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.2] - 2026-11-08
+
+### Changed
+
+- swift-docc-plugin への依存を外した（DocC は Xcode で開く）
+
 ## [5.1.1] - 2026-10-28
 
 ### Fixed
@@ -1060,7 +1066,8 @@ signature; the major number marks the split from 1.x, which is no longer develop
 - DocC support
   - Automatic documentation publishing on GitHub Pages
 
-[Unreleased]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.22...HEAD
+[Unreleased]: https://github.com/no-problem-dev/swift-design-system/compare/5.1.2...HEAD
+[5.1.2]: https://github.com/no-problem-dev/swift-design-system/compare/5.1.1...5.1.2
 [1.0.22]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.21...v1.0.22
 [1.0.21]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.20...v1.0.21
 [1.0.20]: https://github.com/no-problem-dev/swift-design-system/compare/v1.0.19...v1.0.20
