@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.3] - 2026-11-14
+
+### Fixed
+- **`skeleton(isRedacted:tint:)` respects Reduce Motion.** With Reduce Motion on, the content is
+  still redacted but the band of light no longer sweeps across it, so it reads as a static
+  placeholder.
+
 ## [5.1.2] - 2026-11-08
 
 ### Changed

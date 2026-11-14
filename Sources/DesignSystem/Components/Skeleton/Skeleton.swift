@@ -7,6 +7,7 @@ public extension View {
     /// placeholder shapes.
     /// The sweep is guarded internally so that an animation transaction from a parent view
     /// cannot override it.
+    /// When Reduce Motion is on, the content is only redacted: a static placeholder with no sweep.
     ///
     /// Source: Kavsoft "SwiftUI Skeleton View - Skeleton Loading Animations" (2025-04)
     /// - Parameters:
@@ -21,12 +22,18 @@ struct SkeletonModifier: ViewModifier {
     var isRedacted: Bool
     var tint: Color?
     @Environment(\.colorScheme) private var scheme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// Whether the band of light sweeps. Reduce Motion leaves only the redacted placeholder.
+    static func sweeps(isRedacted: Bool, reduceMotion: Bool) -> Bool {
+        isRedacted && !reduceMotion
+    }
 
     func body(content: Content) -> some View {
         content
             .redacted(reason: isRedacted ? .placeholder : [])
             .overlay {
-                if isRedacted {
+                if Self.sweeps(isRedacted: isRedacted, reduceMotion: reduceMotion) {
                     // Driven by the clock (TimelineView): @State plus withAnimation(.repeatForever)
                     // is fragile, because a redraw of an ancestor or an insertion transition kills
                     // the animation. Deriving the position from the clock on every frame keeps it
